@@ -20,6 +20,6 @@ public class MainViewModel extends AndroidViewModel {
      * View action: load current location
      */
     public void moveToCurrentLocation() {
-        locationCollectionManager.loadCurrentLocation(CurrentUserLocationEvent.DO_NOT_MOVE_TO_CURRENT_LOCATION);
+        locationCollectionManager.loadCurrentLocation(CurrentUserLocationEvent.MOVE_TO_CURRENT_LOCATION);
     }
 }

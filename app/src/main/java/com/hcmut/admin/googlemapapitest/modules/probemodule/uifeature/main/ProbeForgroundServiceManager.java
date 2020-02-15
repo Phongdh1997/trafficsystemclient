@@ -15,7 +15,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.hcmut.admin.googlemapapitest.modules.probemodule.service.AppForegroundService;
 
-public class AppForgroundServiceManager {
+public class ProbeForgroundServiceManager {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 888;
     private static final int MUTILE_PERMISSION_REQUEST = 777;
@@ -25,7 +25,7 @@ public class AppForgroundServiceManager {
 
     private Activity activity;
 
-    public AppForgroundServiceManager(Activity activity) {
+    public ProbeForgroundServiceManager(Activity activity) {
         this.activity = activity;
     }
 

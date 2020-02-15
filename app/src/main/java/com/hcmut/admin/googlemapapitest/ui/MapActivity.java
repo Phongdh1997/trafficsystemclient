@@ -109,7 +109,9 @@ import com.hcmut.admin.googlemapapitest.model.response.PatchNotiResponse;
 import com.hcmut.admin.googlemapapitest.model.response.TrafficReportResponse;
 import com.hcmut.admin.googlemapapitest.model.response.TrafficStatusResponse;
 import com.hcmut.admin.googlemapapitest.model.user.User;
-import com.hcmut.admin.googlemapapitest.modules.probemodule.uifeature.main.AppForgroundServiceManager;
+import com.hcmut.admin.googlemapapitest.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
+import com.hcmut.admin.googlemapapitest.modules.probemodule.uifeature.main.ProbeMainUi;
+import com.hcmut.admin.googlemapapitest.modules.probemodule.uifeature.map.ProbeMapUi;
 import com.hcmut.admin.googlemapapitest.ui.question.QuestionActivity;
 import com.hcmut.admin.googlemapapitest.ui.rating.RatingActivity;
 import com.hcmut.admin.googlemapapitest.ui.rating.detailReport.DetailReportActivity;
@@ -324,20 +326,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      *
      * ================================================
      */
-    private AppForgroundServiceManager appForgroundServiceManager;
+    private ProbeForgroundServiceManager appForgroundServiceManager;
+    private ProbeMainUi probeMainUi;
+    private ProbeMapUi probeMapUi;
 
     /**
      *
      * Init probe module variable to use
      */
     private void initProbeModuleVariable() {
-        appForgroundServiceManager = new AppForgroundServiceManager(this);
+        appForgroundServiceManager = new ProbeForgroundServiceManager(this);
+        probeMainUi = new ProbeMainUi(this, mGps);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         appForgroundServiceManager.initLocationService();
+        if (probeMapUi != null) {
+            probeMapUi.startStatusRenderTimer();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (probeMapUi != null) {
+            probeMapUi.stopStatusRenderTimer();
+        }
     }
 
     @Override
@@ -504,6 +520,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
+
+        //
+        //  init Probe Map Module
+        //
+        probeMapUi = new ProbeMapUi(this, mMap);
+        probeMapUi.startStatusRenderTimer();
+
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
         moveToDevicePosition();
@@ -620,12 +643,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 });
 
-        mGps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToDevicePosition();
-            }
-        });
+//        mGps.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                moveToDevicePosition();
+//            }
+//        });
 
         mReport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -742,22 +765,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            private float currentZoom = -1;
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                if (isClickPolyline) {
-                    isClickPolyline = false;
-                    return;
-                }
-                if (cameraPosition.zoom != currentZoom) {
-                    currentZoom = cameraPosition.zoom;
-                    renderCurrentPosition(mMap.getCameraPosition().target);
-                    // do you action here
-                }
-            }
-        });
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -823,47 +830,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 if (mapInteractionStep > 0) {
                     roadFinder.getSnappedPoint(position, false);
-                }
-            }
-        });
-
-        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                LatLng currentCameraPos = mMap.getCameraPosition().target;
-                int zoom = (int) mMap.getCameraPosition().zoom;
-                int distance;
-                switch (zoom) {
-                    case 15: {
-                        distance = 1500;
-                        break;
-                    }
-                    case 14: {
-                        distance = 4000;
-                        break;
-                    }
-                    case 13: {
-                        distance = 6000;
-                        break;
-                    }
-                    case 12: {
-                        distance = 8000;
-                        break;
-                    }
-                    default:
-                        distance = 1500;
-                }
-                //Toast.makeText(MapActivity.this, "New position,lat: " + currentCameraPos.latitude + "long: " + currentCameraPos.longitude, Toast.LENGTH_LONG).show();
-                if (mapUtils.getDistBetween2LatLngs(oldCameraPos, currentCameraPos) >= distance) {
-//                    Toast.makeText(MapActivity.this, "New position,lat: " + currentCameraPos.latitude +
-//                            "long: " + currentCameraPos.longitude, Toast.LENGTH_LONG).show();
-                    renderCurrentPosition(currentCameraPos);
-                    oldCameraPos = currentCameraPos;
-                } else {
-                   /* Toast.makeText(MapActivity.this, "Old position,lat: " + oldCameraPos.latitude + "long: " + oldCameraPos.longitude
-                            +"New position,lat: " + currentCameraPos.latitude + "long: " +
-                            currentCameraPos.longitude +"Distance: "+mapUtils.getDistBetween2LatLngs(oldCameraPos,
-                            currentCameraPos), Toast.LENGTH_LONG).show();*/
                 }
             }
         });
