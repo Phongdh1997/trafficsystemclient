@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/destination_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:elevation="10dp"
+    android:background="@drawable/white_border">
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/ic_destination"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/ic_destination"
+    />
+
+    <AutoCompleteTextView
+        android:id="@+id/destination_edt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/ic_destination"
+        android:layout_centerVertical="true"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textSize="15sp"
+        android:textColor="#000"
+        android:background="@null"
+        android:hint="Chọn điểm đến"
+        android:imeOptions="actionSearch"
+        />
+</RelativeLayout>

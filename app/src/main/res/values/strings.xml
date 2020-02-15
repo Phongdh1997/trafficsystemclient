@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">GoogleMapApiTest</string>
+    <string name="title_activity_speech_to_text">SpeechToText</string>
+    <string name="facebook_app_id">285927118980084</string>
+    <string name="server_client_id">131064076267-voorfdds5699lnio6tcj61k8rgtl3d3g.apps.googleusercontent.com</string>
+    <string name="danh_gia">Đánh giá</string>
+    <string name="list_report">Danh sách báo cáo</string>
+    <string name="report_detail">Chi tiết báo cáo</string>
+    <string name="info">Thông tin cá nhân</string>
+    <string name="gg_api_key">AIzaSyBfloTm067WfYy3ZiE2BiubYjOhv4H-Jrw</string>
+    <string name="text_current_location">Vị trí hiện tại</string>
+    <string-array name="reasons_array">
+        <item>Nguyên nhân (không bắt buộc)</item>
+        <item>Tắc đường</item>
+        <item>Ngập lụt</item>
+        <item>Vật cản</item>
+        <item>Tai nạn</item>
+        <item>Công an</item>
+        <item>Đường cấm</item>
+    </string-array>
+
+    <string-array name="travel_types_array">
+        <item>Khoảng cách</item>
+        <item>Thời gian</item>
+    </string-array>
+
+    <!-- Firebase strings-->
+    <string name="msg_subscribed">Subscribed to weather topic</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <!--
+            This is the name that users will see when interacting with this channel.
+            It should describe the category of notifications that will be sent through this channel
+         -->
+    <string name="default_notification_channel_name" translatable="true">Report</string>
+    <string name="msg_subscribe_failed">Failed to subscribe to report topic</string>
+    <string name="fcm_message">FCM Message</string>
+    <string name="login">Đăng nhập</string>
+    <string name="name">Họ Tên</string>
+    <string name="name_register">Họ Tên*</string>
+    <string name="username">Tên đăng nhập</string>
+    <string name="username_register">Tên đăng nhập*</string>
+    <string name="username_sign_up">Tên đăng nhập (Yêu cầu)</string>
+    <string name="password">Mật khẩu</string>
+    <string name="password_register">Mật khẩu*</string>
+    <string name="password_sign_up">Mật khẩu (Yêu cầu)</string>
+    <string name="confirm_password_sign_up">Xác nhận mật khẩu*</string>
+    <string name="sign_up">Đăng ký</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="email_address">Địa chỉ email</string>
+    <string name="or">Hoặc đăng nhập bằng</string>
+    <string name="forgot_password">Quên mật khẩu</string>
+    <string name="dont_have_account">Bạn có tài khoản chưa?</string>
+    <string name="velocity">Tốc độ đã nhập (km/h): </string>
+    <string name="auto_velocity">Tốc độ tự đo (km/h): </string>
+    <string name="title_take_photo">Chọn nguồn</string>
+    <string name="text_no_report">Thời điểm này không có báo cáo gửi lên hệ thống.\nVui lòng chọn thời điểm khác."</string>
+    <string name="loading">Đang tải…</string>
+
+</resources>
