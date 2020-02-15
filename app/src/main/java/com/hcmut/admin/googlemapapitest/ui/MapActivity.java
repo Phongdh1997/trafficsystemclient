@@ -109,6 +109,7 @@ import com.hcmut.admin.googlemapapitest.model.response.PatchNotiResponse;
 import com.hcmut.admin.googlemapapitest.model.response.TrafficReportResponse;
 import com.hcmut.admin.googlemapapitest.model.response.TrafficStatusResponse;
 import com.hcmut.admin.googlemapapitest.model.user.User;
+import com.hcmut.admin.googlemapapitest.modules.probemodule.uifeature.main.AppForgroundServiceManager;
 import com.hcmut.admin.googlemapapitest.ui.question.QuestionActivity;
 import com.hcmut.admin.googlemapapitest.ui.rating.RatingActivity;
 import com.hcmut.admin.googlemapapitest.ui.rating.detailReport.DetailReportActivity;
@@ -316,6 +317,36 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     };
 
+    /**
+     * ================================================
+     *
+     * Declare probe module variable
+     *
+     * ================================================
+     */
+    private AppForgroundServiceManager appForgroundServiceManager;
+
+    /**
+     *
+     * Init probe module variable to use
+     */
+    private void initProbeModuleVariable() {
+        appForgroundServiceManager = new AppForgroundServiceManager(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        appForgroundServiceManager.initLocationService();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (!appForgroundServiceManager.handleAppForgroundPermission(requestCode, permissions, grantResults)) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     ///Options menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -450,6 +481,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mSearchEdt.setAdapter(mPlaceAutoCompleteAdapter);
         mSearchEdt.setOnItemClickListener(mAutocompleteClickListener);
         mSearchEdt.setThreshold(1);
+
+        initProbeModuleVariable();
     }
 
     private void initMap() {
