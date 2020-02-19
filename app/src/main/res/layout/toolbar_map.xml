@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.hcmut.admin.googlemapapitest.util.CustomDrawerButton
+        <com.hcmut.admin.bktrafficsystem.util.CustomDrawerButton
             android:id="@+id/ic_menu"
             android:layout_width="32dp"
             android:layout_height="32dp"

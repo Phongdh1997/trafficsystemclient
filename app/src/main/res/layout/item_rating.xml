@@ -14,7 +14,7 @@
     <!--app:layout_constraintTop_toTopOf="parent"-->
     <!--app:layout_constraintStart_toStartOf="parent"/>-->
 
-    <com.hcmut.admin.googlemapapitest.util.CircleImageView
+    <com.hcmut.admin.bktrafficsystem.util.CircleImageView
         android:id="@+id/img_avatar"
         android:layout_width="41dp"
         android:layout_height="41dp"

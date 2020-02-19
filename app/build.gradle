@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    vName = "1.0.8"
+    vName = "1.0.1"
     packageName = 'com.hcmut.admin.googlemapapitest'
     appicationName = 'Utraffic'
 }
@@ -13,7 +13,7 @@ android {
         applicationId "com.hcmut.admin.googlemapapitest"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 16
+        versionCode 1
         versionName vName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hcmut.admin.googlemapapitest">
+    package="com.hcmut.admin.bktrafficsystem">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
-        android:name=".MyApplication"
+        android:name="com.hcmut.admin.bktrafficsystem.MyApplication"
         android:icon="@drawable/app_icon"
         android:allowBackup="false"
         android:label="@string/appicationName"
@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme.NoActionBar">
 
         <activity
-            android:name=".ui.SplashActivity"
+            android:name="com.hcmut.admin.bktrafficsystem.ui.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -32,18 +32,18 @@
 
         </activity>
         <activity
-            android:name="com.hcmut.admin.googlemapapitest.ui.LoginActivity"
+            android:name="com.hcmut.admin.bktrafficsystem.ui.LoginActivity"
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name="com.hcmut.admin.googlemapapitest.ui.MapActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.MapActivity"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.googlemapapitest.ui.rating.RatingActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.googlemapapitest.ui.rating.photo.PreViewPhotoActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.googlemapapitest.ui.rating.detailReport.DetailReportActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="detail" />
@@ -51,14 +51,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.hcmut.admin.googlemapapitest.ui.RegisterActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.RegisterActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.InformationActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.InformationActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.question.QuestionActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.question.QuestionDetailActivity" />
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.question.QuestionDetailActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -87,7 +87,7 @@
 
         <!-- [START firebase_service] -->
          <service
-            android:name="com.hcmut.admin.googlemapapitest.model.MyFirebaseMessagingService"
+            android:name="com.hcmut.admin.bktrafficsystem.model.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -95,7 +95,7 @@
          </service>
         <!-- [END firebase_service] -->
 
-        <service android:name=".modules.probemodule.service.AppForegroundService"/>
+        <service android:name="com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService"/>
     </application>
 
 </manifest>
