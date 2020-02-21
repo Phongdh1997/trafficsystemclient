@@ -227,7 +227,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Button agreeBtn, disagreeBtn, ratingBtn, mReport;
     private SwitchCompat switchCompat;
 
-    private MapDirection mapDirection;
+    private ArrayList<Marker> directsMaker = new ArrayList<>();
 
     private int avgVelo;
     private float mBearing = 0;
@@ -395,9 +395,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         accountType = user.getAccountType();
         userName = user.getUserName();
         imgUrl = user.getImgUrl();
-
-        // init map view util
-        mapDirection = new MapDirection();
 
         initView();
         //Init map
@@ -960,7 +957,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     clrOriginBtn.setVisibility(View.VISIBLE);
                 } else {
                     clrOriginBtn.setVisibility(View.INVISIBLE);
-                    mapDirection.clearDirection();
+                    if (directsMaker.size() == 2) {
+                        directsMaker.get(0).remove();
+                        directsMaker.get(1).remove();
+                        directsMaker.clear();
+                    }
                     if (polylinePaths != null) {
                         for (Polyline polyline : polylinePaths) {
                             polyline.remove();
@@ -986,7 +987,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     clrStartBtn.setVisibility(View.VISIBLE);
                 } else {
                     clrStartBtn.setVisibility(View.INVISIBLE);
-                    mapDirection.clearDirection();
+                    if (directsMaker.size() == 2) {
+                        directsMaker.get(0).remove();
+                        directsMaker.get(1).remove();
+                        directsMaker.clear();
+                    }
                     if (polylinePaths != null) {
                         for (Polyline polyline : polylinePaths) {
                             polyline.remove();
@@ -1012,7 +1017,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     clrDestBtn.setVisibility(View.VISIBLE);
                 } else {
                     clrDestBtn.setVisibility(View.INVISIBLE);
-                    mapDirection.clearDirection();
+                    if (directsMaker.size() == 2) {
+                        directsMaker.get(0).remove();
+                        directsMaker.get(1).remove();
+                        directsMaker.clear();
+                    }
                     if (polylinePaths != null) {
                         for (Polyline polyline : polylinePaths) {
                             polyline.remove();
@@ -1687,7 +1696,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     customToolbar.setVisibility(View.VISIBLE);
                     destinationBox.setVisibility(View.GONE);
                     travelTypesSpinner.setVisibility(View.GONE);
-                    mapDirection.clearDirection();
+                    if (directsMaker.size() == 2) {
+                        directsMaker.get(0).remove();
+                        directsMaker.get(1).remove();
+                        directsMaker.clear();
+                    }
                     if (polylinePaths != null) {
                         for (Polyline polyline : polylinePaths) {
                             polyline.remove();
@@ -1876,10 +1889,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(MapActivity.this, "Địa điểm bắt đầu không tồn tại", Toast.LENGTH_LONG).show();
             return;
         }
-        //progressDialog = ProgressDialog.show(this, "", "Đang tìm đường..!", true);
-
+        progressDialog = ProgressDialog.show(this, "", "Đang tìm đường..!", true);
+//        10.831717,106.622377,10.828725,106.618397,2)//
         endFindRoad = end;
-        probeMapUi.renderNewDirection(start, end);
+        callApi.getFindDirect(start.latitude, start.longitude, end.latitude, end.longitude, type)
+                .enqueue(new Callback<BaseResponse<List<DirectRespose>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<DirectRespose>>> call, Response<BaseResponse<List<DirectRespose>>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                applyPolyLine(response.body().getData().get(0).getCoords());
+                                pathId = response.body().getData().get(0).getPathId();
+                                toggleNotify(pathId , "true");
+                            } else {
+                                progressDialog.dismiss();
+                                findDirection(mStartLocationEditext.getText().toString(), mDestEdt.getText().toString());
+                            }
+                        }
+                    }
+
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<DirectRespose>>> call, Throwable t) {
+                        progressDialog.dismiss();
+                        findDirection(mStartLocationEditext.getText().toString(), mDestEdt.getText().toString());
+                    }
+                });
+
     }
 
     private void toggleNotify(String pathId, String isActive) {
@@ -1898,6 +1934,41 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Toast.makeText(MapActivity.this, "Fail", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void applyPolyLine(List<Coord> directs) {
+        if (directsMaker.size() == 2) {
+            directsMaker.get(0).remove();
+            directsMaker.get(1).remove();
+            directsMaker.clear();
+        }
+
+        directsMaker.add(mMap.addMarker(new MarkerOptions().position(new LatLng(directs.get(0).getLat(), directs.get(0).getLng()))
+                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_start_position))));
+        directsMaker.add(mMap.addMarker(new MarkerOptions().position(new LatLng(directs.get(directs.size() - 1).getLat(), directs.get(directs.size() - 1).getLng()))
+                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_end_position))));
+        progressDialog.dismiss();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(new LatLng(directs.get(0).getLat(), directs.get(0).getLng()));
+        builder.include(new LatLng(directs.get(directs.size() - 1).getLat(), directs.get(directs.size() - 1).getLng()));
+        LatLngBounds bounds = builder.build();
+        int padding = 200; // padding around start and end marker
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mMap.animateCamera(cu);
+
+        for (int i = 0; i < directs.size() - 1; i++) {
+            LatLng start = new LatLng(directs.get(i).getLat(), directs.get(i).getLng());
+            LatLng end = new LatLng(directs.get(i + 1).getLat(), directs.get(i + 1).getLng());
+
+            polylinePaths.add(mMap.addPolyline(
+                    new PolylineOptions().add(
+                            start,
+                            end
+                    ).width(5).geodesic(true)
+                            .clickable(true)
+                            .color(Color.BLUE)
+            ));
+        }
     }
 
     @Override
