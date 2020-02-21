@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui;
+package com.hcmut.admin.bktrafficsystem.ui.map;
 
 import android.Manifest;
 import android.app.Activity;
@@ -111,6 +111,9 @@ import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
+import com.hcmut.admin.bktrafficsystem.ui.InformationActivity;
+import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
+import com.hcmut.admin.bktrafficsystem.ui.UserInputFormFragment;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
@@ -223,7 +226,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String accessToken;
     private Button agreeBtn, disagreeBtn, ratingBtn, mReport;
     private SwitchCompat switchCompat;
+
     private ArrayList<Marker> directsMaker = new ArrayList<>();
+
     private int avgVelo;
     private float mBearing = 0;
     private ApiService callApi = null;
@@ -1903,12 +1908,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
                     }
 
+
                     @Override
                     public void onFailure(Call<BaseResponse<List<DirectRespose>>> call, Throwable t) {
                         progressDialog.dismiss();
                         findDirection(mStartLocationEditext.getText().toString(), mDestEdt.getText().toString());
                     }
                 });
+
     }
 
     private void toggleNotify(String pathId, String isActive) {

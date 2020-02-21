@@ -48,6 +48,7 @@ import com.hcmut.admin.bktrafficsystem.model.UserInput;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.Async_ReSizeImageFromBitmap;
 import com.hcmut.admin.bktrafficsystem.util.Async_ResizeImageFromUri;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;

@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -44,7 +45,11 @@ public class SearchWayData {
     public static PolylineOptions parsePolylineOptions(SearchWayData searchWayData) {
         if (searchWayData == null || searchWayData.getCoords() == null) return null;
         int count = 0;
-        PolylineOptions wayPolylineOptions = new PolylineOptions().width(7);
+        PolylineOptions wayPolylineOptions = new PolylineOptions()
+                .width(7)
+                .geodesic(true)
+                .clickable(true)
+                .color(Color.BLUE);
         for (SearchWayData.Coord coord : searchWayData.getCoords()) {
             try {
                 wayPolylineOptions.add(
