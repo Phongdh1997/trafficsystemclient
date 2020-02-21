@@ -18,7 +18,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
-import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
 
 import java.util.Objects;

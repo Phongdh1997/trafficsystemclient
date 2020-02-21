@@ -18,6 +18,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLoca
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,14 @@ public class ProbeMapUi {
 
     private List<Polyline> prevStatusRenderPolylines;
     private Polyline prevDirectionRenderPolyline;
+    private MapDirection mapDirection;
     private MapViewModel mapViewModel;
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
+
+        initUtilsObject();
 
         getViewModel();
         addViewModelObserver();
@@ -53,6 +57,10 @@ public class ProbeMapUi {
 
     private void addEvents() {
 
+    }
+
+    private void initUtilsObject() {
+        this.mapDirection = new MapDirection();
     }
 
     private void getViewModel() {
@@ -89,8 +97,8 @@ public class ProbeMapUi {
             @Override
             public void onChanged(PolylineOptions polylineOptions) {
                 if (polylineOptions != null) {
-                    removePrevDirectionRender();
-                    prevDirectionRenderPolyline = gmaps.addPolyline(polylineOptions);
+                    mapDirection.clearDirection();
+                    mapDirection.drawDirectPolylines(polylineOptions, gmaps, activity.getApplicationContext());
                 } else {
                     Toast.makeText(activity.getApplicationContext(), "Tìm đường thất bại", Toast.LENGTH_SHORT).show();
                 }
@@ -138,5 +146,9 @@ public class ProbeMapUi {
             polylines.add(gmaps.addPolyline(statusPolylineOptions));
         }
         return polylines;
+    }
+
+    public void renderNewDirection(LatLng start, LatLng end) {
+        mapViewModel.direct(new UserLocation(start), new UserLocation(end));
     }
 }

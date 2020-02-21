@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +29,11 @@ public class UserLocation {
         this.latitude = location.getLatitude();
         this.timestamp = Calendar.getInstance().getTime();
         id = -1;
+    }
+
+    public UserLocation(LatLng latLng) {
+        this.latitude = latLng.latitude;
+        this.longitude = latLng.longitude;
     }
 
     public UserLocation(int id, double longitude, double latitude) {
