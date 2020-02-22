@@ -41,7 +41,6 @@ import com.hcmut.admin.bktrafficsystem.model.param.LoginParam;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.LoginResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
-import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import org.json.JSONObject;

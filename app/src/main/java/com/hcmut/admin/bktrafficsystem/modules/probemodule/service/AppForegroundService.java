@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.NotificationManager;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory;
 
 public class AppForegroundService extends Service {
 
@@ -22,7 +22,7 @@ public class AppForegroundService extends Service {
     public void onCreate() {
         super.onCreate();
         try {
-            startForeground(SERVICE_ID, NotificationManager
+            startForeground(SERVICE_ID, TrafficNotificationFactory
                     .getInstance(getApplicationContext())
                     .getForegroundServiceNotification(getApplicationContext()));
         } catch (Exception e) {

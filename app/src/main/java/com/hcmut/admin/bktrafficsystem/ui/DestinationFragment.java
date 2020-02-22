@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
-import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 /**
  * Created by Admin on 9/28/2018.

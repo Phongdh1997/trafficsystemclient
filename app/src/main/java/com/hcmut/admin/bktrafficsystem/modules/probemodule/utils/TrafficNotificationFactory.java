@@ -13,18 +13,18 @@ import android.support.v4.app.NotificationCompat;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 
-public class NotificationManager {
+public class TrafficNotificationFactory {
 
     private String CHANNEL_ID = "Notification1";
 
     public static final int SEARCH_WAY_NOTIFICATION_ID = 1;
 
-    private static NotificationManager serviceNotification;
-    private NotificationManager() {}
+    private static TrafficNotificationFactory serviceNotification;
+    private TrafficNotificationFactory() {}
 
-    public static NotificationManager getInstance(Context context) {
+    public static TrafficNotificationFactory getInstance(Context context) {
         if (serviceNotification == null) {
-            serviceNotification = new NotificationManager();
+            serviceNotification = new TrafficNotificationFactory();
             serviceNotification.createServiceNotificationChanel(context);
         }
         return serviceNotification;

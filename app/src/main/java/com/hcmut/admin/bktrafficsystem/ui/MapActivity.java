@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.map;
+package com.hcmut.admin.bktrafficsystem.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -111,9 +111,6 @@ import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
-import com.hcmut.admin.bktrafficsystem.ui.InformationActivity;
-import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
-import com.hcmut.admin.bktrafficsystem.ui.UserInputFormFragment;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
