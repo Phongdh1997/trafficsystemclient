@@ -18,9 +18,25 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs
+            {
+                debug {
+                    storeFile file('../keystore/traffic_keystore.jks')
+                    storePassword "18001255"
+                    keyAlias "traffic_key"
+                    keyPassword "18001255"
+                }
+            }
+
     flavorDimensions "mode"
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            debuggable true
+        }
+
         release {
             signingConfig signingConfigs.debug
             minifyEnabled false

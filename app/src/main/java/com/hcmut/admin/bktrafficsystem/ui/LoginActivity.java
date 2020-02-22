@@ -133,7 +133,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
         //-------GOOGLE LOGIN--------
-        final GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        final GoogleSignInOptions gso = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
@@ -399,10 +400,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             updateUIGoogle(account);
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("Message:", "signInResult:failed code=" + e.getStatusCode());
-            //updateUI(null);
+            e.printStackTrace();
         }
     }
 
