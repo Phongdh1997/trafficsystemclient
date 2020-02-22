@@ -20,6 +20,7 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import java.util.Objects;
 
@@ -110,6 +111,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         }
 
+    }
+
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+        SharedPrefUtils.saveNotiToken(getApplicationContext(), s);
     }
 }
 

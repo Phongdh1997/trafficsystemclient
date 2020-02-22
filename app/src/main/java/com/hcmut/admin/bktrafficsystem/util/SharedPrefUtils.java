@@ -12,6 +12,8 @@ public class SharedPrefUtils {
     private static final String RATING = "RATING";
     private static final String NOTI_TOKEN = "NOTI_TOKEN";
 
+    private static String notyficationToken;
+
     static public void saveUser(Context context, User user) {
         SharedPreferences pref = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -37,10 +39,14 @@ public class SharedPrefUtils {
     static public void saveNotiToken(Context context, String token) {
         SharedPreferences pref = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         pref.edit().putString(NOTI_TOKEN, token).apply();
+        notyficationToken = token;
     }
 
     static public String getNotiToken(Context context) {
-        SharedPreferences pref = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-        return pref.getString(NOTI_TOKEN, null);
+        if (notyficationToken == null) {
+            SharedPreferences pref = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+            notyficationToken = pref.getString(NOTI_TOKEN, null);
+        }
+        return notyficationToken;
     }
 }
