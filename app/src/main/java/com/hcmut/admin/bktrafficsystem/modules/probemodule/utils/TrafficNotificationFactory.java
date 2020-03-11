@@ -2,6 +2,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
+import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
 
 public class TrafficNotificationFactory {
 
@@ -20,11 +22,13 @@ public class TrafficNotificationFactory {
     public static final int SEARCH_WAY_NOTIFICATION_ID = 1;
 
     private static TrafficNotificationFactory serviceNotification;
-    private TrafficNotificationFactory() {}
+    private Context context;
+    private TrafficNotificationFactory(Context context) {
+        this.context = context.getApplicationContext(); }
 
     public static TrafficNotificationFactory getInstance(Context context) {
         if (serviceNotification == null) {
-            serviceNotification = new TrafficNotificationFactory();
+            serviceNotification = new TrafficNotificationFactory(context);
             serviceNotification.createServiceNotificationChanel(context);
         }
         return serviceNotification;
@@ -97,5 +101,34 @@ public class TrafficNotificationFactory {
                 .setOngoing(true);
 
         return mBuilder.build();
+    }
+
+    public Notification getNotificationMessage (Context context, Class activity, String title, String contentText) {
+        //sound
+        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        // pandingIntent for touch notification
+        Intent intent = new Intent(context, activity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
+                .setContentTitle(title)
+                .setContentText(contentText)
+                .setContentIntent(pendingIntent)
+                .setSound(defaultSound)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true)
+                .setOngoing(true);
+
+        return mBuilder.build();
+    }
+
+    public void sendNotification (Notification notification) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.notify(TrafficNotificationFactory.SEARCH_WAY_NOTIFICATION_ID, notification);
+        }
     }
 }
