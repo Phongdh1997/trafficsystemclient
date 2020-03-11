@@ -2,6 +2,7 @@ package com.hcmut.admin.bktrafficsystem.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.google.gson.Gson;
@@ -47,6 +48,7 @@ public class SharedPrefUtils {
             SharedPreferences pref = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
             notyficationToken = pref.getString(NOTI_TOKEN, null);
         }
+        Log.e("noti token", notyficationToken);
         return notyficationToken;
     }
 }
