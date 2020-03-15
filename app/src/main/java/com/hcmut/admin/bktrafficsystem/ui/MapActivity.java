@@ -36,6 +36,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
@@ -221,7 +222,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private boolean isRatingMode = false;
 
     private String accessToken;
-    private Button agreeBtn, disagreeBtn, ratingBtn, mReport;
+    private Button agreeBtn, disagreeBtn, ratingBtn;
     private SwitchCompat switchCompat;
 
     private ArrayList<Marker> directsMaker = new ArrayList<>();
@@ -234,6 +235,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Compass compass;
     private LatLng endFindRoad;
     private boolean isClickPolyline = false;
+
+    private AppCompatButton btnOption;
+    private AppFeaturePopup appFeaturePopup;
 
     protected BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
         @Override
@@ -437,7 +441,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mDestEdt = findViewById(R.id.destination_edt);
         mGuide = findViewById(R.id.ic_direction);
         mGps = findViewById(R.id.ic_gps);
-        mReport = findViewById(R.id.btn_report);
         customToolbar = findViewById(R.id.custom_toolbar);
         clrOriginBtn = customToolbar.findViewById(R.id.ic_origin_clear);
         clrDestBtn = findViewById(R.id.ic_clear_end);
@@ -466,6 +469,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         tv_travel_types.setOnClickListener(this);
         clReview.setOnClickListener(this);
         tvDateTime.setOnClickListener(this);
+
+        appFeaturePopup = new AppFeaturePopup(this);
+        btnOption = findViewById(R.id.btnOption);
+        btnOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                appFeaturePopup.showPopup();
+            }
+        });
 
         compass = new Compass(this);
         compass.setListener(new Compass.CompassListener() {
@@ -515,6 +527,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String parsedDate = df.format(date);
         tvDateTime.setText(parsedDate);
+    }
+
+    /**
+     * Thực hiện chức năng report của nhóm Minh - Phương
+     * Hàm này sẽ được gọi khi có sự kiện click vào button repord trong popup Feature
+     */
+    public void doReport() {
+        if (!isInputFormOpen) {
+            isInputFormOpen = true;
+            Bundle bundle = new Bundle();
+            bundle.putString("accessToken", accessToken);
+            inputFormFragment.setArguments(bundle);
+            if (mapInteractionStep == 0) {
+                FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
+                mFragmentTransaction.replace(R.id.inputFormFragmentContainer, inputFormFragment, "FragInputForm").commit();
+            } else {
+                interactBox.setVisibility(View.GONE);
+                clearMapInteractionVars();
+                inputFormFragment.uncheckCBoxes();
+                showInputForm(inputFormFragment);
+            }
+            if (destinationBox.getVisibility() == View.VISIBLE) {
+                btnBackToSearch.performClick();
+            }
+            if (currentMaker != null) currentMaker.remove();
+            btnOption.setVisibility(View.GONE);
+            clReview.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -651,34 +691,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //            }
 //        });
 
-        mReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                if (isFragmentActive) return;
-                if (!isInputFormOpen) {
-                    isInputFormOpen = true;
-                    Bundle bundle = new Bundle();
-                    bundle.putString("accessToken", accessToken);
-                    inputFormFragment.setArguments(bundle);
-                    if (mapInteractionStep == 0) {
-                        FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
-                        mFragmentTransaction.replace(R.id.inputFormFragmentContainer, inputFormFragment, "FragInputForm").commit();
-                    } else {
-                        interactBox.setVisibility(View.GONE);
-                        clearMapInteractionVars();
-                        inputFormFragment.uncheckCBoxes();
-                        showInputForm(inputFormFragment);
-                    }
-                    if (destinationBox.getVisibility() == View.VISIBLE) {
-                        btnBackToSearch.performClick();
-                    }
-                    if (currentMaker != null) currentMaker.remove();
-                    mReport.setVisibility(View.GONE);
-                    clReview.setVisibility(View.GONE);
-                }
-            }
-        });
-
         agreeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -693,7 +705,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         if (originMarker != null) {
                             if (inputFormFragment != null) {
                                 interactBox.setVisibility(View.GONE);
-                                mReport.setVisibility(View.VISIBLE);
+                                btnOption.setVisibility(View.VISIBLE);
                                 inputFormFragment.setCurAndDesPos(originPos, fullOriginAddress, desPos);
                                 if (currentMaker != null) currentMaker.remove();
                                 showInputForm(inputFormFragment);
@@ -1437,7 +1449,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
             interactBox.setVisibility(View.GONE);
-            mReport.setVisibility(View.GONE);
+            btnOption.setVisibility(View.GONE);
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -1539,7 +1551,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             if (originMarker != null) {
                                 if (inputFormFragment != null) {
                                     interactBox.setVisibility(View.GONE);
-                                    mReport.setVisibility(View.VISIBLE);
+                                    btnOption.setVisibility(View.VISIBLE);
                                     inputFormFragment.setCurAndDesPos(originPos, fullOriginAddress, desPos);
                                     if (currentMaker != null) currentMaker.remove();
                                     showInputForm(inputFormFragment);
@@ -1846,13 +1858,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //Toast.makeText(MapActivity.this,"On Back Press!!!",Toast.LENGTH_LONG).show();
         if (isInputFormOpen) {
             removeInputForm(inputFormFragment);
-            mReport.setVisibility(View.VISIBLE);
+            btnOption.setVisibility(View.VISIBLE);
         } else if (mapInteractionStep != 0) {
             interactBox.setVisibility(View.GONE);
             clearMapInteractionVars();
             inputFormFragment.uncheckCBoxes();
             showInputForm(inputFormFragment);
-            mReport.setVisibility(View.GONE);
+            btnOption.setVisibility(View.GONE);
         } else if (!customDrawerButton.getDrawerLayout().isDrawerOpen(Gravity.LEFT)){
             Date currentTime = new Date();
             if (pressTime == null) {
