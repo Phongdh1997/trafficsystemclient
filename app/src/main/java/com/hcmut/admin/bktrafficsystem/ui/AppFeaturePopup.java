@@ -38,6 +38,7 @@ public class AppFeaturePopup {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 true);
         popupWindow.setElevation(2.3f);
+        popupWindow.setAnimationStyle(R.style.popup_window_animation);
 
         // init view
         CardView cardView = popupView.findViewById(R.id.card);
