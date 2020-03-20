@@ -109,6 +109,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.PatchNotiResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
@@ -363,8 +364,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (!appForgroundServiceManager.handleAppForgroundPermission(requestCode, permissions, grantResults)) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == ProbeForgroundServiceManager.MUTILE_PERMISSION_REQUEST) {
+            if (!appForgroundServiceManager.handleAppForgroundPermission(requestCode, permissions, grantResults)) {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        } else if (requestCode == AppFeaturePopup.CALL_PHONE_CODE) {
+            appFeaturePopup.handleCallPhonePermission(requestCode, permissions, grantResults);
         }
     }
 

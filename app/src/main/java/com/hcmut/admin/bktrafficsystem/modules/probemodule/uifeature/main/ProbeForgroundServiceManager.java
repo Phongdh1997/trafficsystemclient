@@ -18,7 +18,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForeground
 public class ProbeForgroundServiceManager {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 888;
-    private static final int MUTILE_PERMISSION_REQUEST = 777;
+    public static final int MUTILE_PERMISSION_REQUEST = 777;
     private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
