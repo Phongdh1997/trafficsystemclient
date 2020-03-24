@@ -19,6 +19,7 @@ import android.widget.PopupWindow;
 import android.widget.Switch;
 
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
 
 import java.lang.ref.WeakReference;
 
@@ -31,8 +32,9 @@ public class AppFeaturePopup {
     private WeakReference<MapActivity> mapActivityWeakReference;
     private View popupView;
     private PopupWindow popupWindow;
+    private Switch btnGPSColectionSwitch;
 
-    public AppFeaturePopup(MapActivity context) {
+    public AppFeaturePopup(final MapActivity context) {
         mapActivityWeakReference = new WeakReference<>(context);
         popupView = LayoutInflater.from(context).inflate(R.layout.app_feature_popup_layout, null, false);
         popupWindow = new PopupWindow(popupView,
@@ -46,7 +48,9 @@ public class AppFeaturePopup {
         CardView cardView = popupView.findViewById(R.id.card);
         Button btnReport = popupView.findViewById(R.id.btn_report);
         Button btnCallPhoneReport = popupView.findViewById(R.id.btnCallPhoneReport);
-        Switch btnGPSColectionSwitch = popupView.findViewById(R.id.btnGPSColectionSwitch);
+        btnGPSColectionSwitch = popupView.findViewById(R.id.btnGPSColectionSwitch);
+        boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(context);
+        btnGPSColectionSwitch.setChecked(gpsDataSetting);
 
         // add action
         cardView.setOnTouchListener(new View.OnTouchListener() {
@@ -92,8 +96,16 @@ public class AppFeaturePopup {
                 } else {
                     activity.stopLoctionService();
                 }
+                setGpsDataSetting(b);
             }
         });
+    }
+
+    public void setGpsDataSetting(boolean value) {
+        btnGPSColectionSwitch.setChecked(value);
+        GpsDataSettingSharedRefUtil.saveGpsDataSetting(
+                btnGPSColectionSwitch.getContext().getApplicationContext(),
+                value);
     }
 
     private boolean hasPermisson(Context context, String... permissions) {

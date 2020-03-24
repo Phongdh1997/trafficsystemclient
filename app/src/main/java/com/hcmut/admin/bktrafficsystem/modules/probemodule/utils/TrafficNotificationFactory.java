@@ -72,7 +72,7 @@ public class TrafficNotificationFactory {
                 AppForegroundService.SERVICE_STOP_REQUEST_CODE,
                 stopServiceIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
-        mBuilder.addAction(R.drawable.ic_arrow_back, STOP_ACTION_TITLE, cancelPendingIntent);
+        //mBuilder.addAction(R.drawable.ic_arrow_back, STOP_ACTION_TITLE, cancelPendingIntent);
 
         return mBuilder.build();
     }
