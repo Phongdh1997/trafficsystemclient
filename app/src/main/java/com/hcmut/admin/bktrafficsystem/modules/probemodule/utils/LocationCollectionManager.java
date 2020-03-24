@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
+import android.app.Notification;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
@@ -16,28 +17,35 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLoca
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.LocationRepositoryService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.LocationRemoteRepository;
+import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
 
 public class LocationCollectionManager {
 
     private static final int INTERVAL = 12000;
     private static final int FASTEST_INTERVAL = 8000;
+    private static final int DATA_COLECT_LIMIT = 200;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private HandlerThread locationHandlerThread;
     private LocationCallback callback;
     private static LocationCollectionManager locationCollectionManager;
 
+    private Context context;
     private LocationRepositoryService locationRepositoryService;
     private UserLocation lastUserLocation;
     private MutableLiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
 
+    private int stopServiceCountDown = DATA_COLECT_LIMIT;
+
     private LocationCollectionManager(Context context) {
+        this.context = context.getApplicationContext();
         locationHandlerThread = new HandlerThread("Location Listener thread");
         locationHandlerThread.start();
         fusedLocationProviderClient = LocationServices
                 .getFusedLocationProviderClient(context.getApplicationContext());
         locationRepositoryService = new LocationRemoteRepository();
         currentUserLocationEventLiveData = new MutableLiveData<>();
+
     }
 
     public static LocationCollectionManager getInstance(Context context) {
@@ -104,6 +112,21 @@ public class LocationCollectionManager {
                 locationRepositoryService.postLocationRecord(lastUserLocation, currUserLocation); // send location record to server
                 lastUserLocation = currUserLocation;
             }
+            handleSleepOrWakeupService();
+        }
+    }
+
+    private void handleSleepOrWakeupService() {
+        stopServiceCountDown--;
+        if (stopServiceCountDown < 1) {
+            // notify stop notification
+            TrafficNotificationFactory trafficNotificationFactory = TrafficNotificationFactory
+                    .getInstance(context);
+            Notification notification = trafficNotificationFactory
+                    .getStopLocationServiceNotification(
+                            context, MapActivity.class);
+            trafficNotificationFactory.sendNotification(notification);
+            stopServiceCountDown = DATA_COLECT_LIMIT;
         }
     }
 

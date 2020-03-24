@@ -125,6 +125,31 @@ public class TrafficNotificationFactory {
         return mBuilder.build();
     }
 
+    public Notification getStopLocationServiceNotification (Context context, Class activity) {
+        String title = "Dữ liệu GPS đang được thu thập";
+        String contentText = "Chạm để tùy chọn thiết lập thu thập dữ liệu";
+
+        //sound
+        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        // pandingIntent for touch notification
+        Intent intent = new Intent(context, activity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
+                .setContentTitle(title)
+                .setContentText(contentText)
+                .setContentIntent(pendingIntent)
+                .setSound(defaultSound)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true)
+                .setOngoing(true);
+
+        return mBuilder.build();
+    }
+
     public void sendNotification (Notification notification) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
