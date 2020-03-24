@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Switch;
 
 import com.hcmut.admin.bktrafficsystem.R;
 
@@ -44,6 +46,7 @@ public class AppFeaturePopup {
         CardView cardView = popupView.findViewById(R.id.card);
         Button btnReport = popupView.findViewById(R.id.btn_report);
         Button btnCallPhoneReport = popupView.findViewById(R.id.btnCallPhoneReport);
+        Switch btnGPSColectionSwitch = popupView.findViewById(R.id.btnGPSColectionSwitch);
 
         // add action
         cardView.setOnTouchListener(new View.OnTouchListener() {
@@ -76,6 +79,18 @@ public class AppFeaturePopup {
                 MapActivity mapActivity = mapActivityWeakReference.get();
                 if (mapActivity != null) {
                     checkCallPhonePermisstion(mapActivity, permissions);
+                }
+            }
+        });
+        btnGPSColectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                MapActivity activity = mapActivityWeakReference.get();
+                if (activity == null) return;
+                if (b) {
+                    activity.initLocationService();
+                } else {
+                    activity.stopLoctionService();
                 }
             }
         });

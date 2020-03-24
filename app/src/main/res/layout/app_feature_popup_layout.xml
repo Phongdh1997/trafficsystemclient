@@ -18,12 +18,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="70dp"
-            android:paddingBottom="70dp"
+            android:orientation="vertical"
             android:paddingStart="15dp"
+            android:paddingTop="70dp"
             android:paddingEnd="15dp"
-            tools:layout_editor_absoluteY="1dp"
-            android:orientation="vertical">
+            android:paddingBottom="70dp"
+            tools:layout_editor_absoluteY="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -50,9 +50,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="3"
-                    android:text="Cảnh Báo Vị Trí Hiện Tại"
-                    android:drawableBottom="@drawable/ic_send"
                     android:background="@drawable/blue_btn"
+                    android:drawableBottom="@drawable/ic_send"
+                    android:text="Cảnh Báo Vị Trí Hiện Tại"
                     android:textColor="@color/white"
                     tools:layout_editor_absoluteX="157dp"
                     tools:layout_editor_absoluteY="98dp" />
@@ -63,15 +63,55 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:background="@drawable/blue_btn"
+                    android:drawableBottom="@drawable/ic_call_phone"
                     android:text="Gọi Điện Cảnh Báo"
                     android:textColor="@color/white"
-                    android:drawableBottom="@drawable/ic_call_phone"
                     tools:layout_editor_absoluteX="272dp"
                     tools:layout_editor_absoluteY="86dp" />
+
             </LinearLayout>
 
-<!--            add new linear layout for new feature HERE-->
+            <!--            add new linear layout for new feature HERE-->
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="10dp"
+                android:background="#000" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtSettingTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cài Đặt"
+                    android:textSize="18dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <Switch
+                    android:id="@+id/btnGPSColectionSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layoutDirection="rtl"
+                    android:switchPadding="8dp"
+                    android:checked="true"
+                    android:text="Thu thập dữ liệu GPS"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txtSettingTitle" />
+
+            </android.support.constraint.ConstraintLayout>
 
         </LinearLayout>
+
     </android.support.v7.widget.CardView>
 </LinearLayout>

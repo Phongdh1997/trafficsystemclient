@@ -348,10 +348,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
-        appForgroundServiceManager.initLocationService();
+        initLocationService();
         if (probeMapUi != null) {
             probeMapUi.startStatusRenderTimer();
         }
+    }
+
+    public void initLocationService() {
+        appForgroundServiceManager.initLocationService();
+    }
+
+    public void stopLoctionService() {
+        appForgroundServiceManager.stopLocationService();
     }
 
     @Override

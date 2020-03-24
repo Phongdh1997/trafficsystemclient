@@ -114,4 +114,12 @@ public class ProbeForgroundServiceManager {
             e.printStackTrace();
         }
     }
+
+    public void stopLocationService() {
+        try {
+            activity.stopService(new Intent(activity.getApplicationContext(), AppForegroundService.class));
+        } catch (Exception e) {
+
+        }
+    }
 }
