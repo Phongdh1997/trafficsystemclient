@@ -36,6 +36,7 @@ public class LocationCollectionManager {
     private MutableLiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
 
     private int stopServiceCountDown = DATA_COLECT_LIMIT;
+    private MovingDetection movingDetection = new MovingDetection();
 
     private LocationCollectionManager(Context context) {
         this.context = context.getApplicationContext();
@@ -111,9 +112,15 @@ public class LocationCollectionManager {
                 UserLocation currUserLocation = new UserLocation(location);
                 locationRepositoryService.postLocationRecord(lastUserLocation, currUserLocation); // send location record to server
                 lastUserLocation = currUserLocation;
+                handleDetectMoving(currUserLocation);
             }
             handleSleepOrWakeupService();
         }
+    }
+
+    private void handleDetectMoving(UserLocation currUserLocation) {
+        movingDetection.setCurrLocation(currUserLocation);
+        movingDetection.isMoving();
     }
 
     private void handleSleepOrWakeupService() {
