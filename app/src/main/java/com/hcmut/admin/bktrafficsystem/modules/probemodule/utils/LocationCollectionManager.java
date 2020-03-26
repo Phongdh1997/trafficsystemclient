@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.location.Location;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -24,6 +25,8 @@ public class LocationCollectionManager {
     private static final int INTERVAL = 12000;
     private static final int FASTEST_INTERVAL = 8000;
     private static final int DATA_COLECT_LIMIT = 200;
+    private static final int DETECT_LIMIT = 6;
+    private static final int MOVING_SATISFY = 2;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private HandlerThread locationHandlerThread;
@@ -36,7 +39,10 @@ public class LocationCollectionManager {
     private MutableLiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
 
     private int stopServiceCountDown = DATA_COLECT_LIMIT;
+    private int movingCount = 0;
+    private int detectCountDown = DETECT_LIMIT;
     private MovingDetection movingDetection = new MovingDetection();
+    private MutableLiveData<Boolean> movingStateLiveData = new MutableLiveData<>();
 
     private LocationCollectionManager(Context context) {
         this.context = context.getApplicationContext();
@@ -47,6 +53,10 @@ public class LocationCollectionManager {
         locationRepositoryService = new LocationRemoteRepository();
         currentUserLocationEventLiveData = new MutableLiveData<>();
 
+    }
+
+    public LiveData<Boolean> getMovingStateLiveData () {
+        return movingStateLiveData;
     }
 
     public static LocationCollectionManager getInstance(Context context) {
@@ -61,6 +71,10 @@ public class LocationCollectionManager {
     }
 
     public void beginTraceLocation() {
+        stopServiceCountDown = DATA_COLECT_LIMIT;
+        movingCount = 0;
+        detectCountDown = DETECT_LIMIT;
+        movingDetection = new MovingDetection();
         LocationRequest request = LocationRequest.create();
         request.setInterval(INTERVAL);
         request.setFastestInterval(FASTEST_INTERVAL);
@@ -119,8 +133,26 @@ public class LocationCollectionManager {
     }
 
     private void handleDetectMoving(UserLocation currUserLocation) {
+        detectCountDown--;
         movingDetection.setCurrLocation(currUserLocation);
-        movingDetection.isMoving();
+
+        // check user moving every (MOVING_SATISFY + 2) times
+        if (detectCountDown < MOVING_SATISFY + 2) {
+            if (movingDetection.isMoving()) {
+                movingCount++;
+            }
+            Log.e("moving", "check");
+        }
+        if (detectCountDown < 1) {
+            if (movingCount < MOVING_SATISFY) {
+                // user is not move
+                // stop service
+                movingStateLiveData.postValue(false);
+            }
+            Log.e("moving", "moving count: " + movingCount);
+            movingCount = 0;
+            detectCountDown = DETECT_LIMIT;
+        }
     }
 
     private void handleSleepOrWakeupService() {

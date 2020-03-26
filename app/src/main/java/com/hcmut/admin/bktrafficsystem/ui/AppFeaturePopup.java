@@ -2,10 +2,12 @@ package com.hcmut.admin.bktrafficsystem.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
@@ -20,10 +22,9 @@ import android.widget.Switch;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 
 import java.lang.ref.WeakReference;
-
-import javax.annotation.Nullable;
 
 public class AppFeaturePopup {
     public static final int CALL_PHONE_CODE = 888;
@@ -97,6 +98,20 @@ public class AppFeaturePopup {
                     activity.stopLoctionService();
                 }
                 setGpsDataSetting(b);
+            }
+        });
+        LocationCollectionManager.getInstance(context.getApplicationContext())
+                .getMovingStateLiveData().observe(context, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isMoving) {
+                MapActivity activity = mapActivityWeakReference.get();
+                if (activity == null || isMoving == null) return;
+                if (isMoving) {
+                    activity.initLocationService();
+                } else {
+                    activity.stopLoctionService();
+                }
+                setGpsDataSetting(isMoving);
             }
         });
     }
