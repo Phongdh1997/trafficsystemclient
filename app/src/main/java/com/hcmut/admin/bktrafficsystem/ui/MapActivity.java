@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.arch.lifecycle.Observer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -58,6 +59,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -109,11 +111,13 @@ import com.hcmut.admin.bktrafficsystem.model.response.PatchNotiResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
@@ -238,7 +242,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private LatLng endFindRoad;
     private boolean isClickPolyline = false;
 
-    private AppCompatButton btnOption;
+    private ImageView btnOption;
     private AppFeaturePopup appFeaturePopup;
 
     protected BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
@@ -337,6 +341,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ProbeMainUi probeMainUi;
     private ProbeMapUi probeMapUi;
 
+    private Switch btnGPSColectionSwitch;
+    private Button btnCallPhoneReport;
+
     /**
      *
      * Init probe module variable to use
@@ -344,11 +351,61 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void initProbeModuleVariable() {
         appForgroundServiceManager = new ProbeForgroundServiceManager(this);
         probeMainUi = new ProbeMainUi(this, mGps);
+
+        appFeaturePopup = new AppFeaturePopup(this);
+        btnOption = findViewById(R.id.btnOption);
+        btnCallPhoneReport = findViewById(R.id.btnCallPhoneReport);
+        btnGPSColectionSwitch = findViewById(R.id.btnGPSColectionSwitch);
+        boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
+        btnGPSColectionSwitch.setChecked(gpsDataSetting);
+
+        addEvents();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    /**
+     *
+     * Add probe module Events
+     */
+    private void addEvents() {
+        btnOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                appFeaturePopup.showPopup();
+            }
+        });
+        btnCallPhoneReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CallPhone callPhone = new CallPhone(MapActivity.this);
+                callPhone.checkCallPhonePermisstion();
+            }
+        });
+        btnGPSColectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    initLocationService();
+                } else {
+                    stopLoctionService();
+                }
+                setGpsDataSetting(b);
+            }
+        });
+        LocationCollectionManager.getInstance(getApplicationContext())
+                .getMovingStateLiveData().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isMoving) {
+                if (isMoving == null) return;
+                if (isMoving) {
+                    initLocationService();
+                } else {
+                    stopLoctionService();
+                }
+                setGpsDataSetting(isMoving);
+            }
+        });
+
+        // show dialog ask user to turn on collect GPS data
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
         if (!gpsDataSetting) {
             new AlertDialog.Builder(MapActivity.this)
@@ -360,7 +417,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             initLocationService();
-                            appFeaturePopup.setGpsDataSetting(true);
+                            setGpsDataSetting(true);
                         }
                     })
 
@@ -371,6 +428,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         } else {
             initLocationService();
         }
+    }
+
+    public void setGpsDataSetting(boolean value) {
+        btnGPSColectionSwitch.setChecked(value);
+        GpsDataSettingSharedRefUtil.saveGpsDataSetting(
+                btnGPSColectionSwitch.getContext().getApplicationContext(),
+                value);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         if (probeMapUi != null) {
             probeMapUi.startStatusRenderTimer();
         }
@@ -398,8 +467,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (!appForgroundServiceManager.handleAppForgroundPermission(requestCode, permissions, grantResults)) {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
-        } else if (requestCode == AppFeaturePopup.CALL_PHONE_CODE) {
-            appFeaturePopup.handleCallPhonePermission(requestCode, permissions, grantResults);
+        } else if (requestCode == CallPhone.CALL_PHONE_CODE) {
+            boolean isHavePermission = CallPhone.handleCallPhonePermission(grantResults);
+            if (isHavePermission) {
+                CallPhone.makeAPhoneCall(MapActivity.this);
+            }
         }
     }
 
@@ -504,15 +576,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         tv_travel_types.setOnClickListener(this);
         clReview.setOnClickListener(this);
         tvDateTime.setOnClickListener(this);
-
-        appFeaturePopup = new AppFeaturePopup(this);
-        btnOption = findViewById(R.id.btnOption);
-        btnOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                appFeaturePopup.showPopup();
-            }
-        });
 
         compass = new Compass(this);
         compass.setListener(new Compass.CompassListener() {

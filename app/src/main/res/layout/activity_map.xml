@@ -85,18 +85,6 @@
                     fab:layout_constraintTop_toBottomOf="@+id/icon_more"
                     fab:srcCompat="@drawable/ic_end_destination" />
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/img_type"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="16dp"-->
-<!--                    android:layout_marginTop="8dp"-->
-<!--                    android:layout_marginBottom="8dp"-->
-<!--                    fab:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    fab:layout_constraintStart_toStartOf="parent"-->
-<!--                    fab:layout_constraintTop_toBottomOf="@+id/ctlEnd"-->
-<!--                    fab:srcCompat="@drawable/ic_directions_car" />-->
-
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_travel_types"
                     android:layout_width="200dp"
@@ -130,30 +118,6 @@
                     fab:layout_constraintEnd_toEndOf="@id/tv_travel_types"
                     fab:layout_constraintStart_toStartOf="@id/tv_travel_types"
                     fab:layout_constraintTop_toBottomOf="@id/tv_travel_types"/>
-
-<!--                <android.support.v7.widget.AppCompatImageView-->
-<!--                    android:id="@+id/icon_spinner"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:src="@drawable/ic_arrow_drop_down_black_24dp"-->
-<!--                    fab:layout_constraintEnd_toEndOf="parent"-->
-<!--                    android:layout_marginEnd="16dp"-->
-<!--                    fab:layout_constraintTop_toTopOf="@id/travel_types_spinner"-->
-<!--                    fab:layout_constraintBottom_toBottomOf="@id/travel_types_spinner"/>-->
-
-<!--                <TextView-->
-<!--                    android:id="@+id/txt_Time"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="5dp"-->
-<!--                    android:layout_marginTop="8dp"-->
-<!--                    android:layout_marginBottom="8dp"-->
-<!--                    android:text="8 phút ( 3.9km )"-->
-<!--                    android:textColor="#000000"-->
-<!--                    android:textSize="14sp"-->
-<!--                    fab:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    fab:layout_constraintStart_toEndOf="@+id/img_type"-->
-<!--                    fab:layout_constraintTop_toBottomOf="@+id/ctlEnd" />-->
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/ctlStart"
@@ -266,27 +230,6 @@
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnOption"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_button_active"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:drawablePadding="4dp"
-            android:text="Chức năng"
-            android:drawableStart="@drawable/ic_report_status"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            fab:layout_constraintBottom_toTopOf="@id/clReview"
-            fab:layout_constraintEnd_toEndOf="parent"
-            fab:layout_constraintStart_toStartOf="parent"
-            fab:layout_constraintVertical_bias="0.0" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/clReview"
@@ -441,6 +384,80 @@
             fab:layout_constraintEnd_toEndOf="parent"
             fab:layout_constraintStart_toStartOf="parent"
             fab:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:weightSum="9"
+            fab:layout_constraintStart_toStartOf="parent"
+            fab:layout_constraintBottom_toBottomOf="parent"
+            fab:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/btnOption"
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:layout_weight="0"
+                android:src="@drawable/ic_home_black_64dp"
+                android:background="@drawable/blue_btn"
+                fab:layout_constraintStart_toStartOf="parent"
+                fab:layout_constraintBottom_toBottomOf="parent"
+                fab:layout_constraintTop_toTopOf="parent"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCurrentLocationReport"
+                android:text="Canh Bao Nhanh"
+                android:layout_weight="3"
+                android:drawableTop="@drawable/ic_send"
+                android:drawableTint="@color/black"
+                android:padding="5dp"
+                android:textSize="12dp"
+                android:background="@color/transparent"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCallPhoneReport"
+                android:text="Goi Dien"
+                android:layout_weight="3"
+                android:drawableTop="@drawable/ic_call_phone"
+                android:drawableTint="@color/black"
+                android:padding="5dp"
+                android:textSize="12dp"
+                android:background="@color/transparent"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center">
+
+                <Switch
+                    android:id="@+id/btnGPSColectionSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    fab:layout_constraintEnd_toEndOf="parent"
+                    fab:layout_constraintStart_toStartOf="parent"
+                    fab:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SẴN SÀNG"
+                    android:textSize="12dp"
+                    fab:layout_constraintEnd_toEndOf="parent"
+                    fab:layout_constraintStart_toStartOf="parent"
+                    fab:layout_constraintTop_toBottomOf="@+id/btnGPSColectionSwitch" />
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
     </android.support.constraint.ConstraintLayout>
 
     <FrameLayout

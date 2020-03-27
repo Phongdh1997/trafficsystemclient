@@ -2,12 +2,10 @@ package com.hcmut.admin.bktrafficsystem.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
@@ -15,25 +13,18 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Switch;
 
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 
 import java.lang.ref.WeakReference;
 
 public class AppFeaturePopup {
-    public static final int CALL_PHONE_CODE = 888;
-    private final String[] permissions = {Manifest.permission.CALL_PHONE};
 
     private WeakReference<MapActivity> mapActivityWeakReference;
     private View popupView;
     private PopupWindow popupWindow;
-    private Switch btnGPSColectionSwitch;
 
     public AppFeaturePopup(final MapActivity context) {
         mapActivityWeakReference = new WeakReference<>(context);
@@ -48,10 +39,6 @@ public class AppFeaturePopup {
         // init view
         CardView cardView = popupView.findViewById(R.id.card);
         Button btnReport = popupView.findViewById(R.id.btn_report);
-        Button btnCallPhoneReport = popupView.findViewById(R.id.btnCallPhoneReport);
-        btnGPSColectionSwitch = popupView.findViewById(R.id.btnGPSColectionSwitch);
-        boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(context);
-        btnGPSColectionSwitch.setChecked(gpsDataSetting);
 
         // add action
         cardView.setOnTouchListener(new View.OnTouchListener() {
@@ -67,7 +54,6 @@ public class AppFeaturePopup {
                 return true;
             }
         });
-
         btnReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,86 +64,6 @@ public class AppFeaturePopup {
                 popupWindow.dismiss();
             }
         });
-        btnCallPhoneReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MapActivity mapActivity = mapActivityWeakReference.get();
-                if (mapActivity != null) {
-                    checkCallPhonePermisstion(mapActivity, permissions);
-                }
-            }
-        });
-        btnGPSColectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                MapActivity activity = mapActivityWeakReference.get();
-                if (activity == null) return;
-                if (b) {
-                    activity.initLocationService();
-                } else {
-                    activity.stopLoctionService();
-                }
-                setGpsDataSetting(b);
-            }
-        });
-        LocationCollectionManager.getInstance(context.getApplicationContext())
-                .getMovingStateLiveData().observe(context, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isMoving) {
-                MapActivity activity = mapActivityWeakReference.get();
-                if (activity == null || isMoving == null) return;
-                if (isMoving) {
-                    activity.initLocationService();
-                } else {
-                    activity.stopLoctionService();
-                }
-                setGpsDataSetting(isMoving);
-            }
-        });
-    }
-
-    public void setGpsDataSetting(boolean value) {
-        btnGPSColectionSwitch.setChecked(value);
-        GpsDataSettingSharedRefUtil.saveGpsDataSetting(
-                btnGPSColectionSwitch.getContext().getApplicationContext(),
-                value);
-    }
-
-    private boolean hasPermisson(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission)
-                        != PackageManager.PERMISSION_GRANTED)
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    private void checkCallPhonePermisstion (Activity activity, String [] permissions) {
-        if (!hasPermisson(activity, permissions)) {
-            ActivityCompat.requestPermissions(activity, permissions, CALL_PHONE_CODE);
-        } else {
-            makeAPhoneCall();
-        }
-    }
-
-    public boolean handleCallPhonePermission(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == CALL_PHONE_CODE) {
-            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                makeAPhoneCall();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void makeAPhoneCall() {
-        MapActivity mapActivity = mapActivityWeakReference.get();
-        if (mapActivity != null) {
-            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "0123456789"));
-            mapActivity.startActivity(intent);
-        }
     }
 
     public void showPopup() {

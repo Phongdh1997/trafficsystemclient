@@ -46,8 +46,6 @@ public class LocationCollectionManager {
 
     private LocationCollectionManager(Context context) {
         this.context = context.getApplicationContext();
-        locationHandlerThread = new HandlerThread("Location Listener thread");
-        locationHandlerThread.start();
         fusedLocationProviderClient = LocationServices
                 .getFusedLocationProviderClient(context.getApplicationContext());
         locationRepositoryService = new LocationRemoteRepository();
@@ -80,6 +78,8 @@ public class LocationCollectionManager {
         request.setFastestInterval(FASTEST_INTERVAL);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         this.callback = new LocationReceiverCallback();
+        locationHandlerThread = new HandlerThread("Location Listener thread");
+        locationHandlerThread.start();
         if (fusedLocationProviderClient != null) {
             fusedLocationProviderClient.requestLocationUpdates(request, this.callback, locationHandlerThread.getLooper());
         }
@@ -89,7 +89,6 @@ public class LocationCollectionManager {
         if (fusedLocationProviderClient != null && callback != null) {
             fusedLocationProviderClient.removeLocationUpdates(callback);
             callback = null;
-            fusedLocationProviderClient = null;
         }
         locationHandlerThread.quitSafely();
     }
