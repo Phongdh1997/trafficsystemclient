@@ -1,7 +1,9 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.service;
 
 import android.app.Service;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,6 +19,7 @@ public class AppForegroundService extends Service {
     public static final String STOP_FOREGROUND_ACTION = "com.example.traffic.service.LocationService.STOP_FOREGROUND_ACTION";
 
     private LocationCollectionManager locationCollectionManager;
+    private HandlerThread locationHandlerThread;
 
     @Override
     public void onCreate() {
@@ -30,8 +33,17 @@ public class AppForegroundService extends Service {
         }
 
         // tracking user location
+        locationHandlerThread = new HandlerThread("Location Listener thread");
+        locationHandlerThread.start();
         locationCollectionManager = LocationCollectionManager.getInstance(getApplicationContext());
-        locationCollectionManager.beginTraceLocation();
+        locationCollectionManager.beginTraceLocation(locationHandlerThread.getLooper());
+        locationCollectionManager.setStopServiceEvent(new LocationCollectionManager.StopServiceEvent() {
+            @Override
+            public void onStop() {
+                stopForeground(true);
+                stopSelf();
+            }
+        });
         Log.e("app service", "created");
     }
 
@@ -53,7 +65,12 @@ public class AppForegroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        locationCollectionManager.endTraceLocation();
-        locationCollectionManager = null;
+        try {
+            locationCollectionManager.endTraceLocation();
+            locationHandlerThread.quitSafely();
+            locationCollectionManager = null;
+            locationHandlerThread = null;
+        } catch (Exception e) {}
+        Log.e("Service", "stop");
     }
 }

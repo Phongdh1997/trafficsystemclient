@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.location.Location;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,7 +30,6 @@ public class LocationCollectionManager {
     private static final int MOVING_SATISFY = 2;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private HandlerThread locationHandlerThread;
     private LocationCallback callback;
     private static LocationCollectionManager locationCollectionManager;
 
@@ -44,6 +44,8 @@ public class LocationCollectionManager {
     private MovingDetection movingDetection = new MovingDetection();
     private MutableLiveData<Boolean> movingStateLiveData = new MutableLiveData<>();
 
+    private StopServiceEvent stopServiceEvent;
+
     private LocationCollectionManager(Context context) {
         this.context = context.getApplicationContext();
         fusedLocationProviderClient = LocationServices
@@ -57,6 +59,10 @@ public class LocationCollectionManager {
         return movingStateLiveData;
     }
 
+    public void setStopServiceEvent(StopServiceEvent stopServiceEvent) {
+        this.stopServiceEvent = stopServiceEvent;
+    }
+
     public static LocationCollectionManager getInstance(Context context) {
         if (locationCollectionManager == null) {
             locationCollectionManager = new LocationCollectionManager(context);
@@ -68,7 +74,7 @@ public class LocationCollectionManager {
         return lastUserLocation;
     }
 
-    public void beginTraceLocation() {
+    public void beginTraceLocation(Looper looper) {
         stopServiceCountDown = DATA_COLECT_LIMIT;
         movingCount = 0;
         detectCountDown = DETECT_LIMIT;
@@ -78,10 +84,8 @@ public class LocationCollectionManager {
         request.setFastestInterval(FASTEST_INTERVAL);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         this.callback = new LocationReceiverCallback();
-        locationHandlerThread = new HandlerThread("Location Listener thread");
-        locationHandlerThread.start();
         if (fusedLocationProviderClient != null) {
-            fusedLocationProviderClient.requestLocationUpdates(request, this.callback, locationHandlerThread.getLooper());
+            fusedLocationProviderClient.requestLocationUpdates(request, this.callback, looper);
         }
     }
 
@@ -90,7 +94,6 @@ public class LocationCollectionManager {
             fusedLocationProviderClient.removeLocationUpdates(callback);
             callback = null;
         }
-        locationHandlerThread.quitSafely();
     }
 
     public LiveData<CurrentUserLocationEvent> getCurrentUserLocationEventLiveData() {
@@ -147,6 +150,9 @@ public class LocationCollectionManager {
                 // user is not move
                 // stop service
                 movingStateLiveData.postValue(false);
+                if (stopServiceEvent != null) {
+                    stopServiceEvent.onStop();
+                }
             }
             Log.e("moving", "moving count: " + movingCount);
             movingCount = 0;
@@ -168,4 +174,7 @@ public class LocationCollectionManager {
         }
     }
 
+    public interface StopServiceEvent {
+        void onStop();
+    }
 }
