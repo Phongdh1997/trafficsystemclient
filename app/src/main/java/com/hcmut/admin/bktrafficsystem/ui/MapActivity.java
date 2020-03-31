@@ -343,6 +343,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private Switch btnGPSColectionSwitch;
     private Button btnCallPhoneReport;
+    private Button btnCurrentLocationReport;
 
     /**
      *
@@ -355,6 +356,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         appFeaturePopup = new AppFeaturePopup(this);
         btnOption = findViewById(R.id.btnOption);
         btnCallPhoneReport = findViewById(R.id.btnCallPhoneReport);
+        btnCurrentLocationReport = findViewById(R.id.btnCurrentLocationReport);
         btnGPSColectionSwitch = findViewById(R.id.btnGPSColectionSwitch);
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
         btnGPSColectionSwitch.setChecked(gpsDataSetting);
@@ -378,6 +380,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 CallPhone callPhone = new CallPhone(MapActivity.this);
                 callPhone.checkCallPhonePermisstion();
+            }
+        });
+        btnCurrentLocationReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MapActivity.this, "Chức năng đang phát triển...", Toast.LENGTH_SHORT).show();
             }
         });
         btnGPSColectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
