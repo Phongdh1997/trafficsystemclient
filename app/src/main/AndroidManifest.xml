@@ -99,7 +99,7 @@
 
         <service android:name="com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService"/>
 
-        <receiver android:name=".modules.probemodule.LocationWakefulReceiver"/>
+        <receiver android:name=".modules.probemodule.broadcast.LocationWakefulReceiver"/>
     </application>
 
 </manifest>

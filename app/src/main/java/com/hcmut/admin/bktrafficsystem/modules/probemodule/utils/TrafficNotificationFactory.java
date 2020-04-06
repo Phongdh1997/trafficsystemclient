@@ -14,12 +14,12 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.broadcast.LocationWakefulReceiver;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver.WAKEUP_DELAY_MILLIS;
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver.WAKEUP_ID;
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver.WAKEUP_LOCATION_SERVICE_ID;
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.broadcast.LocationWakefulReceiver.WAKEUP_DELAY_MILLIS;
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.broadcast.LocationWakefulReceiver.WAKEUP_ID;
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.broadcast.LocationWakefulReceiver.WAKEUP_LOCATION_SERVICE_ID;
 
 public class TrafficNotificationFactory {
 

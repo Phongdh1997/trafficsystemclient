@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,8 +16,12 @@ public class LocationWakefulReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.e("Wakeup", "Run");
-        try {
-            ProbeForgroundServiceManager.startLocationService(context.getApplicationContext());
-        } catch (Exception e) {}
+        int wakeupId = intent.getIntExtra(WAKEUP_ID, 0);
+        if (wakeupId == WAKEUP_LOCATION_SERVICE_ID) {
+            try {
+                ProbeForgroundServiceManager.startLocationService(context.getApplicationContext());
+            } catch (Exception e) {
+            }
+        }
     }
 }
