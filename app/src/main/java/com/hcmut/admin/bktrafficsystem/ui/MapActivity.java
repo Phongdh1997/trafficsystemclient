@@ -436,7 +436,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onStart() {
         super.onStart();
         if (probeMapUi != null) {
-            probeMapUi.startStatusRenderTimer();
+            //probeMapUi.startStatusRenderTimer();
         }
     }
 
@@ -659,7 +659,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //  init Probe Map Module
         //
         probeMapUi = new ProbeMapUi(this, mMap);
-        probeMapUi.startStatusRenderTimer();
+        //probeMapUi.startStatusRenderTimer();
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
