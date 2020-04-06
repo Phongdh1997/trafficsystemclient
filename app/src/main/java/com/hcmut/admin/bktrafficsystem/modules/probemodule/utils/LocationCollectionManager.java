@@ -29,7 +29,7 @@ public class LocationCollectionManager {
     private static final int INTERVAL = 12000;
     private static final int FASTEST_INTERVAL = 8000;
     private static final int DATA_COLECT_LIMIT = 200;
-    private static final int STOP_MAX_TIMES = 5;
+    private static final int STOP_MAX_TIMES = 15;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback callback;
