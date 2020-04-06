@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -12,10 +13,13 @@ import afu.org.checkerframework.checker.nullness.qual.NonNull;
 
 public class UserLocation {
 
+    private static final float DEFAULT_ACCURACY = 3.0f;
+
     private int id;
     private double longitude;
     private double latitude;
     private Date timestamp;
+    private Location location;
 
     public UserLocation(double latitude, double longitude) {
         this.longitude = longitude;
@@ -29,6 +33,7 @@ public class UserLocation {
         this.latitude = location.getLatitude();
         this.timestamp = Calendar.getInstance().getTime();
         id = -1;
+        this.location = location;
     }
 
     public UserLocation(LatLng latLng) {
@@ -48,6 +53,30 @@ public class UserLocation {
         longitude = 0.0;
         latitude = 0.0;
         this.timestamp = Calendar.getInstance().getTime();
+    }
+
+    public float distanceTo (UserLocation destLocation) {
+        float [] realDistance = new float[3];
+        Location.distanceBetween(
+                getLatitude(),
+                getLongitude(),
+                destLocation.getLatitude(),
+                destLocation.getLongitude(),
+                realDistance);
+        Log.e("Distance", "" + realDistance[0]);
+        return realDistance[0];
+    }
+
+    public float distanceToWithAccuracy (UserLocation destLocation) {
+        return distanceTo(destLocation) - getAccuracy() - destLocation.getAccuracy();
+    }
+
+    public float getAccuracy() {
+        if (location != null) {
+            return location.getAccuracy();
+        } else {
+            return DEFAULT_ACCURACY;
+        }
     }
 
     public int getId() {

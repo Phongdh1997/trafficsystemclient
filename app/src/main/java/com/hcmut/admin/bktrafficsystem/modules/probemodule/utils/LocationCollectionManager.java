@@ -26,8 +26,7 @@ public class LocationCollectionManager {
     private static final int INTERVAL = 12000;
     private static final int FASTEST_INTERVAL = 8000;
     private static final int DATA_COLECT_LIMIT = 200;
-    private static final int DETECT_LIMIT = 6;
-    private static final int MOVING_SATISFY = 2;
+    private static final int STOP_MAX_TIMES = 5;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback callback;
@@ -39,8 +38,7 @@ public class LocationCollectionManager {
     private MutableLiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
 
     private int stopServiceCountDown = DATA_COLECT_LIMIT;
-    private int movingCount = 0;
-    private int detectCountDown = DETECT_LIMIT;
+    private int stopCount = 0;
     private MovingDetection movingDetection = new MovingDetection();
     private MutableLiveData<Boolean> movingStateLiveData = new MutableLiveData<>();
 
@@ -76,8 +74,7 @@ public class LocationCollectionManager {
 
     public void beginTraceLocation(Looper looper) {
         stopServiceCountDown = DATA_COLECT_LIMIT;
-        movingCount = 0;
-        detectCountDown = DETECT_LIMIT;
+        stopCount = 0;
         movingDetection = new MovingDetection();
         LocationRequest request = LocationRequest.create();
         request.setInterval(INTERVAL);
@@ -135,28 +132,24 @@ public class LocationCollectionManager {
     }
 
     private void handleDetectMoving(UserLocation currUserLocation) {
-        detectCountDown--;
         movingDetection.setCurrLocation(currUserLocation);
-
-        // check user moving every (MOVING_SATISFY + 2) times
-        if (detectCountDown < MOVING_SATISFY + 2) {
-            if (movingDetection.isMoving()) {
-                movingCount++;
-            }
-            Log.e("moving", "check");
+        if (!movingDetection.isMoving()) {
+            stopCount++;
+        } else {
+            stopCount = 0;
         }
-        if (detectCountDown < 1) {
-            if (movingCount < MOVING_SATISFY) {
-                // user is not move
-                // stop service
-                movingStateLiveData.postValue(false);
-                if (stopServiceEvent != null) {
-                    stopServiceEvent.onStop();
-                }
+        Log.e("stoping", "stop count: " + stopCount);
+
+        // nếu người dùng không di chuyển ra khỏi vị trí trong
+        // STOP_MAX_TIMES lần lấy tọa độ, thì xác định người dùng không di chuyển
+        if (stopCount > STOP_MAX_TIMES) {
+            // user is not move
+            // stop service
+            movingStateLiveData.postValue(false);
+            if (stopServiceEvent != null) {
+                stopServiceEvent.onStop();
             }
-            Log.e("moving", "moving count: " + movingCount);
-            movingCount = 0;
-            detectCountDown = DETECT_LIMIT;
+            stopCount = 0;
         }
     }
 
