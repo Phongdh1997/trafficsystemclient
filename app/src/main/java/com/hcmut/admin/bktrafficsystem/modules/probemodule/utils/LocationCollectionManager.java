@@ -123,13 +123,12 @@ public class LocationCollectionManager {
                 UserLocation currUserLocation = new UserLocation(location);
                 locationRepositoryService.postLocationRecord(lastUserLocation, currUserLocation); // send location record to server
                 lastUserLocation = currUserLocation;
-                handleDetectMoving(currUserLocation);
+                handleSleepOrWakeupService(currUserLocation);
             }
-            handleSleepOrWakeupService();
         }
     }
 
-    private void handleDetectMoving(UserLocation currUserLocation) {
+    private void handleSleepOrWakeupService(UserLocation currUserLocation) {
         movingDetection.setCurrLocation(currUserLocation);
         if (!movingDetection.isMoving()) {
             stopCount++;
@@ -140,6 +139,7 @@ public class LocationCollectionManager {
 
         // nếu người dùng không di chuyển ra khỏi vị trí trong
         // STOP_MAX_TIMES lần lấy tọa độ, thì xác định người dùng không di chuyển
+        // => dừng LocationService
         if (stopCount > STOP_MAX_TIMES) {
             // user is not move
             // stop service
@@ -153,9 +153,8 @@ public class LocationCollectionManager {
             trafficNotificationFactory.sendNotification(notification, STOPPED_NOTIFICATION_ID);
             stopCount = 0;
         }
-    }
 
-    private void handleSleepOrWakeupService() {
+        // show notification for location collecting
         stopServiceCountDown--;
         if (stopServiceCountDown < 1) {
             // notify stop notification
