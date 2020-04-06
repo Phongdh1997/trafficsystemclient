@@ -167,8 +167,7 @@ public class TrafficNotificationFactory {
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
                 .setContentTitle(NOTIFICATION_CONTENT_TITLE)
                 .setContentText(NOTIFICATION_CONTENT_TEXT)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setOngoing(true);
+                .setPriority(NotificationCompat.PRIORITY_MAX);
 
         // create intent to start broadcast
         Intent notificationIntent = new Intent(context, LocationWakefulReceiver.class);
