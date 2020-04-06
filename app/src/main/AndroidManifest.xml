@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name="com.hcmut.admin.bktrafficsystem.MyApplication"
@@ -97,6 +98,8 @@
         <!-- [END firebase_service] -->
 
         <service android:name="com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService"/>
+
+        <receiver android:name=".modules.probemodule.LocationWakefulReceiver"/>
     </application>
 
 </manifest>

@@ -48,14 +48,14 @@ public class ProbeForgroundServiceManager {
         if (!hasPermisson(activity, permissions)) {
             ActivityCompat.requestPermissions(activity, permissions, MUTILE_PERMISSION_REQUEST);
         } else {
-            startLocationService();
+            startLocationService(activity.getApplicationContext());
         }
     }
 
     public boolean handleAppForgroundPermission(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MUTILE_PERMISSION_REQUEST) {
             if ((grantResults.length > 0) && (grantResults[0] + grantResults[1] + grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
-                startLocationService();
+                startLocationService(activity.getApplicationContext());
             }
             return true;
         }
@@ -103,21 +103,21 @@ public class ProbeForgroundServiceManager {
         return true;
     }
 
-    private void startLocationService() {
+    public static void startLocationService(Context context) {
         try {
             if (Build.VERSION.SDK_INT < 26) {
-                activity.startService(new Intent(activity.getApplicationContext(), AppForegroundService.class));
+                context.startService(new Intent(context.getApplicationContext(), AppForegroundService.class));
             } else {
-                activity.startForegroundService(new Intent(activity.getApplicationContext(), AppForegroundService.class));
+                context.startForegroundService(new Intent(context.getApplicationContext(), AppForegroundService.class));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void stopLocationService() {
+    public static void stopLocationService(Context context) {
         try {
-            activity.stopService(new Intent(activity.getApplicationContext(), AppForegroundService.class));
+            context.stopService(new Intent(context.getApplicationContext(), AppForegroundService.class));
         } catch (Exception e) {
 
         }

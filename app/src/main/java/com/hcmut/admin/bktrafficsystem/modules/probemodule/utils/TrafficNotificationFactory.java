@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,17 +10,25 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
-import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
+
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver.WAKEUP_DELAY_MILLIS;
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver.WAKEUP_ID;
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.LocationWakefulReceiver.WAKEUP_LOCATION_SERVICE_ID;
 
 public class TrafficNotificationFactory {
 
     private String CHANNEL_ID = "Notification1";
 
-    public static final int SEARCH_WAY_NOTIFICATION_ID = 1;
+    public static final int DIRECTION_NOTIFICATION_ID = 1;
+    public static final int STOP_LOCATION_SERVICE_ALERT_NOTIFICATION_ID = 2;
+    public static final int NORMAL_NOTIFICATION_ID = 1;
+    public static final int STOPPED_NOTIFICATION_ID = 1;
 
     private static TrafficNotificationFactory serviceNotification;
     private Context context;
@@ -53,7 +62,7 @@ public class TrafficNotificationFactory {
     }
 
     public Notification getForegroundServiceNotification(Context context) {
-        String STOP_ACTION_TITLE = "STOP";
+        String STOP_ACTION_TITLE = "Dừng";
         String NOTIFICATION_CONTENT_TITLE = "Ứng dụng đang chạy";
         String NOTIFICATION_CONTENT_TEXT = "Dữ liệu đang được thu thập ...";
 
@@ -72,7 +81,7 @@ public class TrafficNotificationFactory {
                 AppForegroundService.SERVICE_STOP_REQUEST_CODE,
                 stopServiceIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
-        //mBuilder.addAction(R.drawable.ic_arrow_back, STOP_ACTION_TITLE, cancelPendingIntent);
+        mBuilder.addAction(R.drawable.ic_arrow_back, STOP_ACTION_TITLE, cancelPendingIntent);
 
         return mBuilder.build();
     }
@@ -150,10 +159,33 @@ public class TrafficNotificationFactory {
         return mBuilder.build();
     }
 
-    public void sendNotification (Notification notification) {
+    public Notification getStoppedServiceNotification(Context context) {
+        String NOTIFICATION_CONTENT_TITLE = "Thu thập dữ liệu";
+        String NOTIFICATION_CONTENT_TEXT = "Thu thập dữ liệu đã tắt do người dùng không di chuyển ...";
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
+                .setContentTitle(NOTIFICATION_CONTENT_TITLE)
+                .setContentText(NOTIFICATION_CONTENT_TEXT)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setOngoing(true);
+
+        // create intent to start broadcast
+        Intent notificationIntent = new Intent(context, LocationWakefulReceiver.class);
+        notificationIntent.putExtra(WAKEUP_ID, WAKEUP_LOCATION_SERVICE_ID);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, WAKEUP_LOCATION_SERVICE_ID, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + WAKEUP_DELAY_MILLIS;
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+
+        return mBuilder.build();
+    }
+
+    public void sendNotification (Notification notification, int notificationId) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
-            notificationManager.notify(TrafficNotificationFactory.SEARCH_WAY_NOTIFICATION_ID, notification);
+            notificationManager.notify(notificationId, notification);
         }
     }
 }

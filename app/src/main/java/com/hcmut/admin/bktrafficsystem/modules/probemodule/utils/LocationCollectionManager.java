@@ -21,6 +21,9 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.LocationRe
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.LocationRemoteRepository;
 import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
 
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOPPED_NOTIFICATION_ID;
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOP_LOCATION_SERVICE_ALERT_NOTIFICATION_ID;
+
 public class LocationCollectionManager {
 
     private static final int INTERVAL = 12000;
@@ -149,6 +152,11 @@ public class LocationCollectionManager {
             if (stopServiceEvent != null) {
                 stopServiceEvent.onStop();
             }
+            TrafficNotificationFactory trafficNotificationFactory = TrafficNotificationFactory
+                    .getInstance(context);
+            Notification notification = trafficNotificationFactory
+                    .getStoppedServiceNotification(context);
+            trafficNotificationFactory.sendNotification(notification, STOPPED_NOTIFICATION_ID);
             stopCount = 0;
         }
     }
@@ -160,9 +168,8 @@ public class LocationCollectionManager {
             TrafficNotificationFactory trafficNotificationFactory = TrafficNotificationFactory
                     .getInstance(context);
             Notification notification = trafficNotificationFactory
-                    .getStopLocationServiceNotification(
-                            context, MapActivity.class);
-            trafficNotificationFactory.sendNotification(notification);
+                    .getStopLocationServiceNotification(context, MapActivity.class);
+            trafficNotificationFactory.sendNotification(notification, STOP_LOCATION_SERVICE_ALERT_NOTIFICATION_ID);
             stopServiceCountDown = DATA_COLECT_LIMIT;
         }
     }

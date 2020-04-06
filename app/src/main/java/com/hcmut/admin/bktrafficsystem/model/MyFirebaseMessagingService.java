@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.DIRECTION_NOTIFICATION_ID;
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.NORMAL_NOTIFICATION_ID;
+
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     AndroidExt androidExt = new AndroidExt();
@@ -68,14 +71,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 MapActivity.class,
                 "Notification message",
                 "Have a message");
-        trafficNotificationFactory.sendNotification(notification);
+        trafficNotificationFactory.sendNotification(notification, NORMAL_NOTIFICATION_ID);
     }
 
     private void pushDirectionNotification(Map<String, String> remoteData) {
         TrafficNotificationFactory trafficNotificationFactory = TrafficNotificationFactory.getInstance(getApplicationContext());
         Notification notification = trafficNotificationFactory.getFoundNewWayNotification(
                 getApplicationContext(), MapActivity.class);
-        trafficNotificationFactory.sendNotification(notification);
+        trafficNotificationFactory.sendNotification(notification, DIRECTION_NOTIFICATION_ID);
     }
 
     private void pushReportNotification(RemoteMessage remoteMessage) {
