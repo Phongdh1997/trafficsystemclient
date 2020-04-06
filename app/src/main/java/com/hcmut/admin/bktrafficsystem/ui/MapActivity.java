@@ -418,18 +418,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (!gpsDataSetting) {
             new AlertDialog.Builder(MapActivity.this)
                     .setTitle("Dữ liệu vị trí")
-                    .setMessage("Thu thập dữ liệu vị trí đang tắt, bạn có muốn bận nó?")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setMessage("Thu thập dữ liệu vị trí đang tắt, bạn có muốn bật nó?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             initLocationService();
                             setGpsDataSetting(true);
                         }
                     })
-
-                    // A null listener allows the button to dismiss the dialog and take no further action.
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
