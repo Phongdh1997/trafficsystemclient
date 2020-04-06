@@ -37,7 +37,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
@@ -117,7 +116,6 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeF
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
@@ -396,20 +394,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 } else {
                     stopLoctionService();
                 }
-                setGpsDataSetting(b);
             }
         });
-        LocationCollectionManager.getInstance(getApplicationContext())
-                .getMovingStateLiveData().observe(this, new Observer<Boolean>() {
+        AppForegroundService.getMovingStateLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean isMoving) {
-                if (isMoving == null) return;
-                if (isMoving) {
-                    initLocationService();
-                } else {
-                    stopLoctionService();
+                if (isMoving != null) {
+                    setGpsDataSetting(isMoving);
                 }
-                setGpsDataSetting(isMoving);
             }
         });
 
@@ -453,7 +445,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void stopLoctionService() {
-        appForgroundServiceManager.stopLocationService();
+        ProbeForgroundServiceManager.stopLocationService(getApplicationContext());
     }
 
     @Override

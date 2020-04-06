@@ -43,7 +43,6 @@ public class LocationCollectionManager {
     private int stopServiceCountDown = DATA_COLECT_LIMIT;
     private int stopCount = 0;
     private MovingDetection movingDetection = new MovingDetection();
-    private MutableLiveData<Boolean> movingStateLiveData = new MutableLiveData<>();
 
     private StopServiceEvent stopServiceEvent;
 
@@ -54,10 +53,6 @@ public class LocationCollectionManager {
         locationRepositoryService = new LocationRemoteRepository();
         currentUserLocationEventLiveData = new MutableLiveData<>();
 
-    }
-
-    public LiveData<Boolean> getMovingStateLiveData () {
-        return movingStateLiveData;
     }
 
     public void setStopServiceEvent(StopServiceEvent stopServiceEvent) {
@@ -148,7 +143,6 @@ public class LocationCollectionManager {
         if (stopCount > STOP_MAX_TIMES) {
             // user is not move
             // stop service
-            movingStateLiveData.postValue(false);
             if (stopServiceEvent != null) {
                 stopServiceEvent.onStop();
             }

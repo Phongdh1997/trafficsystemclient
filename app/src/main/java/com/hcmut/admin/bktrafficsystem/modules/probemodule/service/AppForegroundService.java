@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.service;
 
 import android.app.Service;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.HandlerThread;
@@ -20,6 +22,11 @@ public class AppForegroundService extends Service {
 
     private LocationCollectionManager locationCollectionManager;
     private HandlerThread locationHandlerThread;
+    private static MutableLiveData<Boolean> movingStateLiveData = new MutableLiveData<>();
+
+    public static LiveData<Boolean> getMovingStateLiveData () {
+        return movingStateLiveData;
+    }
 
     @Override
     public void onCreate() {
@@ -44,6 +51,7 @@ public class AppForegroundService extends Service {
                 stopSelf();
             }
         });
+        movingStateLiveData.postValue(true);
         Log.e("app service", "created");
     }
 
@@ -71,6 +79,7 @@ public class AppForegroundService extends Service {
             locationCollectionManager = null;
             locationHandlerThread = null;
         } catch (Exception e) {}
+        movingStateLiveData.postValue(false);
         Log.e("Service", "stop");
     }
 }
