@@ -161,8 +161,6 @@ public class TrafficNotificationFactory {
                 .setContentTitle(NOTIFICATION_CONTENT_TITLE)
                 .setContentText(NOTIFICATION_CONTENT_TEXT)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
-
-        LocationServiceAlarmUtil.setLocationAlarm(context);
         return mBuilder.build();
     }
 

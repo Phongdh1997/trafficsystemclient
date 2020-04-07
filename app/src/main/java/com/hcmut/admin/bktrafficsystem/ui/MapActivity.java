@@ -116,6 +116,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeF
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationServiceAlarmUtil;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
@@ -343,6 +344,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Button btnCallPhoneReport;
     private Button btnCurrentLocationReport;
 
+    private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            if (b) {
+                initLocationService();
+            } else {
+                stopLoctionService();
+            }
+            LocationServiceAlarmUtil.cancelLocationAlarm(getApplicationContext());
+        }
+    };
+
     /**
      *
      * Init probe module variable to use
@@ -386,16 +399,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Toast.makeText(MapActivity.this, "Chức năng đang phát triển...", Toast.LENGTH_SHORT).show();
             }
         });
-        btnGPSColectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    initLocationService();
-                } else {
-                    stopLoctionService();
-                }
-            }
-        });
+        btnGPSColectionSwitch.setOnCheckedChangeListener(swithCheckedChangedListener);
         AppForegroundService.getMovingStateLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean isMoving) {
@@ -426,10 +430,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void setGpsDataSetting(boolean value) {
+        btnGPSColectionSwitch.setOnCheckedChangeListener(null);
         btnGPSColectionSwitch.setChecked(value);
-        GpsDataSettingSharedRefUtil.saveGpsDataSetting(
-                btnGPSColectionSwitch.getContext().getApplicationContext(),
-                value);
+        GpsDataSettingSharedRefUtil.saveGpsDataSetting(getApplicationContext(), value);
+        btnGPSColectionSwitch.setOnCheckedChangeListener(swithCheckedChangedListener);
     }
 
     @Override

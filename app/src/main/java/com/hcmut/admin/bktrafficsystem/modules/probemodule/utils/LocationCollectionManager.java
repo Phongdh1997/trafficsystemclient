@@ -151,6 +151,7 @@ public class LocationCollectionManager {
             Notification notification = trafficNotificationFactory
                     .getStoppedServiceNotification(context);
             trafficNotificationFactory.sendNotification(notification, STOPPED_NOTIFICATION_ID);
+            LocationServiceAlarmUtil.setLocationAlarm(context);     // set up alarm to start service again
             stopCount = 0;
         }
 
