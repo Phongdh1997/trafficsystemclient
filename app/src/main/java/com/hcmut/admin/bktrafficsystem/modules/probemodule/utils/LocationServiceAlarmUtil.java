@@ -31,7 +31,8 @@ public class LocationServiceAlarmUtil {
         notificationIntent.putExtra(WAKEUP_ID, WAKEUP_LOCATION_SERVICE_ID);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, WAKEUP_LOCATION_SERVICE_ID, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        alarmManager.cancel(pendingIntent);
+        try {
+            alarmManager.cancel(pendingIntent);
+        } catch (Exception e) {}
     }
 }
