@@ -236,6 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void onFailure(Call<BaseResponse<LoginResponse>> call, Throwable t) {
+                        // TODO: check username, passwork wrong
                         Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
