@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">GoogleMapApiTest</string>
     <string name="title_activity_speech_to_text">SpeechToText</string>
-    <string name="facebook_app_id">285927118980084</string>
+    <string name="facebook_app_id">891769847915505</string>
+
+<!--
+    Config login by fb at link: https://developers.facebook.com/docs/facebook-login/android/?sdk=fbsdk
+-->
+    <string name="fb_login_protocol_scheme">fb891769847915505</string>
     <string name="server_client_id">1051658404318-d2prbl7drlg5tegiggo939t0tiv1jogk.apps.googleusercontent.com</string>
     <string name="danh_gia">Đánh giá</string>
     <string name="list_report">Danh sách báo cáo</string>
