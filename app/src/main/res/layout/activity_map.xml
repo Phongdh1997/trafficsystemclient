@@ -389,6 +389,77 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/layoutMoreFeature"
+            android:visibility="gone"
+            android:background="#99000000"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:weightSum="6"
+            fab:layout_constraintStart_toStartOf="parent"
+            fab:layout_constraintBottom_toTopOf="@+id/featureLayout"
+            fab:layout_constraintEnd_toEndOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center">
+
+                <Switch
+                    android:id="@+id/btnGPSColectionSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    fab:layout_constraintEnd_toEndOf="parent"
+                    fab:layout_constraintStart_toStartOf="parent"
+                    fab:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SẴN SÀNG"
+                    android:textSize="12dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    fab:layout_constraintEnd_toEndOf="parent"
+                    fab:layout_constraintStart_toStartOf="parent"
+                    fab:layout_constraintTop_toBottomOf="@+id/btnGPSColectionSwitch" />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center">
+
+                <Switch
+                    android:id="@+id/btnRatingModeSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    fab:layout_constraintEnd_toEndOf="parent"
+                    fab:layout_constraintStart_toStartOf="parent"
+                    fab:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chế Độ Đánh Giá"
+                    android:textSize="12dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    fab:layout_constraintEnd_toEndOf="parent"
+                    fab:layout_constraintStart_toStartOf="parent"
+                    fab:layout_constraintTop_toBottomOf="@+id/btnRatingModeSwitch" />
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/featureLayout"
+            android:orientation="horizontal"
             android:background="@color/white"
             android:weightSum="9"
             fab:layout_constraintStart_toStartOf="parent"
@@ -431,32 +502,16 @@
                 android:textColor="#494949"
                 android:background="@drawable/transparent_btn_bg"/>
 
-            <android.support.constraint.ConstraintLayout
+            <ImageButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/btnMore"
                 android:layout_weight="3"
-                android:layout_gravity="center">
-
-                <Switch
-                    android:id="@+id/btnGPSColectionSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    fab:layout_constraintEnd_toEndOf="parent"
-                    fab:layout_constraintStart_toStartOf="parent"
-                    fab:layout_constraintTop_toTopOf="parent"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SẴN SÀNG"
-                    android:textSize="12dp"
-                    android:textColor="#494949"
-                    android:textStyle="bold"
-                    fab:layout_constraintEnd_toEndOf="parent"
-                    fab:layout_constraintStart_toStartOf="parent"
-                    fab:layout_constraintTop_toBottomOf="@+id/btnGPSColectionSwitch" />
-            </android.support.constraint.ConstraintLayout>
+                android:src="@drawable/ic_more_black_24dp"
+                android:padding="5dp"
+                android:textSize="12dp"
+                android:textColor="#494949"
+                android:background="@drawable/transparent_btn_bg"/>
 
         </LinearLayout>
 

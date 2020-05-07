@@ -56,7 +56,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -341,8 +343,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ProbeMapUi probeMapUi;
 
     private Switch btnGPSColectionSwitch;
+    private Switch btnRatingModeSwitch;
     private Button btnCallPhoneReport;
     private Button btnCurrentLocationReport;
+    private ImageButton btnMore;
+    private LinearLayout layoutMoreFeature;
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -369,6 +374,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnCallPhoneReport = findViewById(R.id.btnCallPhoneReport);
         btnCurrentLocationReport = findViewById(R.id.btnCurrentLocationReport);
         btnGPSColectionSwitch = findViewById(R.id.btnGPSColectionSwitch);
+        btnRatingModeSwitch = findViewById(R.id.btnRatingModeSwitch);
+        btnMore = findViewById(R.id.btnMore);
+        layoutMoreFeature = findViewById(R.id.layoutMoreFeature);
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
         btnGPSColectionSwitch.setChecked(gpsDataSetting);
 
@@ -408,6 +416,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
+        btnRatingModeSwitch.setChecked(isRatingMode);
+        btnRatingModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                handleRatingMode(isChecked);
+            }
+        });
+        btnMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleMoreFeatureOption();
+            }
+        });
 
         // show dialog ask user to turn on collect GPS data
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
@@ -426,6 +447,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     .show();
         } else {
             initLocationService();
+        }
+    }
+
+    private void toggleMoreFeatureOption() {
+        if (layoutMoreFeature.getVisibility() == View.VISIBLE) {
+            layoutMoreFeature.setVisibility(View.GONE);
+        } else {
+            layoutMoreFeature.setVisibility(View.VISIBLE);
         }
     }
 
@@ -940,6 +969,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 if (mapInteractionStep > 0) {
                     roadFinder.getSnappedPoint(position, false);
+                }
+                if (layoutMoreFeature.getVisibility() == View.VISIBLE) {
+                    layoutMoreFeature.setVisibility(View.GONE);
                 }
             }
         });
