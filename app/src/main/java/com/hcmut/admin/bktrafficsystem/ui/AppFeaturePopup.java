@@ -39,6 +39,9 @@ public class AppFeaturePopup {
         // init view
         CardView cardView = popupView.findViewById(R.id.card);
         Button btnReport = popupView.findViewById(R.id.btn_report);
+        Button btnProfile = popupView.findViewById(R.id.btnProfile);
+        Button btnUserGuide = popupView.findViewById(R.id.btnUserGuide);
+        Button btnLogout = popupView.findViewById(R.id.btnLogout);
 
         // add action
         cardView.setOnTouchListener(new View.OnTouchListener() {
@@ -60,6 +63,36 @@ public class AppFeaturePopup {
                 MapActivity mapActivity = mapActivityWeakReference.get();
                 if (mapActivity != null) {
                     mapActivity.doReport();
+                }
+                popupWindow.dismiss();
+            }
+        });
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapActivity mapActivity = mapActivityWeakReference.get();
+                if (mapActivity != null) {
+                    mapActivity.viewInfo();
+                }
+                popupWindow.dismiss();
+            }
+        });
+        btnUserGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapActivity mapActivity = mapActivityWeakReference.get();
+                if (mapActivity != null) {
+                    mapActivity.viewUserGuide();
+                }
+                popupWindow.dismiss();
+            }
+        });
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapActivity mapActivity = mapActivityWeakReference.get();
+                if (mapActivity != null) {
+                    mapActivity.logout();
                 }
                 popupWindow.dismiss();
             }

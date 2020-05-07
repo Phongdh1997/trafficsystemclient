@@ -958,46 +958,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 int itemId = menuItem.getItemId();
 //                Toast.makeText(MapActivity.this, "Item: " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
                 switch (itemId) {
-                    case R.id.account: {
-                        startActivityForResult(new Intent(MapActivity.this, InformationActivity.class), REQUEST_CODE_UPDATE_INFO);
+                    case R.id.account:
+                        viewInfo();
                         break;
-                    }
-                    case R.id.logout: {
-                        new AlertDialog.Builder(MapActivity.this)
-                                .setTitle("Đăng xuất")
-                                .setMessage("Bạn chắc chắn muốn đăng xuất?")
-                                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        switch (accountType) {
-                                            case "facebook": {
-                                                LoginManager.getInstance().logOut();
-                                                break;
-                                            }
-                                            case "google": {
-                                                GoogleSignInClient mGoogleSignInClient = GoogleSignInData.getValue();
-                                                if (mGoogleSignInClient != null) {
-                                                    mGoogleSignInClient.signOut();
-                                                }
-                                                break;
-                                            }
-                                        }
-                                        SharedPrefUtils.saveUser(MapActivity.this, null);
-                                        Intent intent = new Intent(MapActivity.this, LoginActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                    }
-                                })
-
-                                // A null listener allows the button to dismiss the dialog and take no further action.
-                                .setNegativeButton("Hủy bỏ", null)
-                                .show();
-
+                    case R.id.logout:
+                        logout();
                         break;
-                    }
-                    case R.id.guideline: {
-                        startActivity(new Intent(MapActivity.this, QuestionActivity.class));
+                    case R.id.guideline:
+                        viewUserGuide();
                         break;
-                    }
                 }
                 return true;
             }
@@ -1045,6 +1014,45 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //Firebase NpatchNotifyotify
 //        MyFirebaseMessagingService.setActivity(MapActivity.this);
         patchNotify();
+    }
+
+    public void viewUserGuide() {
+        startActivity(new Intent(MapActivity.this, QuestionActivity.class));
+    }
+
+    public void logout() {
+        new AlertDialog.Builder(MapActivity.this)
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn chắc chắn muốn đăng xuất?")
+                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (accountType) {
+                            case "facebook": {
+                                LoginManager.getInstance().logOut();
+                                break;
+                            }
+                            case "google": {
+                                GoogleSignInClient mGoogleSignInClient = GoogleSignInData.getValue();
+                                if (mGoogleSignInClient != null) {
+                                    mGoogleSignInClient.signOut();
+                                }
+                                break;
+                            }
+                        }
+                        SharedPrefUtils.saveUser(MapActivity.this, null);
+                        Intent intent = new Intent(MapActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton("Hủy bỏ", null)
+                .show();
+    }
+
+    public void viewInfo() {
+        startActivityForResult(new Intent(MapActivity.this, InformationActivity.class), REQUEST_CODE_UPDATE_INFO);
     }
 
     private void addEventTextChange() {
@@ -1162,16 +1170,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPrefUtils.saveRatingMode(MapActivity.this, isChecked);
-                isRatingMode = isChecked;
-                if (isChecked) {
-                    showReportStatus();
-                } else {
-                    hideReportStatus();
-                }
-                patchNotify();
+                handleRatingMode(isChecked);
             }
         });
+    }
+
+    public void handleRatingMode(boolean isChecked) {
+        SharedPrefUtils.saveRatingMode(MapActivity.this, isChecked);
+        isRatingMode = isChecked;
+        if (isChecked) {
+            showReportStatus();
+        } else {
+            hideReportStatus();
+        }
+        patchNotify();
     }
 
     public void updateCurDesLocation() {

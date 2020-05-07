@@ -32,6 +32,19 @@
                 android:weightSum="9">
 
                 <Button
+                    android:id="@+id/btnProfile"
+                    android:layout_width="94dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/blue_btn"
+                    android:drawableBottom="@drawable/ic_report_status"
+                    android:text="Thông tin Tài Khoản"
+                    android:textColor="@color/white"
+                    tools:layout_editor_absoluteX="36dp"
+                    tools:layout_editor_absoluteY="86dp" />
+
+                <Button
                     android:id="@+id/btn_report"
                     android:layout_width="94dp"
                     android:layout_height="match_parent"
@@ -40,6 +53,67 @@
                     android:background="@drawable/blue_btn"
                     android:drawableBottom="@drawable/ic_report_status"
                     android:text="Cảnh Báo"
+                    android:textColor="@color/white"
+                    tools:layout_editor_absoluteX="36dp"
+                    tools:layout_editor_absoluteY="86dp" />
+
+                <Button
+                    android:id="@+id/btnUserGuide"
+                    android:layout_width="94dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/blue_btn"
+                    android:drawableBottom="@drawable/ic_report_status"
+                    android:text="Hướng Dẫn"
+                    android:textColor="@color/white"
+                    tools:layout_editor_absoluteX="36dp"
+                    tools:layout_editor_absoluteY="86dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:weightSum="9">
+
+                <Button
+                    android:id="@+id/btnLogout"
+                    android:layout_width="94dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/blue_btn"
+                    android:drawableBottom="@drawable/ic_report_status"
+                    android:text="Đăng xuất"
+                    android:textColor="@color/white"
+                    tools:layout_editor_absoluteX="36dp"
+                    tools:layout_editor_absoluteY="86dp" />
+
+                <Button
+                    android:id="@+id/fdsafsa"
+                    android:layout_width="94dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/blue_btn"
+                    android:drawableBottom="@drawable/ic_report_status"
+                    android:text="Updating"
+                    android:textColor="@color/white"
+                    tools:layout_editor_absoluteX="36dp"
+                    tools:layout_editor_absoluteY="86dp" />
+
+                <Button
+                    android:id="@+id/fdsafas"
+                    android:layout_width="94dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/blue_btn"
+                    android:drawableBottom="@drawable/ic_report_status"
+                    android:text="Updating"
                     android:textColor="@color/white"
                     tools:layout_editor_absoluteX="36dp"
                     tools:layout_editor_absoluteY="86dp" />
