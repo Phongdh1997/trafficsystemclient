@@ -2002,15 +2002,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .enqueue(new Callback<BaseResponse<List<DirectRespose>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<DirectRespose>>> call, Response<BaseResponse<List<DirectRespose>>> response) {
-                        if (response.body() != null) {
-                            if (response.body().getData() != null) {
-                                applyPolyLine(response.body().getData().get(0).getCoords());
+                        progressDialog.dismiss();
+                        Log.e("fdsaf", "code" + response.code());
+                        try {
+                            List<Coord> directs = response.body().getData().get(0).getCoords();
+                            if (directs.size() > 1) {
+                                applyPolyLine(directs);
                                 pathId = response.body().getData().get(0).getPathId();
-                                toggleNotify(pathId , "true");
+                                toggleNotify(pathId, "true");
                             } else {
-                                progressDialog.dismiss();
-                                findDirection(mStartLocationEditext.getText().toString(), mDestEdt.getText().toString());
+                                new AlertDialog.Builder(MapActivity.this)
+                                        .setTitle("tìm đường thất bại")
+                                        .setMessage("Không tìm được đường đi ngắn nhất")
+                                        .setPositiveButton(android.R.string.ok, null)
+                                        .show();
                             }
+                        } catch (Exception e) {
+                            new AlertDialog.Builder(MapActivity.this)
+                                    .setTitle("tìm đường thất bại")
+                                    .setMessage("Vị trí tìm đường chưa được hỗ trợ")
+                                    .setPositiveButton(android.R.string.ok, null)
+                                    .show();
                         }
                     }
 
@@ -2018,7 +2030,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     @Override
                     public void onFailure(Call<BaseResponse<List<DirectRespose>>> call, Throwable t) {
                         progressDialog.dismiss();
-                        findDirection(mStartLocationEditext.getText().toString(), mDestEdt.getText().toString());
+                        new AlertDialog.Builder(MapActivity.this)
+                                .setTitle("tìm đường thất bại")
+                                .setMessage("Không tìm được đường đi ngắn nhất")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
                     }
                 });
 
@@ -2053,7 +2069,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .icon(bitmapDescriptorFromVector(this, R.drawable.ic_start_position))));
         directsMaker.add(mMap.addMarker(new MarkerOptions().position(new LatLng(directs.get(directs.size() - 1).getLat(), directs.get(directs.size() - 1).getLng()))
                 .icon(bitmapDescriptorFromVector(this, R.drawable.ic_end_position))));
-        progressDialog.dismiss();
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(directs.get(0).getLat(), directs.get(0).getLng()));
         builder.include(new LatLng(directs.get(directs.size() - 1).getLat(), directs.get(directs.size() - 1).getLng()));

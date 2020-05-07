@@ -15,8 +15,9 @@ public class CallApi {
 
 
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
-        okHttpClient.readTimeout(60, TimeUnit.SECONDS);
-        okHttpClient.connectTimeout(60, TimeUnit.SECONDS);
+        okHttpClient.readTimeout(30000, TimeUnit.MILLISECONDS);
+        okHttpClient.connectTimeout(30000, TimeUnit.MILLISECONDS);
+        okHttpClient.callTimeout(30000, TimeUnit.MILLISECONDS);
         okHttpClient.addInterceptor(logging);
 
         return new Retrofit.Builder()
