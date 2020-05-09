@@ -67,8 +67,8 @@ public class StatusRenderData {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.e("Status data", trafficData.toString());
         }
+        Log.e("Status size", "size" + polylineOptionsList.size());
         return polylineOptionsList;
     }
 

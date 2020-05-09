@@ -77,6 +77,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -901,6 +902,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 intent.putExtra("VELOCITY", velocity);
                 intent.putExtra("SEGMENT_ID", segmentId);
                 startActivity(intent);
+            }
+        });
+
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            private float currentZoom = -1;
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                if (isClickPolyline) {
+                    isClickPolyline = false;
+                    return;
+                }
+                if (cameraPosition.zoom != currentZoom) {
+                    currentZoom = cameraPosition.zoom;
+                    renderCurrentPosition(mMap.getCameraPosition().target);
+                    // do you action here
+                }
             }
         });
 

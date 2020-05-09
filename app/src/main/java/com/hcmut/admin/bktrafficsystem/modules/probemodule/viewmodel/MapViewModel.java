@@ -67,7 +67,7 @@ public class MapViewModel extends AndroidViewModel {
     }
 
     /**
-     * View action
+     * View action: load traffic status from server and notify to map to render
      */
     public void rendering(UserLocation userLocation, double zoom) {
         statusRender.loadTrafficStatus(userLocation, zoom);
