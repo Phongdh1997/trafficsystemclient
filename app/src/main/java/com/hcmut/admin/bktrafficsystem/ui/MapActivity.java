@@ -905,18 +905,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            private float currentZoom = -1;
+        mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                if (isClickPolyline) {
-                    isClickPolyline = false;
-                    return;
-                }
-                if (cameraPosition.zoom != currentZoom) {
-                    currentZoom = cameraPosition.zoom;
-                    renderCurrentPosition(mMap.getCameraPosition().target);
-                    // do you action here
+            public void onCameraMoveStarted(int i) {
+                if (i == REASON_GESTURE) {
+                    probeMapUi.render();
                 }
             }
         });

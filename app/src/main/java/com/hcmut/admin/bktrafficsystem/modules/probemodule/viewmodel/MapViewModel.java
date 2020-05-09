@@ -74,6 +74,13 @@ public class MapViewModel extends AndroidViewModel {
     }
 
     /**
+     * View action:
+     */
+    public void triggerRender() {
+        statusRender.triggerRender();
+    }
+
+    /**
      * View action
      */
     public void direct(UserLocation startPoint, UserLocation endPoint) {

@@ -55,6 +55,11 @@ public class UserLocation {
         this.timestamp = Calendar.getInstance().getTime();
     }
 
+    /**
+     *
+     * @param destLocation
+     * @return: distance in meter
+     */
     public float distanceTo (UserLocation destLocation) {
         float [] realDistance = new float[3];
         Location.distanceBetween(
