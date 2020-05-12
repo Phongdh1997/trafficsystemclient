@@ -13,36 +13,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatusRenderData {
-    @SerializedName("velocity")
-    @Expose
-    private Double velocity;
-    @SerializedName("_id")
-    @Expose
-    private String id;
-    @SerializedName("segment")
-    @Expose
-    private Long segment;
-    @SerializedName("source")
-    @Expose
-    private String source;
+//    @SerializedName("velocity")
+//    @Expose
+//    private Double velocity;
+//    @SerializedName("_id")
+//    @Expose
+//    private String id;
+//    @SerializedName("segment")
+//    @Expose
+//    private Long segment;
+//    @SerializedName("source")
+//    @Expose
+//    private String source;
+//    @SerializedName("createdAt")
+//    @Expose
+//    private String createdAt;
+//    @SerializedName("updatedAt")
+//    @Expose
+//    private String updatedAt;
+//    @SerializedName("priority")
+//    @Expose
+//    private Long priority;
+//    @SerializedName("_class")
+//    @Expose
+//    private String _class;
+
     @SerializedName("color")
     @Expose
     private String color;
     @SerializedName("polyline")
     @Expose
     private Polyline polyline;
-    @SerializedName("createdAt")
-    @Expose
-    private String createdAt;
-    @SerializedName("updatedAt")
-    @Expose
-    private String updatedAt;
-    @SerializedName("priority")
-    @Expose
-    private Long priority;
-    @SerializedName("_class")
-    @Expose
-    private String _class;
 
     public static List<PolylineOptions> parsePolylineOptions(List<StatusRenderData> trafficStatusDatas) {
         if (trafficStatusDatas == null) return new ArrayList<>();
@@ -75,39 +76,7 @@ public class StatusRenderData {
     @NonNull
     @Override
     public String toString() {
-        return "segment: " + segment + ", speed: " + velocity + ", polyline: " + polyline.toString();
-    }
-
-    public Double getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Double velocity) {
-        this.velocity = velocity;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Long getSegment() {
-        return segment;
-    }
-
-    public void setSegment(Long segment) {
-        this.segment = segment;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
+        return "polyline: " + polyline.toString() + ", color: " + color;
     }
 
     public String getColor() {
@@ -126,49 +95,17 @@ public class StatusRenderData {
         this.polyline = polyline;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Long getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Long priority) {
-        this.priority = priority;
-    }
-
-    public String getClass_() {
-        return _class;
-    }
-
-    public void setClass_(String _class) {
-        this._class = _class;
-    }
-
     public class Polyline {
 
         @SerializedName("coordinates")
         @Expose
         private List<List<Double>> coordinates = null;
-        @SerializedName("_id")
-        @Expose
-        private String id;
-        @SerializedName("type")
-        @Expose
-        private String type;
+//        @SerializedName("_id")
+//        @Expose
+//        private String id;
+//        @SerializedName("type")
+//        @Expose
+//        private String type;
 
         public List<List<Double>> getCoordinates() {
             return coordinates;
@@ -178,30 +115,18 @@ public class StatusRenderData {
             this.coordinates = coordinates;
         }
 
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
         @NonNull
         @Override
         public String toString() {
-            String s = "";
-            for (List<Double> coords : coordinates) {
-                s += "{ " + coords.get(0) + ", " + coords.get(1) + "} ";
+            try {
+                String s = "";
+                for (List<Double> coords : coordinates) {
+                    s += "{ " + coords.get(0) + ", " + coords.get(1) + "} ";
+                }
+                return s;
+            } catch (Exception e) {
             }
-            return s;
+            return "";
         }
     }
 
