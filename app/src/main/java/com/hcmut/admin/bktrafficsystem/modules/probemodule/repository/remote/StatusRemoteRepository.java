@@ -50,9 +50,10 @@ public class StatusRemoteRepository implements StatusRepositoryService {
                             if (googleMap == null) return;
                             if (response.code() == 200 && response.body() != null && response.body().getData() != null) {
                                 try {
-                                    JSONObject jsonLayer = StatusRenderData.parseLayerJsonObject(response.body().getData());
-                                    GeoJsonLayer geoJsonLayer = new GeoJsonLayer(googleMap, jsonLayer);
-                                    statusRenderGeoJsonLayerLiveData.postValue(geoJsonLayer);
+                                    GeoJsonLayer geoJsonLayer = StatusRenderData.getJsonLayerFromStatus(googleMap, response.body().getData());
+                                    if (geoJsonLayer != null) {
+                                        statusRenderGeoJsonLayerLiveData.postValue(geoJsonLayer);
+                                    }
                                 } catch (Exception e) {}
                             }
                         }

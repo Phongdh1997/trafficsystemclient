@@ -4,10 +4,16 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.maps.android.data.geojson.GeoJsonFeature;
+import com.google.maps.android.data.geojson.GeoJsonLayer;
+import com.google.maps.android.data.geojson.GeoJsonLineString;
+import com.google.maps.android.data.geojson.GeoJsonLineStringStyle;
+import com.hcmut.admin.bktrafficsystem.R;
 
 import org.json.JSONObject;
 
@@ -75,9 +81,27 @@ public class StatusRenderData {
         return polylineOptionsList;
     }
 
-    public static JSONObject parseLayerJsonObject (List<StatusRenderData> trafficStatusDatas) {
+    public static GeoJsonLayer getJsonLayerFromStatus (GoogleMap map, List<StatusRenderData> trafficStatusDatas) {
+        //if (trafficStatusDatas == null || trafficStatusDatas.size() == 0) return null;
+        GeoJsonLayer geoJsonLayer = new GeoJsonLayer(map, new JSONObject());
 
-        return null;
+        for (int i = 0; i < 1000; i++) {
+            ArrayList<LatLng> lineStringArray = new ArrayList<LatLng>();
+            lineStringArray.add(new LatLng(10.765646, 106.659504));
+            lineStringArray.add(new LatLng(10.780170, 106.655523));
+
+            GeoJsonLineString lineString = new GeoJsonLineString(lineStringArray);
+            GeoJsonFeature lineStringFeature = new GeoJsonFeature(lineString, null, null, null);
+
+            GeoJsonLineStringStyle lineStringStyle = new GeoJsonLineStringStyle();
+            lineStringStyle.setColor(Color.RED);
+
+            lineStringFeature.setLineStringStyle(lineStringStyle);
+
+            geoJsonLayer.addFeature(lineStringFeature);
+        }
+        Log.e("geojson", "finish");
+        return geoJsonLayer;
     }
 
     @NonNull
@@ -116,6 +140,16 @@ public class StatusRenderData {
 
         public List<List<Double>> getCoordinates() {
             return coordinates;
+        }
+
+        public ArrayList<LatLng> getLineStringArray() {
+            ArrayList<LatLng> lineStringArray = new ArrayList<>();
+            try {
+                lineStringArray.add(new LatLng(coordinates.get(0).get(1), coordinates.get(0).get(0)));
+                lineStringArray.add(new LatLng(coordinates.get(1).get(1), coordinates.get(1).get(0)));
+            } catch (Exception e) {
+            }
+            return lineStringArray;
         }
 
         public void setCoordinates(List<List<Double>> coordinates) {
