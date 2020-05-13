@@ -9,6 +9,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +73,11 @@ public class StatusRenderData {
         }
         Log.e("Status size", "size" + polylineOptionsList.size());
         return polylineOptionsList;
+    }
+
+    public static JSONObject parseLayerJsonObject (List<StatusRenderData> trafficStatusDatas) {
+
+        return null;
     }
 
     @NonNull

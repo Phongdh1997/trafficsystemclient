@@ -3,7 +3,10 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,11 +18,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.data.geojson.GeoJsonFeature;
+import com.google.maps.android.data.geojson.GeoJsonLayer;
+import com.google.maps.android.data.geojson.GeoJsonLineString;
+import com.google.maps.android.data.geojson.GeoJsonLineStringStyle;
+import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,16 +81,16 @@ public class ProbeMapUi {
 
     private void addViewModelObserver() {
         // get live data
-        LiveData<List<PolylineOptions>> statusPolylineOptionsLiveData = mapViewModel.getStatusRenderPolylineOptionsLiveData();
+        LiveData<GeoJsonLayer> statusGeoJsonLayerLiveData = mapViewModel.getStatusRenderGeoJsonLayerLiveData();
         LiveData<StatusRenderEvent> statusRenderEventLiveData = mapViewModel.getStatusRenderEventLiveData();
         LiveData<PolylineOptions> directionRenderPolylineOptionsLiveData = mapViewModel.getDirectionRenderPolylineOptionsLiveData();
         LiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData = mapViewModel.getCurrentUserLocationEventLiveData();
 
         // set observer
-        statusPolylineOptionsLiveData.observe(activity, new Observer<List<PolylineOptions>>() {
+        statusGeoJsonLayerLiveData.observe(activity, new Observer<GeoJsonLayer>() {
             @Override
-            public void onChanged(List<PolylineOptions> statusPolylineOptionsList) {
-                renderStatus(statusPolylineOptionsList);
+            public void onChanged(GeoJsonLayer statusLayer) {
+                statusLayer.addLayerToMap();
             }
         });
         statusRenderEventLiveData.observe(activity, new Observer<StatusRenderEvent>() {
@@ -92,7 +103,7 @@ public class ProbeMapUi {
                 if (lastCameraTarget == null ||
                         currentCameraTarget.distanceTo(lastCameraTarget) > MAP_LOAD_RANGE) {
                     Log.e("render at", "camera target " + currentCameraTarget.toString());
-                    mapViewModel.rendering(currentCameraTarget, zoom);
+                    mapViewModel.rendering(currentCameraTarget, zoom, gmaps);
                     lastCameraTarget = currentCameraTarget;
                 }
             }
@@ -154,6 +165,7 @@ public class ProbeMapUi {
         return polylines;
     }
 
+    @Deprecated
     private void renderStatus(List<PolylineOptions> statusPolylineOptionsList){
         for (PolylineOptions statusPolylineOptions: statusPolylineOptionsList) {
             gmaps.addPolyline(statusPolylineOptions);

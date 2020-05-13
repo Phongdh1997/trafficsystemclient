@@ -5,7 +5,9 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.data.geojson.GeoJsonLayer;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
@@ -16,7 +18,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollect
 import java.util.List;
 
 public class MapViewModel extends AndroidViewModel {
-    private LiveData<List<PolylineOptions>> statusRenderPolylineOptionsLiveData;
+    private LiveData<GeoJsonLayer> statusRenderGeoJsonLayerLiveData;
     private LiveData<StatusRenderEvent> statusRenderEventLiveData;
     private LiveData<PolylineOptions> directionRenderPolylineOptionsLiveData;
     private LiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
@@ -29,15 +31,15 @@ public class MapViewModel extends AndroidViewModel {
         super(application);
         statusRender = new StatusRender();
         directionRender = new DirectionRender();
-        statusRenderPolylineOptionsLiveData = statusRender.getStatusRenderData();
+        statusRenderGeoJsonLayerLiveData = statusRender.getStatusRenderData();
         statusRenderEventLiveData = statusRender.getStatusRenderEvent();
         directionRenderPolylineOptionsLiveData = directionRender.getDirectionRenderData();
         locationCollectionManager = LocationCollectionManager.getInstance(application.getApplicationContext());
         currentUserLocationEventLiveData = locationCollectionManager.getCurrentUserLocationEventLiveData();
     }
 
-    public LiveData<List<PolylineOptions>> getStatusRenderPolylineOptionsLiveData() {
-        return statusRenderPolylineOptionsLiveData;
+    public LiveData<GeoJsonLayer> getStatusRenderGeoJsonLayerLiveData() {
+        return statusRenderGeoJsonLayerLiveData;
     }
 
     public LiveData<StatusRenderEvent> getStatusRenderEventLiveData() {
@@ -69,8 +71,8 @@ public class MapViewModel extends AndroidViewModel {
     /**
      * View action: load traffic status from server and notify to map to render
      */
-    public void rendering(UserLocation userLocation, double zoom) {
-        statusRender.loadTrafficStatus(userLocation, zoom);
+    public void rendering(UserLocation userLocation, double zoom, GoogleMap map) {
+        statusRender.loadTrafficStatus(userLocation, zoom, map);
     }
 
     /**

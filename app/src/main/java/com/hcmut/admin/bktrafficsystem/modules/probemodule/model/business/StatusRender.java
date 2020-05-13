@@ -4,12 +4,15 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.data.geojson.GeoJsonLayer;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,7 +24,7 @@ public class StatusRender {
 
     private boolean isTimerRunning;
 
-    private LiveData<List<PolylineOptions>> statusRenderPolylineOptionsLiveData;
+    private LiveData<GeoJsonLayer> statusRenderGeoJsonLayerLiveData;
     private MutableLiveData<StatusRenderEvent> statusRenderEventLiveData;
 
     private StatusRepositoryService statusRepositoryService;
@@ -31,20 +34,20 @@ public class StatusRender {
         isTimerRunning = false;
         statusRenderEventLiveData = new MutableLiveData<>();
         statusRepositoryService = new StatusRemoteRepository();
-        statusRenderPolylineOptionsLiveData = statusRepositoryService.getStatusRenderData();
+        statusRenderGeoJsonLayerLiveData = statusRepositoryService.getStatusRenderData();
     }
 
-    public LiveData<List<PolylineOptions>> getStatusRenderData() {
-        return statusRenderPolylineOptionsLiveData;
+    public LiveData<GeoJsonLayer> getStatusRenderData() {
+        return statusRenderGeoJsonLayerLiveData;
     }
 
     public LiveData<StatusRenderEvent> getStatusRenderEvent () {
         return statusRenderEventLiveData;
     }
 
-    public void loadTrafficStatus(UserLocation userLocation, double zoom) {
+    public void loadTrafficStatus(UserLocation userLocation, double zoom, GoogleMap map) {
         Log.e("traffic", "load, user location: " + userLocation);
-        //statusRepositoryService.loadStatusRenderData(userLocation, zoom);
+        statusRepositoryService.loadStatusRenderData(userLocation, zoom, new WeakReference<GoogleMap>(map));
     }
 
     public void startStatusRenderTimer() {
