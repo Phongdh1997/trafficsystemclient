@@ -68,6 +68,6 @@ public class StatusRender {
     }
 
     public void triggerRender() {
-        statusRenderEventLiveData.postValue(new StatusRenderEvent());
+        statusRenderEventLiveData.postValue(new StatusRenderEvent(false));
     }
 }

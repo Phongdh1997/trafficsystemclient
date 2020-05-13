@@ -114,6 +114,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.TrafficReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
@@ -160,6 +161,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
 
     private static final float DEFAULT_ZOOM = 15f;
+
+    private static final float MAP_LOAD_RANGE = 500; // meter
 
     private LocationRequire locationRequire = null;
     //varsm
@@ -349,6 +352,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Button btnCurrentLocationReport;
     private ImageButton btnMore;
     private LinearLayout layoutMoreFeature;
+
+    private UserLocation lastCameraTarget;
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -909,7 +914,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onCameraMoveStarted(int i) {
                 if (i == REASON_GESTURE) {
-                    probeMapUi.render();
+                    UserLocation currentCameraTarget = new UserLocation(mMap.getCameraPosition().target);
+                    if (lastCameraTarget == null) {
+                        lastCameraTarget = currentCameraTarget;
+                    } else if (currentCameraTarget.distanceTo(lastCameraTarget) > MAP_LOAD_RANGE) {
+                        probeMapUi.render();
+                        Log.e("render at", "camera target " + currentCameraTarget.toString());
+                        lastCameraTarget = currentCameraTarget;
+                    }
                 }
             }
         });

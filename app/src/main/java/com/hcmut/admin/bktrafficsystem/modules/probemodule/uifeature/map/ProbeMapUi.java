@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,23 +27,22 @@ import java.util.List;
 
 public class ProbeMapUi {
 
-    private static final float MAP_LOAD_RANGE = 500; // meter
-
     /**
      * external view
      */
     private AppCompatActivity activity;
     private GoogleMap gmaps;
 
-    private List<Polyline> prevStatusRenderPolylines;
+    private List<Polyline> prevStatusRenderPolylines = new ArrayList<>();
     private Polyline prevDirectionRenderPolyline;
     private MapViewModel mapViewModel;
 
-    private UserLocation lastCameraTarget;
+    private Handler mainHandler;
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
+        mainHandler = new Handler(Looper.getMainLooper());
 
         getViewModel();
         addViewModelObserver();
@@ -79,7 +80,7 @@ public class ProbeMapUi {
         statusPolylineOptionsLiveData.observe(activity, new Observer<List<PolylineOptions>>() {
             @Override
             public void onChanged(List<PolylineOptions> statusPolylineOptionsList) {
-                renderStatus(statusPolylineOptionsList);
+                renderNewStatus(statusPolylineOptionsList);
             }
         });
         statusRenderEventLiveData.observe(activity, new Observer<StatusRenderEvent>() {
@@ -89,11 +90,9 @@ public class ProbeMapUi {
                 double zoom = gmaps.getCameraPosition().zoom;
                 if (zoom < 15 || zoom > 21) return;
                 UserLocation currentCameraTarget = new UserLocation(gmaps.getCameraPosition().target);
-                if (lastCameraTarget == null ||
-                        currentCameraTarget.distanceTo(lastCameraTarget) > MAP_LOAD_RANGE) {
-                    Log.e("render at", "camera target " + currentCameraTarget.toString());
-                    mapViewModel.rendering(currentCameraTarget, zoom);
-                    lastCameraTarget = currentCameraTarget;
+                mapViewModel.rendering(currentCameraTarget, zoom);
+                if (statusRenderEvent.isRemovePrePolyline()) {
+                    removePrevStatusRender();
                 }
             }
         });
@@ -134,30 +133,26 @@ public class ProbeMapUi {
         }
     }
 
-    @Deprecated
     private void removePrevStatusRender() {
         if (prevStatusRenderPolylines != null) {
+            Log.e("remove", "status, size " + prevStatusRenderPolylines.size());
             for (Polyline polyline : prevStatusRenderPolylines) {
                 polyline.remove();
             }
             prevStatusRenderPolylines.clear();
-            prevStatusRenderPolylines = null;
         }
     }
 
-    @Deprecated
-    private List<Polyline> renderNewStatus(List<PolylineOptions> statusPolylineOptionsList) {
-        List<Polyline> polylines = new ArrayList<>();
-        for (PolylineOptions statusPolylineOptions: statusPolylineOptionsList) {
-            polylines.add(gmaps.addPolyline(statusPolylineOptions));
-        }
-        return polylines;
-    }
-
-    private void renderStatus(List<PolylineOptions> statusPolylineOptionsList){
-        for (PolylineOptions statusPolylineOptions: statusPolylineOptionsList) {
-            gmaps.addPolyline(statusPolylineOptions);
-        }
-        Log.e("render", "render " + statusPolylineOptionsList.size() + " polyline");
+    private void renderNewStatus(final List<PolylineOptions> statusPolylineOptionsList) {
+        mainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                for (PolylineOptions statusPolylineOptions: statusPolylineOptionsList) {
+                    prevStatusRenderPolylines.add(gmaps.addPolyline(statusPolylineOptions));
+                }
+                Log.e("render", "render " + statusPolylineOptionsList.size() + " polyline, time " + (System.currentTimeMillis() - start));
+            }
+        }, 1000);
     }
 }
