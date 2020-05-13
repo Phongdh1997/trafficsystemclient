@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit;
 
+import android.os.AsyncTask;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.API.APIServerRetrofitService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.API.ProbeServerRetrofitService;
 
@@ -17,10 +18,12 @@ public class RetrofitClient {
     private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .readTimeout(25, TimeUnit.SECONDS)
             .connectTimeout(25, TimeUnit.SECONDS)
+            .callTimeout(25, TimeUnit.SECONDS)
             .build();
     private static Retrofit bktrafficAPI_RetrofitClient = new Retrofit.Builder()
             .baseUrl(BkTrafficAPI_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .callbackExecutor(AsyncTask.SERIAL_EXECUTOR)
             .client(okHttpClient)
             .build();
 

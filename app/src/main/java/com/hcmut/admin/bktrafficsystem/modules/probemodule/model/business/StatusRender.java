@@ -44,7 +44,7 @@ public class StatusRender {
 
     public void loadTrafficStatus(UserLocation userLocation, double zoom) {
         Log.e("traffic", "load, user location: " + userLocation);
-        //statusRepositoryService.loadStatusRenderData(userLocation, zoom);
+        statusRepositoryService.loadStatusRenderData(userLocation, zoom);
     }
 
     public void startStatusRenderTimer() {

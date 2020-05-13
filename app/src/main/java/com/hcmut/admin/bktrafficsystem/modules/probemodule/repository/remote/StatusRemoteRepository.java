@@ -40,15 +40,15 @@ public class StatusRemoteRepository implements StatusRepositoryService {
                         public void onResponse(Call<StatusResponse<List<StatusRenderData>>> call, Response<StatusResponse<List<StatusRenderData>>> response) {
                             if (response.code() == 200 && response.body() != null && response.body().getData() != null) {
                                 List<PolylineOptions> polylineOptions = StatusRenderData.parsePolylineOptions(response.body().getData());
-                                statusRenderPolylineOptionsLiveData.postValue(polylineOptions);
-                            } else {
-                                statusRenderPolylineOptionsLiveData.postValue(new ArrayList<PolylineOptions>());
+                                if (polylineOptions != null) {
+                                    statusRenderPolylineOptionsLiveData.postValue(polylineOptions);
+                                }
                             }
                         }
 
                         @Override
                         public void onFailure(Call<StatusResponse<List<StatusRenderData>>> call, Throwable t) {
-                            statusRenderPolylineOptionsLiveData.postValue(new ArrayList<PolylineOptions>());
+
                         }
                     });
         }
