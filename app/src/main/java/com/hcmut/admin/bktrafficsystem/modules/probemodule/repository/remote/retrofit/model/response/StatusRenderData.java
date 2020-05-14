@@ -95,7 +95,14 @@ public class StatusRenderData {
         this.polyline = polyline;
     }
 
-    public class Polyline {
+    public List<LatLng> getLatLngPolyline() {
+        if (polyline != null) {
+            return polyline.getLatLngPolyline();
+        }
+        return null;
+    }
+
+    public static class Polyline {
 
         @SerializedName("coordinates")
         @Expose
@@ -113,6 +120,16 @@ public class StatusRenderData {
 
         public void setCoordinates(List<List<Double>> coordinates) {
             this.coordinates = coordinates;
+        }
+
+        public List<LatLng> getLatLngPolyline() {
+            try {
+                List<LatLng> l = new ArrayList<>();
+                l.add(new LatLng(coordinates.get(0).get(1), coordinates.get(0).get(0)));
+                l.add(new LatLng(coordinates.get(1).get(1), coordinates.get(1).get(0)));
+                return l;
+            } catch (Exception e) {}
+            return null;
         }
 
         @NonNull

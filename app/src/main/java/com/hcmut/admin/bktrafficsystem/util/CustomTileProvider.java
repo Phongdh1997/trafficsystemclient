@@ -1,9 +1,12 @@
 package com.hcmut.admin.bktrafficsystem.util;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
@@ -17,6 +20,7 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 public class CustomTileProvider implements TileProvider {
     private static final String TAG = "PointTileOverlay";
@@ -24,40 +28,40 @@ public class CustomTileProvider implements TileProvider {
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = 1;
     private final int mDimension = mScale * mTileSize;
-    private ArrayList<ArrayList<LatLng>> mLatLng;
     private Paint paint;
 
-    private final int colour;
+    private List<StatusRenderData> statusDataSource;
 
-    public CustomTileProvider(ArrayList<ArrayList<LatLng>> mLatLng, int colour) {
-        this.mLatLng = mLatLng;
-        this.colour = colour;
+    private static final int DEFAULT_COLOR = Color.BLACK;
+
+    public CustomTileProvider(List<StatusRenderData> statusDataSource) {
+        this.statusDataSource = statusDataSource;
     }
 
     /**
      * Update data source for new polyline render
      */
-    public void updateSource(ArrayList<ArrayList<LatLng>> source) {
-        this.mLatLng = source;
+    public void updateDataSource(List<StatusRenderData> statusDataSource) {
+        this.statusDataSource = statusDataSource;
     }
 
     @Override
     public Tile getTile(int x, int y, int zoom) {
-        Log.d(TAG, "zoom int: "+zoom);
+        Log.d(TAG, "zoom int: " + zoom);
         Matrix matrix = new Matrix();
 
         /*The scale factor in the transformation matrix is 1/10 here because I scale up the tiles for drawing.
          * Why? Well, the spherical mercator projection doesn't seem to quite provide the resolution I need for
          * scaling up at high zoom levels. This bypasses it without needing a higher tile resolution.
          */
-        float scale = ((float) Math.pow(2, zoom) * mScale/10);
+        float scale = ((float) Math.pow(2, zoom) * mScale / 10);
         matrix.postScale(scale, scale);
         matrix.postTranslate(-x * mDimension, -y * mDimension);
 
         Bitmap bitmap = Bitmap.createBitmap(mDimension, mDimension, Bitmap.Config.ARGB_8888); //save memory on old phones
         Canvas c = new Canvas(bitmap);
         c.setMatrix(matrix);
-        c=drawCanvasFromArray(c, zoom);
+        c = drawCanvasFromArray(c, zoom);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
@@ -66,52 +70,62 @@ public class CustomTileProvider implements TileProvider {
 
     /**
      * Here the Canvas can be drawn on based on data provided from a Spherical Mercator Projection
+     *
      * @param c
      * @param zoom
      * @return
      */
-    private Canvas drawCanvasFromArray(Canvas c, int zoom){
+    private Canvas drawCanvasFromArray(Canvas c, int zoom) {
 
         paint = new Paint();
 
         //Line features
         paint.setStrokeWidth(getLineWidth(zoom));
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(colour);
+        paint.setColor(DEFAULT_COLOR);
         paint.setStrokeCap(Cap.ROUND);
         paint.setStrokeJoin(Join.ROUND);
         paint.setShadowLayer(0, 0, 0, 0);
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setAlpha(getAlpha(zoom));
-        Path path = new Path();
 
-        if (mLatLng != null){
-            for(int i = 0; i<mLatLng.size();i++){
-                ArrayList<LatLng> route = mLatLng.get(i);
+        if (statusDataSource != null) {
+            List<LatLng> route;
+            float startX;
+            float startY;
+            float stopX;
+            float stopY;
+            Log.e("data", "size " + statusDataSource.size());
+            for (StatusRenderData statusRenderDataItem : statusDataSource) {
+                 route = statusRenderDataItem.getLatLngPolyline();
+                if (route != null && route.size() > 1) {
+                    // start point
+                    Point screenPt1 = mProjection.toPoint(route.get(0));
+                    startX = (float) screenPt1.x * 10;
+                    startY = (float) screenPt1.y * 10;
 
-                if(route!=null&&route.size()>1){
+                    // stop point
+                    Point screenPt2 = mProjection.toPoint(route.get(1));
+                    stopX = (float) screenPt2.x * 10;
+                    stopY = (float) screenPt2.y * 10;
 
-                    Point screenPt1 = mProjection.toPoint(route.get(0)); //first point
-                    MarkerOptions m = new MarkerOptions();
-                    m.position(route.get(0));
-                    path.moveTo((float)screenPt1.x*10, (float)screenPt1.y*10);
-                    for (int j = 1; j<route.size(); j++){
-                        Point screenPt2 = mProjection.toPoint(route.get(j));
-                        path.lineTo((float)screenPt2.x*10, (float)screenPt2.y*10);
-                    }
+                    // draw polyline
+                    paint.setColor(Color.parseColor(statusRenderDataItem.getColor()));
+                    c.drawLine(startX, startY, stopX, stopY, paint);
                 }
             }
         }
-        c.drawPath(path, paint);
         return c;
     }
+
     /**
      * This will let you adjust the line width based on zoom level
+     *
      * @param zoom
      * @return
      */
-    private float getLineWidth(int zoom){
-        switch(zoom){
+    private float getLineWidth(int zoom) {
+        switch (zoom) {
             case 21:
             case 20:
                 return 0.0001f;
@@ -138,12 +152,13 @@ public class CustomTileProvider implements TileProvider {
 
     /**
      * This will let you adjust the alpha value based on zoom level
+     *
      * @param zoom
      * @return
      */
-    private int getAlpha(int zoom){
+    private int getAlpha(int zoom) {
 
-        switch(zoom){
+        switch (zoom) {
             case 20:
                 return 140;
             case 19:

@@ -7,9 +7,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 import com.hcmut.admin.bktrafficsystem.util.CustomTileProvider;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Đại diện cho nguồn dữ liệu status sẽ được render lên TileOverlay
@@ -22,14 +24,13 @@ public class StatusOverlayRender {
 
     public StatusOverlayRender(GoogleMap map) {
         this.map = map;
-        statusTileProvider = new CustomTileProvider(new ArrayList<ArrayList<LatLng>>(), Color.RED);
+        statusTileProvider = new CustomTileProvider(new ArrayList<StatusRenderData>());
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(statusTileProvider));
     }
 
-    public void updateDataSource(ArrayList<ArrayList<LatLng>> source) {
+    public void updateDataSource(List<StatusRenderData> statusDataSource) {
         statusTileOverlay.clearTileCache();
-        statusTileProvider.updateSource(source);
-        Log.e("change ", "ch");
+        statusTileProvider.updateDataSource(statusDataSource);
     }
 }
