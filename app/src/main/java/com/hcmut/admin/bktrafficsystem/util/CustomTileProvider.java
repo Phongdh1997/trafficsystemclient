@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 public class CustomTileProvider implements TileProvider {
@@ -41,7 +42,7 @@ public class CustomTileProvider implements TileProvider {
     /**
      * Update data source for new polyline render
      */
-    public void updateDataSource(List<StatusRenderData> statusDataSource) {
+    public void setDataSource(List<StatusRenderData> statusDataSource) {
         this.statusDataSource = statusDataSource;
     }
 
@@ -95,7 +96,7 @@ public class CustomTileProvider implements TileProvider {
             float startY;
             float stopX;
             float stopY;
-            Log.e("data", "size " + statusDataSource.size());
+            Log.e("tile data source", "size " + statusDataSource.size());
             for (StatusRenderData statusRenderDataItem : statusDataSource) {
                  route = statusRenderDataItem.getLatLngPolyline();
                 if (route != null && route.size() > 1) {

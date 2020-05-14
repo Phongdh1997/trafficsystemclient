@@ -919,7 +919,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         lastCameraTarget = currentCameraTarget;
                     } else if (currentCameraTarget.distanceTo(lastCameraTarget) > MAP_LOAD_RANGE) {
                         probeMapUi.render();
-                        Log.e("render at", "camera target " + currentCameraTarget.toString());
                         lastCameraTarget = currentCameraTarget;
                     }
                 }

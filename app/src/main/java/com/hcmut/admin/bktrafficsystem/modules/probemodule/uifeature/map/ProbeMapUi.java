@@ -3,12 +3,10 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,7 +32,6 @@ public class ProbeMapUi {
     private AppCompatActivity activity;
     private GoogleMap gmaps;
 
-    private List<Polyline> prevStatusRenderPolylines = new ArrayList<>();
     private Polyline prevDirectionRenderPolyline;
     private MapViewModel mapViewModel;
     private StatusOverlayRender statusOverlayRender;
@@ -73,19 +70,14 @@ public class ProbeMapUi {
     }
 
     private void addViewModelObserver() {
+        mapViewModel.setTileOverlayRender(statusOverlayRender);
+
         // get live data
-        LiveData<List<PolylineOptions>> statusPolylineOptionsLiveData = mapViewModel.getStatusRenderPolylineOptionsLiveData();
         LiveData<StatusRenderEvent> statusRenderEventLiveData = mapViewModel.getStatusRenderEventLiveData();
         LiveData<PolylineOptions> directionRenderPolylineOptionsLiveData = mapViewModel.getDirectionRenderPolylineOptionsLiveData();
         LiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData = mapViewModel.getCurrentUserLocationEventLiveData();
 
         // set observer
-        statusPolylineOptionsLiveData.observe(activity, new Observer<List<PolylineOptions>>() {
-            @Override
-            public void onChanged(List<PolylineOptions> statusPolylineOptionsList) {
-                renderNewStatus(statusPolylineOptionsList);
-            }
-        });
         statusRenderEventLiveData.observe(activity, new Observer<StatusRenderEvent>() {
             @Override
             public void onChanged(StatusRenderEvent statusRenderEvent) {
@@ -94,9 +86,6 @@ public class ProbeMapUi {
                 if (zoom < 15 || zoom > 21) return;
                 UserLocation currentCameraTarget = new UserLocation(gmaps.getCameraPosition().target);
                 mapViewModel.rendering(currentCameraTarget, zoom);
-                if (statusRenderEvent.isRemovePrePolyline()) {
-                    removePrevStatusRender();
-                }
             }
         });
         directionRenderPolylineOptionsLiveData.observe(activity, new Observer<PolylineOptions>() {
@@ -134,28 +123,5 @@ public class ProbeMapUi {
             prevDirectionRenderPolyline.remove();
             prevDirectionRenderPolyline = null;
         }
-    }
-
-    private void removePrevStatusRender() {
-        if (prevStatusRenderPolylines != null) {
-            Log.e("remove", "status, size " + prevStatusRenderPolylines.size());
-            for (Polyline polyline : prevStatusRenderPolylines) {
-                polyline.remove();
-            }
-            prevStatusRenderPolylines.clear();
-        }
-    }
-
-    private void renderNewStatus(final List<PolylineOptions> statusPolylineOptionsList) {
-        mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                long start = System.currentTimeMillis();
-                for (PolylineOptions statusPolylineOptions: statusPolylineOptionsList) {
-                    prevStatusRenderPolylines.add(gmaps.addPolyline(statusPolylineOptions));
-                }
-                Log.e("render", "render " + statusPolylineOptionsList.size() + " polyline, time " + (System.currentTimeMillis() - start));
-            }
-        }, 1000);
     }
 }

@@ -13,65 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatusRenderData {
-//    @SerializedName("velocity")
-//    @Expose
-//    private Double velocity;
-//    @SerializedName("_id")
-//    @Expose
-//    private String id;
-//    @SerializedName("segment")
-//    @Expose
-//    private Long segment;
-//    @SerializedName("source")
-//    @Expose
-//    private String source;
-//    @SerializedName("createdAt")
-//    @Expose
-//    private String createdAt;
-//    @SerializedName("updatedAt")
-//    @Expose
-//    private String updatedAt;
-//    @SerializedName("priority")
-//    @Expose
-//    private Long priority;
-//    @SerializedName("_class")
-//    @Expose
-//    private String _class;
-
+    @SerializedName("segment")
+    @Expose
+    private Long segment;
     @SerializedName("color")
     @Expose
     private String color;
     @SerializedName("polyline")
     @Expose
     private Polyline polyline;
-
-    public static List<PolylineOptions> parsePolylineOptions(List<StatusRenderData> trafficStatusDatas) {
-        if (trafficStatusDatas == null) return new ArrayList<>();
-        double startLat;
-        double startLng;
-        double endLat;
-        double endLng;
-        List<PolylineOptions> polylineOptionsList = new ArrayList<>();
-        PolylineOptions polylineOptions;
-        List<List<Double>> coordinates;
-        for (StatusRenderData trafficData : trafficStatusDatas) {
-            try {
-                coordinates = trafficData.getPolyline().getCoordinates();
-                startLat = coordinates.get(0).get(1);
-                startLng = coordinates.get(0).get(0);
-                endLat = coordinates.get(1).get(1);
-                endLng = coordinates.get(1).get(0);
-                polylineOptions = new PolylineOptions()
-                        .width(7).color(Color.parseColor(trafficData.getColor()))
-                        .add(new LatLng(startLat, startLng), new LatLng(endLat, endLng));
-                polylineOptionsList.add(polylineOptions);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        Log.e("Status size", "size" + polylineOptionsList.size());
-        return polylineOptionsList;
-    }
 
     @NonNull
     @Override
@@ -107,12 +57,6 @@ public class StatusRenderData {
         @SerializedName("coordinates")
         @Expose
         private List<List<Double>> coordinates = null;
-//        @SerializedName("_id")
-//        @Expose
-//        private String id;
-//        @SerializedName("type")
-//        @Expose
-//        private String type;
 
         public List<List<Double>> getCoordinates() {
             return coordinates;

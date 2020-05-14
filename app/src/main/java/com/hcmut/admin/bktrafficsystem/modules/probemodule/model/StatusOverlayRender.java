@@ -29,8 +29,18 @@ public class StatusOverlayRender {
                 .tileProvider(statusTileProvider));
     }
 
-    public void updateDataSource(List<StatusRenderData> statusDataSource) {
+    /**
+     * Add new data source to old data source, don't clear Tile Cache
+     * @param statusDataSource
+     */
+    public void setDataSource(List<StatusRenderData> statusDataSource) {
+        statusTileProvider.setDataSource(statusDataSource);
+    }
+
+    /**
+     * clear Tile Cache, current data source will be displayed
+     */
+    public void notifyDataChange() {
         statusTileOverlay.clearTileCache();
-        statusTileProvider.updateDataSource(statusDataSource);
     }
 }

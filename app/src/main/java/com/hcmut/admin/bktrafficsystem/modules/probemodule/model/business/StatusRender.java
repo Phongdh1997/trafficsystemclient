@@ -4,13 +4,12 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,7 +20,6 @@ public class StatusRender {
 
     private boolean isTimerRunning;
 
-    private LiveData<List<PolylineOptions>> statusRenderPolylineOptionsLiveData;
     private MutableLiveData<StatusRenderEvent> statusRenderEventLiveData;
 
     private StatusRepositoryService statusRepositoryService;
@@ -31,11 +29,6 @@ public class StatusRender {
         isTimerRunning = false;
         statusRenderEventLiveData = new MutableLiveData<>();
         statusRepositoryService = new StatusRemoteRepository();
-        statusRenderPolylineOptionsLiveData = statusRepositoryService.getStatusRenderData();
-    }
-
-    public LiveData<List<PolylineOptions>> getStatusRenderData() {
-        return statusRenderPolylineOptionsLiveData;
     }
 
     public LiveData<StatusRenderEvent> getStatusRenderEvent () {
@@ -69,5 +62,9 @@ public class StatusRender {
 
     public void triggerRender() {
         statusRenderEventLiveData.postValue(new StatusRenderEvent(false));
+    }
+
+    public void setStatusOverlayRender(StatusOverlayRender statusOverlayRender) {
+        statusRepositoryService.setStatusOverlayRender(statusOverlayRender);
     }
 }

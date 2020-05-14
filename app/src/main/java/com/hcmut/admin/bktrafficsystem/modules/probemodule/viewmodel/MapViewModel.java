@@ -8,15 +8,13 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business.DirectionRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business.StatusRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 
-import java.util.List;
-
 public class MapViewModel extends AndroidViewModel {
-    private LiveData<List<PolylineOptions>> statusRenderPolylineOptionsLiveData;
     private LiveData<StatusRenderEvent> statusRenderEventLiveData;
     private LiveData<PolylineOptions> directionRenderPolylineOptionsLiveData;
     private LiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
@@ -29,15 +27,10 @@ public class MapViewModel extends AndroidViewModel {
         super(application);
         statusRender = new StatusRender();
         directionRender = new DirectionRender();
-        statusRenderPolylineOptionsLiveData = statusRender.getStatusRenderData();
         statusRenderEventLiveData = statusRender.getStatusRenderEvent();
         directionRenderPolylineOptionsLiveData = directionRender.getDirectionRenderData();
         locationCollectionManager = LocationCollectionManager.getInstance(application.getApplicationContext());
         currentUserLocationEventLiveData = locationCollectionManager.getCurrentUserLocationEventLiveData();
-    }
-
-    public LiveData<List<PolylineOptions>> getStatusRenderPolylineOptionsLiveData() {
-        return statusRenderPolylineOptionsLiveData;
     }
 
     public LiveData<StatusRenderEvent> getStatusRenderEventLiveData() {
@@ -78,6 +71,13 @@ public class MapViewModel extends AndroidViewModel {
      */
     public void triggerRender() {
         statusRender.triggerRender();
+    }
+
+    /**
+     * set statusOverlayRender to model
+     */
+    public void setTileOverlayRender(StatusOverlayRender statusOverlayRender) {
+        statusRender.setStatusOverlayRender(statusOverlayRender);
     }
 
     /**
