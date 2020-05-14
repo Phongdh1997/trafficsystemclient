@@ -24,7 +24,7 @@ public class CustomTileProvider implements TileProvider {
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = 1;
     private final int mDimension = mScale * mTileSize;
-    private final ArrayList<ArrayList<LatLng>> mLatLng;
+    private ArrayList<ArrayList<LatLng>> mLatLng;
     private Paint paint;
 
     private final int colour;
@@ -32,6 +32,13 @@ public class CustomTileProvider implements TileProvider {
     public CustomTileProvider(ArrayList<ArrayList<LatLng>> mLatLng, int colour) {
         this.mLatLng = mLatLng;
         this.colour = colour;
+    }
+
+    /**
+     * Update data source for new polyline render
+     */
+    public void updateSource(ArrayList<ArrayList<LatLng>> source) {
+        this.mLatLng = source;
     }
 
     @Override
