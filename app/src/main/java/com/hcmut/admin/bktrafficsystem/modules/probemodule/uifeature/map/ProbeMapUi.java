@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
 
@@ -36,6 +37,7 @@ public class ProbeMapUi {
     private List<Polyline> prevStatusRenderPolylines = new ArrayList<>();
     private Polyline prevDirectionRenderPolyline;
     private MapViewModel mapViewModel;
+    private StatusOverlayRender statusOverlayRender;
 
     private Handler mainHandler;
 
@@ -43,6 +45,7 @@ public class ProbeMapUi {
         this.activity = activity;
         this.gmaps = map;
         mainHandler = new Handler(Looper.getMainLooper());
+        statusOverlayRender = new StatusOverlayRender(map);
 
         getViewModel();
         addViewModelObserver();
