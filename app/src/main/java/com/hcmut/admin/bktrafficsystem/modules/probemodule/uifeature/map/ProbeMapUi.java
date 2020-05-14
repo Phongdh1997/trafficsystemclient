@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewMode
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public class ProbeMapUi {
 
@@ -36,12 +38,11 @@ public class ProbeMapUi {
     private MapViewModel mapViewModel;
     private StatusOverlayRender statusOverlayRender;
 
-    private Handler mainHandler;
+    private Executor executor = AsyncTask.SERIAL_EXECUTOR;
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
-        mainHandler = new Handler(Looper.getMainLooper());
         statusOverlayRender = new StatusOverlayRender(map);
 
         getViewModel();
@@ -85,6 +86,9 @@ public class ProbeMapUi {
                 double zoom = gmaps.getCameraPosition().zoom;
                 if (zoom < 15 || zoom > 21) return;
                 UserLocation currentCameraTarget = new UserLocation(gmaps.getCameraPosition().target);
+                if (statusRenderEvent.isClearRender()) {
+                    clearTileOverlayRender();
+                }
                 mapViewModel.rendering(currentCameraTarget, zoom);
             }
         });
@@ -114,6 +118,15 @@ public class ProbeMapUi {
                 } else {
                     Toast.makeText(activity.getApplicationContext(), "Không thể lấy được vị trí", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+
+    private void clearTileOverlayRender() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                statusOverlayRender.clearRender();
             }
         });
     }

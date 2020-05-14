@@ -39,7 +39,7 @@ public class StatusRemoteRepository implements StatusRepositoryService {
                         public void onResponse(Call<StatusResponse<List<StatusRenderData>>> call, Response<StatusResponse<List<StatusRenderData>>> response) {
                             if (response.code() == 200 && response.body() != null && response.body().getData() != null) {
                                 if (statusOverlayRender != null) {
-                                    statusOverlayRender.setDataSource(response.body().getData());
+                                    statusOverlayRender.addDataSource(response.body().getData());
                                     statusOverlayRender.notifyDataChange();
                                 } else {
                                     Log.e("status overlay render", "Null");

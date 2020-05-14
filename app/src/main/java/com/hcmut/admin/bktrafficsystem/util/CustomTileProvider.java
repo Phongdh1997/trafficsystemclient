@@ -42,8 +42,17 @@ public class CustomTileProvider implements TileProvider {
     /**
      * Update data source for new polyline render
      */
-    public void setDataSource(List<StatusRenderData> statusDataSource) {
-        this.statusDataSource = statusDataSource;
+    public synchronized void addDataSource(List<StatusRenderData> statusDataSource) {
+        if (this.statusDataSource == null) {
+            this.statusDataSource = new ArrayList<>();
+        }
+        if (statusDataSource != null) {
+            this.statusDataSource.addAll(statusDataSource);
+        }
+    }
+
+    public synchronized void clearDataSource () {
+        this.statusDataSource.clear();
     }
 
     @Override
