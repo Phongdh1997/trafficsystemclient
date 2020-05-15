@@ -7,6 +7,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,9 @@ public class StatusOverlayRender {
     private CustomTileProvider statusTileProvider;
     private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
-    public StatusOverlayRender(GoogleMap map) {
+    public StatusOverlayRender(GoogleMap map, ProbeMapUi probeMapUi) {
         this.map = map;
-        statusTileProvider = new CustomTileProvider(new ArrayList<StatusRenderData>());
+        statusTileProvider = new CustomTileProvider(new ArrayList<StatusRenderData>(), probeMapUi);
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(statusTileProvider));
     }

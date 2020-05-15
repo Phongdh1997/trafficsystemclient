@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,17 +12,17 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
-import android.graphics.Path;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
 public class CustomTileProvider implements TileProvider {
     private static final String TAG = "PointTileOverlay";
@@ -32,11 +33,13 @@ public class CustomTileProvider implements TileProvider {
     private Paint paint;
 
     private List<StatusRenderData> statusDataSource;
+    private WeakReference<ProbeMapUi> probeMapUiWeakReference;
 
     private static final int DEFAULT_COLOR = Color.BLACK;
 
-    public CustomTileProvider(List<StatusRenderData> statusDataSource) {
+    public CustomTileProvider(List<StatusRenderData> statusDataSource, ProbeMapUi probeMapUi) {
         this.statusDataSource = statusDataSource;
+        probeMapUiWeakReference = new WeakReference<>(probeMapUi);
     }
 
     /**
@@ -56,27 +59,40 @@ public class CustomTileProvider implements TileProvider {
         this.statusDataSource.clear();
     }
 
+    // TODO:
+    private List<StatusRenderData> searchStatusRender(LatLngBounds bounds) {
+        return null;
+    }
+
     @Override
     public Tile getTile(int x, int y, int zoom) {
-        Log.d(TAG, "zoom int: " + zoom);
-        Matrix matrix = new Matrix();
+        List<StatusRenderData> statusDatas = searchStatusRender(MyLatLngBoundsUtil.tileToLatLngBound(x, y, zoom));
+        if (statusDatas != null) {
+            Matrix matrix = new Matrix();
 
-        /*The scale factor in the transformation matrix is 1/10 here because I scale up the tiles for drawing.
-         * Why? Well, the spherical mercator projection doesn't seem to quite provide the resolution I need for
-         * scaling up at high zoom levels. This bypasses it without needing a higher tile resolution.
-         */
-        float scale = ((float) Math.pow(2, zoom) * mScale / 10);
-        matrix.postScale(scale, scale);
-        matrix.postTranslate(-x * mDimension, -y * mDimension);
+            /*The scale factor in the transformation matrix is 1/10 here because I scale up the tiles for drawing.
+             * Why? Well, the spherical mercator projection doesn't seem to quite provide the resolution I need for
+             * scaling up at high zoom levels. This bypasses it without needing a higher tile resolution.
+             */
+            float scale = ((float) Math.pow(2, zoom) * mScale / 10);
+            matrix.postScale(scale, scale);
+            matrix.postTranslate(-x * mDimension, -y * mDimension);
 
-        Bitmap bitmap = Bitmap.createBitmap(mDimension, mDimension, Bitmap.Config.ARGB_8888); //save memory on old phones
-        Canvas c = new Canvas(bitmap);
-        c.setMatrix(matrix);
-        c = drawCanvasFromArray(c, zoom);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-        return new Tile(mDimension, mDimension, baos.toByteArray());
+            Bitmap bitmap = Bitmap.createBitmap(mDimension, mDimension, Bitmap.Config.ARGB_8888); //save memory on old phones
+            Canvas c = new Canvas(bitmap);
+            c.setMatrix(matrix);
+            c = drawCanvasFromArray(c, zoom, statusDatas);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            return new Tile(mDimension, mDimension, baos.toByteArray());
+        } else {
+            ProbeMapUi probeMapUi = probeMapUiWeakReference.get();
+            if (probeMapUi != null) {
+                // TODO:
+                probeMapUi.loadStatus(null, 0);
+            }
+            return null;
+        }
     }
 
     /**
@@ -86,7 +102,7 @@ public class CustomTileProvider implements TileProvider {
      * @param zoom
      * @return
      */
-    private Canvas drawCanvasFromArray(Canvas c, int zoom) {
+    private Canvas drawCanvasFromArray(Canvas c, int zoom, List<StatusRenderData> statusDatas) {
 
         paint = new Paint();
 
@@ -100,14 +116,14 @@ public class CustomTileProvider implements TileProvider {
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setAlpha(getAlpha(zoom));
 
-        if (statusDataSource != null) {
+        if (statusDatas != null) {
             List<LatLng> route;
             float startX;
             float startY;
             float stopX;
             float stopY;
-            Log.e("tile data source", "size " + statusDataSource.size());
-            for (StatusRenderData statusRenderDataItem : statusDataSource) {
+            //Log.e("tile data source", "size " + statusDataSource.size());
+            for (StatusRenderData statusRenderDataItem : statusDatas) {
                  route = statusRenderDataItem.getLatLngPolyline();
                 if (route != null && route.size() > 1) {
                     // start point

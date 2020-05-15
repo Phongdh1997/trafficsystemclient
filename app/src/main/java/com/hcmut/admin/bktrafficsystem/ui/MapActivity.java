@@ -474,7 +474,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onStart() {
         super.onStart();
         if (probeMapUi != null) {
-            probeMapUi.startStatusRenderTimer();
+            //probeMapUi.startStatusRenderTimer();
         }
     }
 
@@ -697,7 +697,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //  init Probe Map Module
         //
         probeMapUi = new ProbeMapUi(this, mMap);
-        probeMapUi.startStatusRenderTimer();
+        //probeMapUi.startStatusRenderTimer();
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
@@ -912,7 +912,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int i) {
-                probeMapUi.onMapMoved();
+                //probeMapUi.onMapMoved();
             }
         });
 

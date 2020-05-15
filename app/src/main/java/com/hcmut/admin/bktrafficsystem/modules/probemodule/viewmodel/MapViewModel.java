@@ -81,6 +81,10 @@ public class MapViewModel extends AndroidViewModel {
         statusRender.setStatusOverlayRender(statusOverlayRender);
     }
 
+    public void loadStatus(UserLocation userLocation, float zoom) {
+        statusRender.loadTrafficStatus(userLocation, zoom);
+    }
+
     /**
      * View action
      */

@@ -23,6 +23,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLoca
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class ProbeMapUi {
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
-        statusOverlayRender = new StatusOverlayRender(map);
+        statusOverlayRender = new StatusOverlayRender(map, this);
 
         getViewModel();
         addViewModelObserver();
@@ -79,6 +80,12 @@ public class ProbeMapUi {
             }
         }
 
+    }
+
+    public void loadStatus(UserLocation userLocation, float zoom) {
+        if (mapViewModel != null) {
+            mapViewModel.loadStatus(userLocation, zoom);
+        }
     }
 
     private boolean isCameraTargetsInsideVisibleRegion(ArrayList<LatLng> renderedCameraTargets) {
