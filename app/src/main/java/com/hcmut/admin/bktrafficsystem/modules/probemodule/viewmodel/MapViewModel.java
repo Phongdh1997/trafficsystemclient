@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
@@ -69,8 +70,8 @@ public class MapViewModel extends AndroidViewModel {
     /**
      * View action:
      */
-    public void triggerRender() {
-        statusRender.triggerRender();
+    public void triggerRender(LatLng cameraTarget, float zoom) {
+        statusRender.triggerRender(cameraTarget, zoom);
     }
 
     /**

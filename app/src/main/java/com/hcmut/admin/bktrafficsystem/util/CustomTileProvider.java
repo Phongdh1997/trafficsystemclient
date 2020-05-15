@@ -47,6 +47,7 @@ public class CustomTileProvider implements TileProvider {
             this.statusDataSource = new ArrayList<>();
         }
         if (statusDataSource != null) {
+            Log.e("Add status data", "size " + statusDataSource.size());
             this.statusDataSource.addAll(statusDataSource);
         }
     }

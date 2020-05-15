@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
@@ -36,7 +37,6 @@ public class StatusRender {
     }
 
     public void loadTrafficStatus(UserLocation userLocation, double zoom) {
-        Log.e("traffic", "load, user location: " + userLocation);
         statusRepositoryService.loadStatusRenderData(userLocation, zoom);
     }
 
@@ -60,8 +60,10 @@ public class StatusRender {
         } catch (Exception e) {}
     }
 
-    public void triggerRender() {
-        statusRenderEventLiveData.postValue(new StatusRenderEvent(false));
+    public void triggerRender(LatLng cameraTarget, float zoom) {
+        StatusRenderEvent statusRenderEvent = new StatusRenderEvent(false);
+        statusRenderEvent.setCameraTargetAndZoom(cameraTarget, zoom);
+        statusRenderEventLiveData.postValue(statusRenderEvent);
     }
 
     public void setStatusOverlayRender(StatusOverlayRender statusOverlayRender) {

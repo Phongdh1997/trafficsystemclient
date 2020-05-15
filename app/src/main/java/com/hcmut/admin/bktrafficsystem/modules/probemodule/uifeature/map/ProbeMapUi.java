@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
@@ -63,13 +64,15 @@ public class ProbeMapUi {
 
     public void onMapMoved() {
         LatLng currCameraTarget = gmaps.getCameraPosition().target;
+        float zoom = gmaps.getCameraPosition().zoom;
+        if (zoom < 15.0f || zoom > 21.0f) return;
         if (renderedCameraTargets.size() < 1) {
             renderedCameraTargets.add(currCameraTarget);
-            mapViewModel.triggerRender();
+            mapViewModel.triggerRender(currCameraTarget, zoom);
         } else {
             if (!isCameraTargetsInsideVisibleRegion(renderedCameraTargets)) {
                 renderedCameraTargets.add(currCameraTarget);
-                mapViewModel.triggerRender();
+                mapViewModel.triggerRender(currCameraTarget, zoom);
                 Log.e("camera", "outside screen");
             } else {
                 Log.e("camera", "inside screen");
@@ -108,14 +111,21 @@ public class ProbeMapUi {
         statusRenderEventLiveData.observe(activity, new Observer<StatusRenderEvent>() {
             @Override
             public void onChanged(StatusRenderEvent statusRenderEvent) {
-                // render status at current camera
-                double zoom = gmaps.getCameraPosition().zoom;
-                if (zoom < 15 || zoom > 21) return;
-                UserLocation currentCameraTarget = new UserLocation(gmaps.getCameraPosition().target);
+                double zoom;
+                UserLocation currentCameraTarget;
+                if (statusRenderEvent.isHaveCameraTarget()) {
+                    zoom = statusRenderEvent.getZoom();
+                    currentCameraTarget = new UserLocation(statusRenderEvent.getCameraTarget());
+                } else {
+                    zoom = gmaps.getCameraPosition().zoom;
+                    currentCameraTarget = new UserLocation(gmaps.getCameraPosition().target);
+                }
+                if (zoom > 15.0f && zoom < 21.0f) {
+                    mapViewModel.rendering(currentCameraTarget, zoom);
+                }
                 if (statusRenderEvent.isClearRender()) {
                     clearTileOverlayRender();
                 }
-                mapViewModel.rendering(currentCameraTarget, zoom);
             }
         });
         directionRenderPolylineOptionsLiveData.observe(activity, new Observer<PolylineOptions>() {
