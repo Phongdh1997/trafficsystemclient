@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.util;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;

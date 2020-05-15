@@ -1,16 +1,12 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
-import com.hcmut.admin.bktrafficsystem.util.CustomTileProvider;
 
 import java.util.ArrayList;
 import java.util.List;
