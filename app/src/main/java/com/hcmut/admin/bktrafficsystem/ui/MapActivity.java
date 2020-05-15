@@ -353,7 +353,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ImageButton btnMore;
     private LinearLayout layoutMoreFeature;
 
-    private UserLocation lastCameraTarget;
+    private LatLng lastCameraTarget;
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -913,14 +913,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int i) {
-                if (i == REASON_GESTURE) {
-                    UserLocation currentCameraTarget = new UserLocation(mMap.getCameraPosition().target);
-                    if (lastCameraTarget == null) {
-                        lastCameraTarget = currentCameraTarget;
-                    } else if (currentCameraTarget.distanceTo(lastCameraTarget) > MAP_LOAD_RANGE) {
-                        probeMapUi.render();
-                        lastCameraTarget = currentCameraTarget;
-                    }
+                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+                if (lastCameraTarget == null) {
+                    lastCameraTarget = mMap.getCameraPosition().target;
+                    probeMapUi.render();
+                } else if (!bounds.contains(lastCameraTarget)) {
+                    Log.e("camera", "outside screen");
+                    lastCameraTarget = mMap.getCameraPosition().target;
+                    probeMapUi.render();
                 }
             }
         });

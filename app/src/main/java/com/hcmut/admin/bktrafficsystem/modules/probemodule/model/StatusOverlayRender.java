@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +23,7 @@ public class StatusOverlayRender {
 
     private TileOverlay statusTileOverlay;
     private CustomTileProvider statusTileProvider;
+    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     public StatusOverlayRender(GoogleMap map) {
         this.map = map;
@@ -41,7 +44,12 @@ public class StatusOverlayRender {
      * clear Tile Cache, current data source will be displayed
      */
     public void notifyDataChange() {
-        statusTileOverlay.clearTileCache();
+        mainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                statusTileOverlay.clearTileCache();
+            }
+        });
     }
 
     /**
@@ -49,6 +57,6 @@ public class StatusOverlayRender {
      */
     public void clearRender() {
         statusTileProvider.clearDataSource();
-        statusTileOverlay.clearTileCache();
+        notifyDataChange();
     }
 }
