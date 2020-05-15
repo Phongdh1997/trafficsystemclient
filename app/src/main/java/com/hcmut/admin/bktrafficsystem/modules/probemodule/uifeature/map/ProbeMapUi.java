@@ -8,11 +8,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -39,6 +41,7 @@ public class ProbeMapUi {
     private StatusOverlayRender statusOverlayRender;
 
     private Executor executor = AsyncTask.SERIAL_EXECUTOR;
+    private ArrayList<LatLng> renderedCameraTargets = new ArrayList<>();
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
@@ -58,8 +61,31 @@ public class ProbeMapUi {
         mapViewModel.stopStatusRenderTimer();
     }
 
-    public void render() {
-        mapViewModel.triggerRender();
+    public void onMapMoved() {
+        LatLng currCameraTarget = gmaps.getCameraPosition().target;
+        if (renderedCameraTargets.size() < 1) {
+            renderedCameraTargets.add(currCameraTarget);
+            mapViewModel.triggerRender();
+        } else {
+            if (!isCameraTargetsInsideVisibleRegion(renderedCameraTargets)) {
+                renderedCameraTargets.add(currCameraTarget);
+                mapViewModel.triggerRender();
+                Log.e("camera", "outside screen");
+            } else {
+                Log.e("camera", "inside screen");
+            }
+        }
+
+    }
+
+    private boolean isCameraTargetsInsideVisibleRegion(ArrayList<LatLng> renderedCameraTargets) {
+        LatLngBounds bounds = gmaps.getProjection().getVisibleRegion().latLngBounds;
+        for (LatLng cameraTarget : renderedCameraTargets) {
+            if (bounds.contains(cameraTarget)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addEvents() {
