@@ -912,7 +912,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int i) {
-                //probeMapUi.onMapMoved();
+                // TODO:
             }
         });
 

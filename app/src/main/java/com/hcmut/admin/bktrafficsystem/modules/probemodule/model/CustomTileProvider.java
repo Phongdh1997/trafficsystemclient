@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,65 +16,44 @@ import android.graphics.Paint.Join;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
 public class CustomTileProvider implements TileProvider {
-    private static final String TAG = "PointTileOverlay";
     private final int mTileSize = 256;
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = 1;
     private final int mDimension = mScale * mTileSize;
     private Paint paint;
 
-    private List<StatusRenderData> statusDataSource;
-    private WeakReference<ProbeMapUi> probeMapUiWeakReference;
+    private StatusRepositoryService statusRepositoryService;
+
+    private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
 
     private static final int DEFAULT_COLOR = Color.BLACK;
 
-    public CustomTileProvider(List<StatusRenderData> statusDataSource, ProbeMapUi probeMapUi) {
-        this.statusDataSource = statusDataSource;
-        probeMapUiWeakReference = new WeakReference<>(probeMapUi);
-    }
-
-    /**
-     * Update data source for new polyline render
-     */
-    public synchronized void addDataSource(List<StatusRenderData> statusDataSource) {
-        if (this.statusDataSource == null) {
-            this.statusDataSource = new ArrayList<>();
-        }
-        if (statusDataSource != null) {
-            Log.e("Add status data", "size " + statusDataSource.size());
-            this.statusDataSource.addAll(statusDataSource);
-        }
-    }
-
-    public synchronized void clearDataSource () {
-        this.statusDataSource.clear();
-    }
-
-    // TODO:
-    private List<StatusRenderData> searchStatusRender(LatLngBounds bounds) {
-        return null;
+    public CustomTileProvider() {
+        statusRepositoryService = new StatusRemoteRepository();
     }
 
     @Override
     public Tile getTile(int x, int y, int zoom) {
-        List<StatusRenderData> statusDatas = searchStatusRender(MyLatLngBoundsUtil.tileToLatLngBound(x, y, zoom));
+        if (zoom < 15 || zoom > 21) {
+            return NO_TILE;
+        }
+
+        List<StatusRenderData> statusDatas = statusRepositoryService.loadStatusRenderData(new UserLocation(10.772584, 106.657612), 18);
+        Log.e("render tile", "render");
         if (statusDatas != null) {
+            Log.e("render tile", "data size " + statusDatas.size());
             Matrix matrix = new Matrix();
 
-            /*The scale factor in the transformation matrix is 1/10 here because I scale up the tiles for drawing.
-             * Why? Well, the spherical mercator projection doesn't seem to quite provide the resolution I need for
-             * scaling up at high zoom levels. This bypasses it without needing a higher tile resolution.
-             */
             float scale = ((float) Math.pow(2, zoom) * mScale / 10);
             matrix.postScale(scale, scale);
             matrix.postTranslate(-x * mDimension, -y * mDimension);
@@ -85,14 +65,8 @@ public class CustomTileProvider implements TileProvider {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             return new Tile(mDimension, mDimension, baos.toByteArray());
-        } else {
-            ProbeMapUi probeMapUi = probeMapUiWeakReference.get();
-            if (probeMapUi != null) {
-                // TODO:
-                probeMapUi.loadStatus(null, 0);
-            }
-            return null;
         }
+        return null;
     }
 
     /**

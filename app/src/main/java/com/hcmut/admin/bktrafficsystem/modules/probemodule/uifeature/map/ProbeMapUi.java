@@ -48,7 +48,7 @@ public class ProbeMapUi {
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
-        statusOverlayRender = new StatusOverlayRender(map, this);
+        statusOverlayRender = new StatusOverlayRender(map);
 
         getViewModel();
         addViewModelObserver();
@@ -63,41 +63,6 @@ public class ProbeMapUi {
         mapViewModel.stopStatusRenderTimer();
     }
 
-    public void onMapMoved() {
-        LatLng currCameraTarget = gmaps.getCameraPosition().target;
-        float zoom = gmaps.getCameraPosition().zoom;
-        if (zoom < 15.0f || zoom > 21.0f) return;
-        if (renderedCameraTargets.size() < 1) {
-            renderedCameraTargets.add(currCameraTarget);
-            mapViewModel.triggerRender(currCameraTarget, zoom);
-        } else {
-            if (!isCameraTargetsInsideVisibleRegion(renderedCameraTargets)) {
-                renderedCameraTargets.add(currCameraTarget);
-                mapViewModel.triggerRender(currCameraTarget, zoom);
-                Log.e("camera", "outside screen");
-            } else {
-                Log.e("camera", "inside screen");
-            }
-        }
-
-    }
-
-    public void loadStatus(UserLocation userLocation, float zoom) {
-        if (mapViewModel != null) {
-            mapViewModel.loadStatus(userLocation, zoom);
-        }
-    }
-
-    private boolean isCameraTargetsInsideVisibleRegion(ArrayList<LatLng> renderedCameraTargets) {
-        LatLngBounds bounds = gmaps.getProjection().getVisibleRegion().latLngBounds;
-        for (LatLng cameraTarget : renderedCameraTargets) {
-            if (bounds.contains(cameraTarget)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void addEvents() {
 
     }
@@ -107,8 +72,6 @@ public class ProbeMapUi {
     }
 
     private void addViewModelObserver() {
-        mapViewModel.setTileOverlayRender(statusOverlayRender);
-
         // get live data
         LiveData<StatusRenderEvent> statusRenderEventLiveData = mapViewModel.getStatusRenderEventLiveData();
         LiveData<PolylineOptions> directionRenderPolylineOptionsLiveData = mapViewModel.getDirectionRenderPolylineOptionsLiveData();
@@ -118,21 +81,7 @@ public class ProbeMapUi {
         statusRenderEventLiveData.observe(activity, new Observer<StatusRenderEvent>() {
             @Override
             public void onChanged(StatusRenderEvent statusRenderEvent) {
-                double zoom;
-                UserLocation currentCameraTarget;
-                if (statusRenderEvent.isHaveCameraTarget()) {
-                    zoom = statusRenderEvent.getZoom();
-                    currentCameraTarget = new UserLocation(statusRenderEvent.getCameraTarget());
-                } else {
-                    zoom = gmaps.getCameraPosition().zoom;
-                    currentCameraTarget = new UserLocation(gmaps.getCameraPosition().target);
-                }
-                if (zoom > 15.0f && zoom < 21.0f) {
-                    mapViewModel.rendering(currentCameraTarget, zoom);
-                }
-                if (statusRenderEvent.isClearRender()) {
-                    clearTileOverlayRender();
-                }
+                clearTileOverlayRender();
             }
         });
         directionRenderPolylineOptionsLiveData.observe(activity, new Observer<PolylineOptions>() {
@@ -166,12 +115,7 @@ public class ProbeMapUi {
     }
 
     private void clearTileOverlayRender() {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                statusOverlayRender.clearRender();
-            }
-        });
+        statusOverlayRender.notifyDataChange();
     }
 
     private void removePrevDirectionRender() {
