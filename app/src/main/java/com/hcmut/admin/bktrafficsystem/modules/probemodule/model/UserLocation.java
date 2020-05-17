@@ -84,6 +84,22 @@ public class UserLocation {
         }
     }
 
+    /**
+     * return speed in km/h
+     * @param prevLocation
+     * @param currLocation
+     * @return
+     */
+    public static float calculateSpeed(UserLocation prevLocation, UserLocation currLocation) {
+        try {
+            float distance = prevLocation.distanceTo(currLocation);
+            long time = currLocation.getTimestamp().getTime() - prevLocation.getTimestamp().getTime();
+            return (distance * 1000.0f) / ((float) time / (1000.0f * 60.0f * 60.0f));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     public int getId() {
         return id;
     }

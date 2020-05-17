@@ -43,6 +43,10 @@ public interface ApiService {
     Call<BaseResponse<ReportResponse>> postTrafficReport(@Header("Authorization") String Authorization,
                                                          @Body ReportRequest reportRequest);
 
+    @POST("api/report/segment/here")
+    Call<Object> postGPSTrafficReport(@Header("Authorization") String Authorization,
+                                                         @Body ReportRequest reportRequest);
+
     @POST("api/evaluation/add")
     @FormUrlEncoded
     Call<BaseResponse<PostRatingResponse>> postRating(@Header("Authorization") String Authorization,

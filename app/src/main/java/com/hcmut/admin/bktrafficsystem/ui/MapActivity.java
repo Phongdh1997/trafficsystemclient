@@ -165,6 +165,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final float MAP_LOAD_RANGE = 500; // meter
 
     private LocationRequire locationRequire = null;
+    public static User currentUser;
     //varsm
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
@@ -1191,10 +1192,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void initDrawerView(View drawerView) {
-        User user = SharedPrefUtils.getUser(MapActivity.this);
+        currentUser = SharedPrefUtils.getUser(MapActivity.this);
         //Get user data
-        userName = user.getUserName();
-        imgUrl = user.getImgUrl();
+        userName = currentUser.getUserName();
+        imgUrl = currentUser.getImgUrl();
 
         NavigationView navView = (NavigationView) drawerView;
         //Header of navView

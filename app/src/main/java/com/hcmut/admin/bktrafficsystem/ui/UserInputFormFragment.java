@@ -819,7 +819,7 @@ public class UserInputFormFragment extends Fragment {
             causes.add(String.valueOf(causeId));
 
         ReportRequest reportRequest = new ReportRequest(velocity, curPos.latitude, curPos.longitude, desPos.latitude, desPos.longitude, causes, description, images);
-        new CallApi().createService().postTrafficReport(accessToken, reportRequest)
+        CallApi.createService().postTrafficReport(accessToken, reportRequest)
                 .enqueue(new Callback<BaseResponse<ReportResponse>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
@@ -857,7 +857,7 @@ public class UserInputFormFragment extends Fragment {
         else
             causes.add(String.valueOf(causeId));
         ReportRequest reportRequest = new ReportRequest(velocity, curPos.latitude, curPos.longitude, desPos.latitude, desPos.longitude, causes, description, images);
-        new CallApi().createService().postTrafficReport(accessToken, reportRequest)
+        CallApi.createService().postTrafficReport(accessToken, reportRequest)
                 .enqueue(new Callback<BaseResponse<ReportResponse>>() {
                     @Override
                     public void onResponse(@NotNull Call<BaseResponse<ReportResponse>> call, @NotNull Response<BaseResponse<ReportResponse>> response) {
