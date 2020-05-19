@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business.TileDataSource;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 import java.util.ArrayList;
@@ -16,9 +17,9 @@ public class StatusOverlayRender {
     private TileOverlay statusTileOverlay;
     private CustomTileProvider statusTileProvider;
 
-    public StatusOverlayRender(GoogleMap map) {
+    public StatusOverlayRender(GoogleMap map, TileDataSource tileDataSource) {
         this.map = map;
-        statusTileProvider = new CustomTileProvider();
+        statusTileProvider = new CustomTileProvider(tileDataSource);
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(statusTileProvider));
     }

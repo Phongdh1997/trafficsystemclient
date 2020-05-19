@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business.TileDataSource;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
@@ -33,12 +34,14 @@ public class CustomTileProvider implements TileProvider {
     private Paint paint;
 
     private StatusRepositoryService statusRepositoryService;
+    private TileDataSource tileDataSource;
 
     private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
 
     private static final int DEFAULT_COLOR = Color.BLACK;
 
-    public CustomTileProvider() {
+    public CustomTileProvider(TileDataSource tileDataSource) {
+        this.tileDataSource = tileDataSource;
         statusRepositoryService = new StatusRemoteRepository();
     }
 
@@ -48,7 +51,7 @@ public class CustomTileProvider implements TileProvider {
             return NO_TILE;
         }
 
-        List<StatusRenderData> statusDatas = statusRepositoryService.loadStatusRenderData(new UserLocation(10.772584, 106.657612), 18);
+        List<StatusRenderData> statusDatas = tileDataSource.getTileDataSource(x, y, zoom);
         Log.e("render tile", "render");
         if (statusDatas != null) {
             Log.e("render tile", "data size " + statusDatas.size());
@@ -64,8 +67,10 @@ public class CustomTileProvider implements TileProvider {
             c = drawCanvasFromArray(c, zoom, statusDatas);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            tileDataSource.setTileDataLoaded(true);
             return new Tile(mDimension, mDimension, baos.toByteArray());
         }
+        tileDataSource.setTileDataLoaded(false);
         return null;
     }
 
@@ -126,22 +131,20 @@ public class CustomTileProvider implements TileProvider {
      * @return
      */
     private float getLineWidth(int zoom) {
+        Log.e("zoom", "" + zoom);
         switch (zoom) {
             case 21:
             case 20:
-                return 0.0001f;
+                return 0.00009f;
             case 19:
-                return 0.00025f;
+                return 0.0001f;
             case 18:
-                return 0.0005f;
             case 17:
-                return 0.0005f;
+                return 0.0003f;
             case 16:
-                return 0.001f;
             case 15:
-                return 0.001f;
             case 14:
-                return 0.001f;
+                return 0.0007f;
             case 13:
                 return 0.002f;
             case 12:
