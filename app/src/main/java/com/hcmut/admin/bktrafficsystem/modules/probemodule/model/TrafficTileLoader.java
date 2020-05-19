@@ -49,7 +49,7 @@ public class TrafficTileLoader {
         // load data for parent tile from server
         LatLng centerPoint = childBounds.getCenter();
         TileCoordinates parentTile = MyLatLngBoundsUtil.getTileNumber(centerPoint.latitude, centerPoint.longitude, LOAD_ZOOM);
-        synchronized (this) {
+        synchronized (TrafficTileLoader.class) {
             String tileStatus = loadedTiles.get(parentTile);
             if (tileStatus == null) {
                 loadMore(parentTile);
