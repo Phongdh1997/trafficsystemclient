@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business;
 
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
@@ -17,7 +18,7 @@ public class TileDataSource {
     }
 
     public List<StatusRenderData> getTileDataSource(int x, int y, int zoom) {
-        LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(x, y, zoom);
+        LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(new TileCoordinates(x, y, zoom));
         List<StatusRenderData> temp = new ArrayList<>();
         for (StatusRenderData statusRenderData : statusRenderDataList) {
             if (statusRenderData.isInLatLngBounds(bounds)) {

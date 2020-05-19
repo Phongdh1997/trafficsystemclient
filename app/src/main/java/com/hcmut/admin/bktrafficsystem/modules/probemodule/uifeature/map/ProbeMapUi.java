@@ -3,9 +3,6 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,23 +11,14 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.MoveToLoadHandler;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business.TileDataSource;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
 
 public class ProbeMapUi {
 
@@ -43,19 +31,12 @@ public class ProbeMapUi {
     private Polyline prevDirectionRenderPolyline;
     private MapViewModel mapViewModel;
     private StatusOverlayRender statusOverlayRender;
-    private MoveToLoadHandler moveToLoadHandler;
-
-    private Executor executor = AsyncTask.SERIAL_EXECUTOR;
-    private ArrayList<LatLng> renderedCameraTargets = new ArrayList<>();
-
-    LatLngBounds bounds;
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
 
-        TileDataSource tileDataSource = new TileDataSource();
-        statusOverlayRender = new StatusOverlayRender(map, tileDataSource);
+        statusOverlayRender = new StatusOverlayRender(map);
 
 
         getViewModel();
@@ -71,9 +52,7 @@ public class ProbeMapUi {
         mapViewModel.stopStatusRenderTimer();
     }
 
-    public void onCameraMoved() {
-        moveToLoadHandler.loadTrafficStatus(gmaps);
-    }
+    public void onCameraMoved() {}
 
     private void addEvents() {
 

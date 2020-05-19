@@ -20,10 +20,6 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business.TileDataSource;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 public class CustomTileProvider implements TileProvider {
@@ -31,18 +27,12 @@ public class CustomTileProvider implements TileProvider {
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = 1;
     private final int mDimension = mScale * mTileSize;
-    private Paint paint;
-
-    private StatusRepositoryService statusRepositoryService;
-    private TileDataSource tileDataSource;
-
-    private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
-
     private static final int DEFAULT_COLOR = Color.BLACK;
 
-    public CustomTileProvider(TileDataSource tileDataSource) {
-        this.tileDataSource = tileDataSource;
-        statusRepositoryService = new StatusRemoteRepository();
+    private Paint paint = new Paint();
+    private TrafficTileLoader trafficTileLoader = new TrafficTileLoader();
+
+    public CustomTileProvider() {
     }
 
     @Override
@@ -51,7 +41,7 @@ public class CustomTileProvider implements TileProvider {
             return NO_TILE;
         }
 
-        List<StatusRenderData> statusDatas = tileDataSource.getTileDataSource(x, y, zoom);
+        List<StatusRenderData> statusDatas = trafficTileLoader.loadTileData(new TileCoordinates(x, y, zoom));
         Log.e("render tile", "render");
         if (statusDatas != null) {
             Log.e("render tile", "data size " + statusDatas.size());
@@ -80,9 +70,6 @@ public class CustomTileProvider implements TileProvider {
      * @return
      */
     private Canvas drawCanvasFromArray(Canvas c, int zoom, List<StatusRenderData> statusDatas) {
-
-        paint = new Paint();
-
         //Line features
         paint.setStrokeWidth(getLineWidth(zoom));
         paint.setStyle(Paint.Style.STROKE);

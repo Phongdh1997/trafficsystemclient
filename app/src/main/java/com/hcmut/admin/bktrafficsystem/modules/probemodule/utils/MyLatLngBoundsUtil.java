@@ -4,9 +4,13 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
 public class MyLatLngBoundsUtil {
-    public static LatLngBounds tileToLatLngBound(final int x, final int y, final int zoom) {
+    public static LatLngBounds tileToLatLngBound(TileCoordinates tileCoordinates) {
+        final int x = tileCoordinates.x;
+        final int y = tileCoordinates.y;
+        final int zoom = tileCoordinates.z;
         double north = tile2lat(y, zoom);
         double south = tile2lat(y + 1, zoom);
         double west = tile2lon(x, zoom);
@@ -33,7 +37,7 @@ public class MyLatLngBoundsUtil {
      * @param zoom: zoom of tile which want to get
      * @return: tile with zoom level contain latlng
      */
-    public static int [] getTileNumber(final double lat, final double lon, final int zoom) {
+    public static TileCoordinates getTileNumber(final double lat, final double lon, final int zoom) {
         int xtile = (int) Math.floor((lon + 180) / 360 * (1 << zoom));
         int ytile = (int) Math.floor((1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat))) / Math.PI) / 2 * (1 << zoom));
         if (xtile < 0)
@@ -44,6 +48,6 @@ public class MyLatLngBoundsUtil {
             ytile = 0;
         if (ytile >= (1 << zoom))
             ytile = ((1 << zoom) - 1);
-        return new int[] {xtile, ytile, zoom};
+        return new TileCoordinates(xtile, ytile, zoom);
     }
 }
