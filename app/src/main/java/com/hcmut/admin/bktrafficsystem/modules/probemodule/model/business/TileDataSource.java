@@ -10,20 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TileDataSource {
-    private boolean isTileDataLoaded = false;
-
     private List<StatusRenderData> statusRenderDataList = new ArrayList<>();
 
     public void addData(@NotNull List<StatusRenderData> statusRenderDataList) {
         this.statusRenderDataList.addAll(statusRenderDataList);
-    }
-
-    public boolean isTileDataLoaded() {
-        return isTileDataLoaded;
-    }
-
-    public void setTileDataLoaded(boolean state) {
-        isTileDataLoaded = state;
     }
 
     public List<StatusRenderData> getTileDataSource(int x, int y, int zoom) {

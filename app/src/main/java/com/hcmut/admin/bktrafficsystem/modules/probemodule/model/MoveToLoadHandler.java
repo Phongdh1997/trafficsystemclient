@@ -39,16 +39,11 @@ public class MoveToLoadHandler {
         }
         LatLng currentCameraTarget = bounds.getCenter();
         if (lastCameraTarget == null) {
-            loadMoreStatus(currentCameraTarget, zoom);
+            //loadMoreStatus(currentCameraTarget, zoom);
             //lastCameraTarget = currentCameraTarget;
         } else if (!bounds.contains(lastCameraTarget)) {    // camera move outside lastCameraTarget
             Log.e("camera", "outside screen");
-            if (!tileDataSource.isTileDataLoaded()) {   // if tile data is not loaded then load more
-                Log.e("camera", "load more");
-                tileDataSource.setTileDataLoaded(true);
-                //lastCameraTarget = currentCameraTarget;
-                // loadMoreStatus(currentCameraTarget, zoom);
-            }
+
         }
     }
 
@@ -66,6 +61,16 @@ public class MoveToLoadHandler {
                     isLoading = false;
                 }
             });
+        }
+    }
+
+    private static class TileBoundingCheck {
+        private LatLng northeast;
+        private LatLng southwest;
+
+        private TileBoundingCheck(LatLngBounds bounds) {
+            northeast = bounds.northeast;
+            southwest = bounds.southwest;
         }
     }
 }

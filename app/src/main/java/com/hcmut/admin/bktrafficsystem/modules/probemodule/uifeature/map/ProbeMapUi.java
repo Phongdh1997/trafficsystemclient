@@ -56,7 +56,6 @@ public class ProbeMapUi {
 
         TileDataSource tileDataSource = new TileDataSource();
         statusOverlayRender = new StatusOverlayRender(map, tileDataSource);
-        moveToLoadHandler = new MoveToLoadHandler(tileDataSource);
 
 
         getViewModel();

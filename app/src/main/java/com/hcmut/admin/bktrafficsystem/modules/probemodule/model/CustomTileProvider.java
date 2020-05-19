@@ -67,10 +67,8 @@ public class CustomTileProvider implements TileProvider {
             c = drawCanvasFromArray(c, zoom, statusDatas);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            tileDataSource.setTileDataLoaded(true);
             return new Tile(mDimension, mDimension, baos.toByteArray());
         }
-        tileDataSource.setTileDataLoaded(false);
         return null;
     }
 
