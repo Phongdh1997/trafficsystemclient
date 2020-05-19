@@ -1,10 +1,7 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -33,6 +30,10 @@ public class CustomTileProvider implements TileProvider {
     private TrafficTileLoader trafficTileLoader = new TrafficTileLoader();
 
     public CustomTileProvider() {
+    }
+
+    public void clearTileDataCached() {
+        trafficTileLoader.clearTileDataCached();
     }
 
     @Override

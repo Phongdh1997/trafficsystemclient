@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.CustomTileProvider;
 
 /**
  * Đại diện cho nguồn dữ liệu status sẽ được render lên TileOverlay
@@ -25,5 +26,6 @@ public class StatusOverlayRender {
      */
     public void notifyDataChange() {
         statusTileOverlay.clearTileCache();
+        statusTileProvider.clearTileDataCached();
     }
 }

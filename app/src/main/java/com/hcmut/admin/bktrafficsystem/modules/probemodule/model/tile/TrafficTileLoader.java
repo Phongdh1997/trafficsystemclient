@@ -1,7 +1,10 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
+
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.RoomDatabaseService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
@@ -31,6 +34,10 @@ public class TrafficTileLoader {
      * Value: boolean: status of tile: true => loading; false => loaded
      */
     private HashMap<TileCoordinates, String> loadedTiles = new HashMap<>();
+
+    public void clearTileDataCached() {
+        loadedTiles.clear();
+    }
 
     /**
      * Load traffic status data for tileCoordinates
@@ -72,6 +79,7 @@ public class TrafficTileLoader {
 
     private void loadMore(@NotNull final TileCoordinates tileCoordinates) {
         loadedTiles.put(tileCoordinates, TILE_LOADING);
+        Log.e("tile status", tileCoordinates.toString() + "loading");
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -81,8 +89,10 @@ public class TrafficTileLoader {
                 if (datas != null) {
                     roomDatabaseService.insertTrafficStatus(datas);
                     loadedTiles.put(tileCoordinates, TILE_LOADED);
+                    Log.e("tile status", tileCoordinates.toString() + "loaded");
                 } else {
                     loadedTiles.put(tileCoordinates, TILE_LOAD_FAIL);
+                    Log.e("tile status", tileCoordinates.toString() + "load fail");
                 }
             }
         });

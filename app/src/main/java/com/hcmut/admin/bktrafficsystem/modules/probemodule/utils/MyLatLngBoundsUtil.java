@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
 
 public class MyLatLngBoundsUtil {
     public static LatLngBounds tileToLatLngBound(TileCoordinates tileCoordinates) {
