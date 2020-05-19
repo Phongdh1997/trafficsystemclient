@@ -36,7 +36,7 @@ public class ProbeMapUi {
         this.activity = activity;
         this.gmaps = map;
 
-        statusOverlayRender = new StatusOverlayRender(map);
+        statusOverlayRender = new StatusOverlayRender(map, activity.getApplicationContext());
 
 
         getViewModel();

@@ -25,7 +25,6 @@ public class StatusRemoteRepository implements StatusRepositoryService {
     public List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, double zoom) {
         if (userLocation != null) {
             try {
-                Log.e("userlocation", "" + userLocation.getLatitude() + ", " + userLocation.getLongitude());
                 Response<StatusResponse<List<StatusRenderData>>> response = apiServerRetrofitService
                         .getTrafficStatus(userLocation.getLatitude(), userLocation.getLongitude(), zoom)
                         .execute();

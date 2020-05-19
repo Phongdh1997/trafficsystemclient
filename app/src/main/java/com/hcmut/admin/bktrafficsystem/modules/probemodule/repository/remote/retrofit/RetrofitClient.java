@@ -23,17 +23,17 @@ public class RetrofitClient {
 
     static {
         THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
-                NUMBER_OF_CORES * 2,
-                NUMBER_OF_CORES * 2,
+                NUMBER_OF_CORES,
+                NUMBER_OF_CORES,
                 60L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>());
     }
 
     private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .readTimeout(25, TimeUnit.SECONDS)
-            .connectTimeout(25, TimeUnit.SECONDS)
-            .callTimeout(25, TimeUnit.SECONDS)
+            .readTimeout(40, TimeUnit.SECONDS)
+            .connectTimeout(40, TimeUnit.SECONDS)
+            .callTimeout(40, TimeUnit.SECONDS)
             .build();
     private static Retrofit bktrafficAPI_RetrofitClient = new Retrofit.Builder()
             .baseUrl(BkTrafficAPI_BASE_URL)

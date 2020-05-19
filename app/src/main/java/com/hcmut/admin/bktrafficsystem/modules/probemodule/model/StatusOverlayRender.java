@@ -1,5 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
@@ -14,9 +16,9 @@ public class StatusOverlayRender {
     private TileOverlay statusTileOverlay;
     private CustomTileProvider statusTileProvider;
 
-    public StatusOverlayRender(GoogleMap map) {
+    public StatusOverlayRender(GoogleMap map, Context context) {
         this.map = map;
-        statusTileProvider = new CustomTileProvider();
+        statusTileProvider = new CustomTileProvider(context);
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(statusTileProvider));
     }

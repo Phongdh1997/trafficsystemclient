@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -7,6 +8,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.RoomDatabaseService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.RoomDatabaseImpl;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
@@ -23,7 +26,7 @@ public class TrafficTileLoader {
     public static final String TILE_LOADED = "tile_loaded";
     public static final String TILE_LOAD_FAIL = "tile_load_fail";
 
-    private static final int LOAD_ZOOM = 14;
+    private static final int LOAD_ZOOM = 15;
 
     private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
@@ -39,18 +42,24 @@ public class TrafficTileLoader {
         loadedTiles.clear();
     }
 
+    public TrafficTileLoader (Context context) {
+        roomDatabaseService = new RoomDatabaseImpl(context);
+    }
+
     /**
      * Load traffic status data for tileCoordinates
      * First: load from local.
      * If Empty then load from server
      * @param childTile
      */
-    public List<StatusRenderData> loadTileData(@NotNull TileCoordinates childTile) {
+    public List<StatusRenderDataEntity> loadTileData(@NotNull TileCoordinates childTile) {
         LatLngBounds childBounds = MyLatLngBoundsUtil.tileToLatLngBound(childTile);
-        List<StatusRenderData> localDatas = loadTileDataFromLocal(childBounds);
-        if (localDatas != null) {
+        List<StatusRenderDataEntity> localDatas = loadTileDataFromLocal(childBounds);
+        if (localDatas != null && localDatas.size() > 0) {
+            Log.e("data", "local ready");
             return localDatas;
         }
+        Log.e("data", "load from server");
 
         // convert current tile to tile with zoom level LOAD_ZOOM
         // load data for parent tile from server
@@ -66,20 +75,20 @@ public class TrafficTileLoader {
                     case TILE_LOADED:
                         break;
                     case TILE_LOAD_FAIL:
-                        loadMore(parentTile);
+                        //loadMore(parentTile);
                 }
             }
         }
         return null;
     }
 
-    private List<StatusRenderData> loadTileDataFromLocal(LatLngBounds bounds) {
+    private List<StatusRenderDataEntity> loadTileDataFromLocal(LatLngBounds bounds) {
         return roomDatabaseService.getTrafficStatus(bounds);
     }
 
     private void loadMore(@NotNull final TileCoordinates tileCoordinates) {
         loadedTiles.put(tileCoordinates, TILE_LOADING);
-        Log.e("tile status", tileCoordinates.toString() + "loading");
+        Log.e("tile status", tileCoordinates.toString() + "loading, ");
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -90,9 +99,11 @@ public class TrafficTileLoader {
                     roomDatabaseService.insertTrafficStatus(datas);
                     loadedTiles.put(tileCoordinates, TILE_LOADED);
                     Log.e("tile status", tileCoordinates.toString() + "loaded");
+                    Log.e("loaded", "status size " + datas.size());
+
                 } else {
                     loadedTiles.put(tileCoordinates, TILE_LOAD_FAIL);
-                    Log.e("tile status", tileCoordinates.toString() + "load fail");
+                    Log.e("tile status", tileCoordinates.toString() + "load fail, " + userLocation.toString());
                 }
             }
         });

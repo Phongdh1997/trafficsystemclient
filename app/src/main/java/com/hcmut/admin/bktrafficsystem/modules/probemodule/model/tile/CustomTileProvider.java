@@ -1,8 +1,10 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 public class CustomTileProvider implements TileProvider {
@@ -27,9 +30,10 @@ public class CustomTileProvider implements TileProvider {
     private static final int DEFAULT_COLOR = Color.BLACK;
 
     private Paint paint = new Paint();
-    private TrafficTileLoader trafficTileLoader = new TrafficTileLoader();
+    private TrafficTileLoader trafficTileLoader;
 
-    public CustomTileProvider() {
+    public CustomTileProvider(Context context) {
+        trafficTileLoader = new TrafficTileLoader(context);
     }
 
     public void clearTileDataCached() {
@@ -41,11 +45,9 @@ public class CustomTileProvider implements TileProvider {
         if (zoom < 15 || zoom > 21) {
             return NO_TILE;
         }
-
-        List<StatusRenderData> statusDatas = trafficTileLoader.loadTileData(new TileCoordinates(x, y, zoom));
-        Log.e("render tile", "render");
+        List<StatusRenderDataEntity> statusDatas = trafficTileLoader.loadTileData(new TileCoordinates(x, y, zoom));
+        Log.e("Tile", "get tile");
         if (statusDatas != null) {
-            Log.e("render tile", "data size " + statusDatas.size());
             Matrix matrix = new Matrix();
 
             float scale = ((float) Math.pow(2, zoom) * mScale / 10);
@@ -70,7 +72,7 @@ public class CustomTileProvider implements TileProvider {
      * @param zoom
      * @return
      */
-    private Canvas drawCanvasFromArray(Canvas c, int zoom, List<StatusRenderData> statusDatas) {
+    private Canvas drawCanvasFromArray(Canvas c, int zoom, List<StatusRenderDataEntity> statusDatas) {
         //Line features
         paint.setStrokeWidth(getLineWidth(zoom));
         paint.setStyle(Paint.Style.STROKE);
@@ -82,27 +84,28 @@ public class CustomTileProvider implements TileProvider {
         paint.setAlpha(getAlpha(zoom));
 
         if (statusDatas != null) {
-            List<LatLng> route;
             float startX;
             float startY;
             float stopX;
             float stopY;
-            //Log.e("tile data source", "size " + statusDataSource.size());
-            for (StatusRenderData statusRenderDataItem : statusDatas) {
-                 route = statusRenderDataItem.getLatLngPolyline();
-                if (route != null && route.size() > 1) {
+            LatLng startPoint;
+            LatLng endPoint;
+            for (StatusRenderDataEntity statusRenderDataEntity : statusDatas) {
+                startPoint = statusRenderDataEntity.getStartLatlng();
+                endPoint = statusRenderDataEntity.getEndLatlng();
+                if (startPoint != null && endPoint != null) {
                     // start point
-                    Point screenPt1 = mProjection.toPoint(route.get(0));
+                    Point screenPt1 = mProjection.toPoint(startPoint);
                     startX = (float) screenPt1.x * 10;
                     startY = (float) screenPt1.y * 10;
 
                     // stop point
-                    Point screenPt2 = mProjection.toPoint(route.get(1));
+                    Point screenPt2 = mProjection.toPoint(endPoint);
                     stopX = (float) screenPt2.x * 10;
                     stopY = (float) screenPt2.y * 10;
 
                     // draw polyline
-                    paint.setColor(Color.parseColor(statusRenderDataItem.getColor()));
+                    paint.setColor(Color.parseColor(statusRenderDataEntity.color));
                     c.drawLine(startX, startY, stopX, stopY, paint);
                 }
             }

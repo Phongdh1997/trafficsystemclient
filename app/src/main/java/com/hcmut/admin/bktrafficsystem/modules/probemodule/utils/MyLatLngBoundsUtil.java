@@ -17,7 +17,6 @@ public class MyLatLngBoundsUtil {
         double east = tile2lon(x + 1, zoom);
         LatLng southwest = new LatLng(south, west);
         LatLng northeast = new LatLng(north, east);
-        Log.e("cal", "" + north + ", " + south + ", " + west + ", " + east);
         return new LatLngBounds(southwest, northeast);
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 public class StatusRenderData {
     @SerializedName("segment")
     @Expose
-    private Long segment;
+    private long segment;
     @SerializedName("color")
     @Expose
     private String color;
@@ -40,6 +40,10 @@ public class StatusRenderData {
 
     public Polyline getPolyline() {
         return polyline;
+    }
+
+    public long getSegment() {
+        return segment;
     }
 
     public void setPolyline(Polyline polyline) {
