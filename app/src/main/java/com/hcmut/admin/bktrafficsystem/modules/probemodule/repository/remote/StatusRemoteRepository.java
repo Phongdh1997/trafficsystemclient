@@ -29,7 +29,7 @@ public class StatusRemoteRepository implements StatusRepositoryService {
                         .getTrafficStatus(userLocation.getLatitude(), userLocation.getLongitude(), zoom)
                         .execute();
                 return response.body().getData();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -21,6 +21,7 @@ public class StatusOverlayRender {
         statusTileProvider = new CustomTileProvider(context);
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(statusTileProvider));
+        notifyDataChange();
     }
 
     /**

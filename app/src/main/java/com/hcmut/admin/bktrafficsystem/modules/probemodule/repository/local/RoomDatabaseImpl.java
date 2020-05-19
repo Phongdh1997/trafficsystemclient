@@ -32,6 +32,20 @@ public class RoomDatabaseImpl implements RoomDatabaseService {
 
     @Override
     public synchronized List<StatusRenderDataEntity> getTrafficStatus(LatLngBounds bounds) {
-        return statusRenderDataDAO.getStatusByBounds();
+        return statusRenderDataDAO.getStatusByBounds(
+                bounds.northeast.latitude,
+                bounds.northeast.longitude,
+                bounds.southwest.latitude,
+                bounds.southwest.longitude);
+    }
+
+    @Override
+    public synchronized List<StatusRenderDataEntity> getTrafficStatus() {
+        return statusRenderDataDAO.getStatus();
+    }
+
+    @Override
+    public void deleteAll() {
+        statusRenderDataDAO.deleteAllRecord();
     }
 }

@@ -38,6 +38,7 @@ public class CustomTileProvider implements TileProvider {
 
     public void clearTileDataCached() {
         trafficTileLoader.clearTileDataCached();
+
     }
 
     @Override
@@ -46,8 +47,8 @@ public class CustomTileProvider implements TileProvider {
             return NO_TILE;
         }
         List<StatusRenderDataEntity> statusDatas = trafficTileLoader.loadTileData(new TileCoordinates(x, y, zoom));
-        Log.e("Tile", "get tile");
         if (statusDatas != null) {
+            Log.e("Tile", "render status, size " + statusDatas.size());
             Matrix matrix = new Matrix();
 
             float scale = ((float) Math.pow(2, zoom) * mScale / 10);

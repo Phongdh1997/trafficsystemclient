@@ -38,8 +38,14 @@ public class TrafficTileLoader {
      */
     private HashMap<TileCoordinates, String> loadedTiles = new HashMap<>();
 
-    public void clearTileDataCached() {
-        loadedTiles.clear();
+    public synchronized void clearTileDataCached() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                loadedTiles.clear();
+                roomDatabaseService.deleteAll();
+            }
+        });
     }
 
     public TrafficTileLoader (Context context) {
@@ -59,7 +65,6 @@ public class TrafficTileLoader {
             Log.e("data", "local ready");
             return localDatas;
         }
-        Log.e("data", "load from server");
 
         // convert current tile to tile with zoom level LOAD_ZOOM
         // load data for parent tile from server
