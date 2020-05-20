@@ -35,4 +35,19 @@ public class StatusRemoteRepository implements StatusRepositoryService {
         }
         return null;
     }
+
+    @Override
+    public List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, int radiusInMeters) {
+        if (userLocation != null) {
+            try {
+                Response<StatusResponse<List<StatusRenderData>>> response = apiServerRetrofitService
+                        .getTrafficStatus(userLocation.getLatitude(), userLocation.getLongitude(), radiusInMeters)
+                        .execute();
+                return response.body().getData();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

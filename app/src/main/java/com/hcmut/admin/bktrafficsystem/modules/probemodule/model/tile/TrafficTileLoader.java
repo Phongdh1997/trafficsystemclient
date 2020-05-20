@@ -26,7 +26,13 @@ public class TrafficTileLoader {
     public static final String TILE_LOADED = "tile_loaded";
     public static final String TILE_LOAD_FAIL = "tile_load_fail";
 
-    private static final int LOAD_ZOOM = 15;
+    /**
+     *  radius of tile level 14 in meters
+     *  ref: https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/
+     *
+      */
+    private static final int TILE_RADIUS = 1730;
+    private static final int LOAD_ZOOM = 14;
 
     private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
@@ -59,12 +65,8 @@ public class TrafficTileLoader {
      * @param childTile
      */
     public List<StatusRenderDataEntity> loadTileData(@NotNull TileCoordinates childTile) {
-        LatLngBounds childBounds = MyLatLngBoundsUtil.tileToLatLngBound(childTile);
-        List<StatusRenderDataEntity> localDatas = loadTileDataFromLocal(childBounds);
-        if (localDatas != null && localDatas.size() > 0) {
-            Log.e("data", "local ready");
-            return localDatas;
-        }
+        final LatLngBounds childBounds = MyLatLngBoundsUtil.tileToLatLngBound(childTile);
+        List<StatusRenderDataEntity> localDatas = null;
 
         // convert current tile to tile with zoom level LOAD_ZOOM
         // load data for parent tile from server
@@ -77,14 +79,16 @@ public class TrafficTileLoader {
             } else {
                 switch (tileStatus) {
                     case TILE_LOADING:
+                        break;
                     case TILE_LOADED:
+                        localDatas = loadTileDataFromLocal(childBounds);
                         break;
                     case TILE_LOAD_FAIL:
                         //loadMore(parentTile);
                 }
             }
         }
-        return null;
+        return localDatas;
     }
 
     private List<StatusRenderDataEntity> loadTileDataFromLocal(LatLngBounds bounds) {
@@ -99,7 +103,7 @@ public class TrafficTileLoader {
             public void run() {
                 LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tileCoordinates);
                 UserLocation userLocation = new UserLocation(bounds.getCenter());
-                List<StatusRenderData> datas = statusRepositoryService.loadStatusRenderData(userLocation, tileCoordinates.z);
+                List<StatusRenderData> datas = statusRepositoryService.loadStatusRenderData(userLocation, TILE_RADIUS);
                 if (datas != null) {
                     roomDatabaseService.insertTrafficStatus(datas);
                     loadedTiles.put(tileCoordinates, TILE_LOADED);

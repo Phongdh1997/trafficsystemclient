@@ -47,7 +47,7 @@ public class CustomTileProvider implements TileProvider {
             return NO_TILE;
         }
         List<StatusRenderDataEntity> statusDatas = trafficTileLoader.loadTileData(new TileCoordinates(x, y, zoom));
-        if (statusDatas != null) {
+        if (statusDatas != null && statusDatas.size() > 0) {
             Log.e("Tile", "render status, size " + statusDatas.size());
             Matrix matrix = new Matrix();
 

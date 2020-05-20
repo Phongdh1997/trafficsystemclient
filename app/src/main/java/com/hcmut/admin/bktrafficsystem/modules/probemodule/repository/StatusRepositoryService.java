@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface StatusRepositoryService {
     List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, double zoom);
+    List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, int radiusInMeters);
 }

@@ -40,7 +40,7 @@ public class RoomDatabaseImpl implements RoomDatabaseService {
     }
 
     @Override
-    public synchronized List<StatusRenderDataEntity> getTrafficStatus() {
+    public List<StatusRenderDataEntity> getTrafficStatus() {
         return statusRenderDataDAO.getStatus();
     }
 
