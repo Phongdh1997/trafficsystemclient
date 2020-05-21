@@ -27,7 +27,7 @@ public class TileBitmap {
     private Paint paint = new Paint();
 
     public Tile getTileWithScale(int x, int y, int zoom, @Nullable List<StatusRenderDataEntity> statusDatas) {
-        if (statusDatas != null && statusDatas.size() > 0) {
+        if (statusDatas == null || statusDatas.size() == 0) {
             return null;
         }
         Log.e("Tile", "render status, size " + statusDatas.size());
