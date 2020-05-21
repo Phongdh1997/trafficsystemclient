@@ -141,6 +141,6 @@ public class UserLocation {
     @NonNull
     @Override
     public String toString() {
-        return "No" + id + ": Long: " + longitude + " - Lati: " + latitude + " - Speed = " + timestamp;
+        return "No" + id + ": Long: " + longitude + " ; Lati: " + latitude + " - Speed = " + timestamp;
     }
 }

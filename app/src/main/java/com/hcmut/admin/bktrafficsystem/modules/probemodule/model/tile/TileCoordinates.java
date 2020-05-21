@@ -8,10 +8,18 @@ public class TileCoordinates {
     public final int y;
     public final int z;
 
-    public TileCoordinates(int x, int y, int z) {
+    private TileCoordinates(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public static TileCoordinates getTileCoordinates(int x, int y, int z) throws TileCoordinatesNotValid {
+        double maxHeight = Math.pow(2, z) - 1;
+        if (x < 0 || y < 0 || x > maxHeight || y > maxHeight) {
+            throw new TileCoordinatesNotValid();
+        }
+        return new TileCoordinates(x, y, z);
     }
 
     @Override
@@ -32,5 +40,12 @@ public class TileCoordinates {
     @Override
     public String toString() {
         return "x: " + x + ", y: " + y + ", z: " + z;
+    }
+
+    public static class TileCoordinatesNotValid extends Exception {
+        @Override
+        public String getMessage() {
+            return "Tile Coordinates is not valid";
+        }
     }
 }

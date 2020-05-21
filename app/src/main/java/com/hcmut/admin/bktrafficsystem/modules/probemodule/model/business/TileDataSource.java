@@ -18,7 +18,12 @@ public class TileDataSource {
     }
 
     public List<StatusRenderData> getTileDataSource(int x, int y, int zoom) {
-        LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(new TileCoordinates(x, y, zoom));
+        LatLngBounds bounds = null;
+        try {
+            bounds = MyLatLngBoundsUtil.tileToLatLngBound(TileCoordinates.getTileCoordinates(x, y, zoom));
+        } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
+            return new ArrayList<>();
+        }
         List<StatusRenderData> temp = new ArrayList<>();
         for (StatusRenderData statusRenderData : statusRenderDataList) {
             if (statusRenderData.isInLatLngBounds(bounds)) {

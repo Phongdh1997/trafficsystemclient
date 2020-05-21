@@ -46,7 +46,10 @@ public class CustomTileProvider implements TileProvider {
         if (zoom < 15 || zoom > 21) {
             return NO_TILE;
         }
-        List<StatusRenderDataEntity> statusDatas = trafficTileLoader.loadTileData(new TileCoordinates(x, y, zoom));
+        List<StatusRenderDataEntity> statusDatas = null;
+        try {
+            statusDatas = trafficTileLoader.loadTileDataFromLocal(TileCoordinates.getTileCoordinates(x, y, zoom));
+        } catch (Exception e){}
         if (statusDatas != null && statusDatas.size() > 0) {
             Log.e("Tile", "render status, size " + statusDatas.size());
             Matrix matrix = new Matrix();
