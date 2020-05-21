@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -64,6 +65,8 @@ public class TileBitmap {
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setAlpha(getAlpha(zoom));
 
+        //Path path = new Path();
+
         if (statusDatas != null) {
             float startX;
             float startY;
@@ -88,8 +91,12 @@ public class TileBitmap {
                     // draw polyline
                     paint.setColor(Color.parseColor(statusRenderDataEntity.color));
                     c.drawLine(startX, startY, stopX, stopY, paint);
+
+                    //path.moveTo(startX, startY);
+                    //path.lineTo(stopX, stopY);
                 }
             }
+            //c.drawPath(path, paint);
         }
         return c;
     }
@@ -105,20 +112,16 @@ public class TileBitmap {
         switch (zoom) {
             case 21:
             case 20:
-                return 0.00009f;
             case 19:
-                return 0.0001f;
+                return 0.000123f;
             case 18:
+                return 0.00013f;//ok
             case 17:
-                return 0.0003f;
+                return 0.00015f; //ok
             case 16:
+                return 0.0002f; //ok
             case 15:
-            case 14:
-                return 0.0007f;
-            case 13:
-                return 0.002f;
-            case 12:
-                return 0.003f;
+                return 0.0003f; //0k
             default:
                 return 0f;
         }
