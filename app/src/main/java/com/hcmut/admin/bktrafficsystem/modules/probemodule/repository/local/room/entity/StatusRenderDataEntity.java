@@ -12,9 +12,7 @@ import java.util.List;
 
 @Entity(tableName = "status_render_data")
 public class StatusRenderDataEntity {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
+    @PrimaryKey
     @ColumnInfo(name = "segment")
     public Long segment;
 
