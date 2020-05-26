@@ -693,6 +693,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
+        mMap.setMaxZoomPreference(18);
 
         //
         //  init Probe Map Module

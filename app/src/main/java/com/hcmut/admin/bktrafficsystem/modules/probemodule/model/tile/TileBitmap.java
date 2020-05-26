@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Build;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -15,11 +16,13 @@ import com.google.maps.android.projection.SphericalMercatorProjection;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 public class TileBitmap {
+    private final boolean IS_HIGHER_API_25 = Build.VERSION.SDK_INT > 25;
     private final int mTileSize = 256;
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = 1;
@@ -44,7 +47,11 @@ public class TileBitmap {
         c = drawCanvasFromArray(c, zoom, statusDatas);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return new Tile(mDimension, mDimension, baos.toByteArray());
+        Tile tile = new Tile(mDimension, mDimension, baos.toByteArray());
+        if (IS_HIGHER_API_25) {
+            bitmap.recycle();
+        }
+        return tile;
     }
 
     /**
