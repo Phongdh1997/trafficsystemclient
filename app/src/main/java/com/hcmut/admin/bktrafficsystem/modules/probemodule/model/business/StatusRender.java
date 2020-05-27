@@ -11,7 +11,7 @@ import java.util.TimerTask;
 public class StatusRender {
 
     private static final int TIMER_DELAY = 0;
-    private static final int TIMER_PERIOD = 30000;
+    private static final int TIMER_PERIOD = 60000 * 3; // 3 minus
 
     private boolean isTimerRunning;
 
