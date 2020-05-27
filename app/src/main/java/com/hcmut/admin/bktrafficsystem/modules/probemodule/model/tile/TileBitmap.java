@@ -122,13 +122,13 @@ public class TileBitmap {
             case 19:
                 return 0.000123f;
             case 18:
-                return 0.00013f;//ok
+                return 0.00015f;//ok
             case 17:
-                return 0.00015f; //ok
+                return 0.00025f; //ok
             case 16:
-                return 0.0002f; //ok
+                return 0.0003f; //ok
             case 15:
-                return 0.0003f; //0k
+                return 0.00035f; //0k
             default:
                 return 0f;
         }
