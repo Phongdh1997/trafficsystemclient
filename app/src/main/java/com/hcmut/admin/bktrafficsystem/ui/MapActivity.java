@@ -1471,7 +1471,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 setupInfoWindow();
                                 current = Calendar.getInstance().getTimeInMillis();
                                 renderCurrentPosition(oldCameraPos);
-                                probeMapUi.setupTileOverlay();
                             }
 
                             @Override

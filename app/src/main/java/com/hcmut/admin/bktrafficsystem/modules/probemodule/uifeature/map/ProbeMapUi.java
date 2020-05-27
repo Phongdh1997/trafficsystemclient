@@ -35,6 +35,7 @@ public class ProbeMapUi {
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
+        statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
 
         getViewModel();
         addViewModelObserver();
@@ -50,10 +51,6 @@ public class ProbeMapUi {
     }
 
     public void onCameraMoved() {}
-
-    public void setupTileOverlay () {
-        statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
-    }
 
     private void addEvents() {
 
