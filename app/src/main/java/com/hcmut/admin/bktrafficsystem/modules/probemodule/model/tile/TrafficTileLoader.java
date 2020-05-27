@@ -31,7 +31,7 @@ public class TrafficTileLoader {
      * ref: https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/
      */
     private static final int TILE_RADIUS = 1730;
-    private static final int LOAD_ZOOM = 14;
+    private static final int LOAD_ZOOM = 15;
 
     private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
