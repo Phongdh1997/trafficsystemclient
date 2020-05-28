@@ -21,6 +21,7 @@ import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.SleepWakeupLocationService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.LocationRepositoryService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.LocationRemoteRepository;
@@ -37,8 +38,6 @@ public class LocationCollectionManager {
 
     private static final int INTERVAL = 12000;
     private static final int FASTEST_INTERVAL = 8000;
-    private static final int DATA_COLECT_LIMIT = 200;
-    private static final int STOP_MAX_TIMES = 15;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback callback;
@@ -49,11 +48,7 @@ public class LocationCollectionManager {
     private UserLocation lastUserLocation;
     private MutableLiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
 
-    private int stopServiceCountDown = DATA_COLECT_LIMIT;
-    private int stopCount = 0;
-    private MovingDetection movingDetection = new MovingDetection();
-
-    private StopServiceEvent stopServiceEvent;
+    private SleepWakeupLocationService sleepWakeupLocationService;
 
     private LocationCollectionManager(Context context) {
         this.context = context.getApplicationContext();
@@ -63,8 +58,8 @@ public class LocationCollectionManager {
         apiService = CallApi.createService();
     }
 
-    public void setStopServiceEvent(StopServiceEvent stopServiceEvent) {
-        this.stopServiceEvent = stopServiceEvent;
+    public void setStopServiceEvent(SleepWakeupLocationService.StopServiceEvent stopServiceEvent) {
+        sleepWakeupLocationService.setStopServiceEvent(stopServiceEvent);
     }
 
     public static LocationCollectionManager getInstance(Context context) {
@@ -79,13 +74,11 @@ public class LocationCollectionManager {
     }
 
     public void beginTraceLocation(Looper looper) {
-        stopServiceCountDown = DATA_COLECT_LIMIT;
-        stopCount = 0;
-        movingDetection = new MovingDetection();
         LocationRequest request = LocationRequest.create();
         request.setInterval(INTERVAL);
         request.setFastestInterval(FASTEST_INTERVAL);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        sleepWakeupLocationService.repare();
         this.callback = new LocationReceiverCallback();
         if (fusedLocationProviderClient != null) {
             fusedLocationProviderClient.requestLocationUpdates(request, this.callback, looper);
@@ -131,7 +124,7 @@ public class LocationCollectionManager {
                 UserLocation currUserLocation = new UserLocation(location);
                 postReport(currUserLocation);
                 lastUserLocation = currUserLocation;
-                handleSleepOrWakeupService(currUserLocation);
+                sleepWakeupLocationService.handleSleepOrWakeupService(currUserLocation);
             }
         }
     }
@@ -151,49 +144,5 @@ public class LocationCollectionManager {
                 Log.e("post GPS report", "fail");
             }
         });
-    }
-
-    private void handleSleepOrWakeupService(UserLocation currUserLocation) {
-        movingDetection.setCurrLocation(currUserLocation);
-        if (!movingDetection.isMoving()) {
-            stopCount++;
-        } else {
-            stopCount = 0;
-        }
-        Log.e("stoping", "stop count: " + stopCount);
-
-        // nếu người dùng không di chuyển ra khỏi vị trí trong
-        // STOP_MAX_TIMES lần lấy tọa độ, thì xác định người dùng không di chuyển
-        // => dừng LocationService
-        if (stopCount > STOP_MAX_TIMES) {
-            // user is not move
-            // stop service
-            if (stopServiceEvent != null) {
-                stopServiceEvent.onStop();
-            }
-            TrafficNotificationFactory trafficNotificationFactory = TrafficNotificationFactory
-                    .getInstance(context);
-            Notification notification = trafficNotificationFactory
-                    .getStoppedServiceNotification(context);
-            trafficNotificationFactory.sendNotification(notification, STOPPED_NOTIFICATION_ID);
-            LocationServiceAlarmUtil.setLocationAlarm(context);     // set up alarm to start service again
-            stopCount = 0;
-        }
-
-        // show notification for location collecting
-        stopServiceCountDown--;
-        if (stopServiceCountDown < 1) {
-            // notify stop notification
-            TrafficNotificationFactory trafficNotificationFactory = TrafficNotificationFactory
-                    .getInstance(context);
-            Notification notification = trafficNotificationFactory
-                    .getStopLocationServiceNotification(context, MapActivity.class);
-            trafficNotificationFactory.sendNotification(notification, STOP_LOCATION_SERVICE_ALERT_NOTIFICATION_ID);
-            stopServiceCountDown = DATA_COLECT_LIMIT;
-        }
-    }
-
-    public interface StopServiceEvent {
-        void onStop();
     }
 }
