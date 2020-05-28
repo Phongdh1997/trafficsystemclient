@@ -55,6 +55,11 @@ public class UserLocation {
         this.timestamp = Calendar.getInstance().getTime();
     }
 
+    /**
+     *
+     * @param destLocation
+     * @return: distance in meter
+     */
     public float distanceTo (UserLocation destLocation) {
         float [] realDistance = new float[3];
         Location.distanceBetween(
@@ -76,6 +81,23 @@ public class UserLocation {
             return location.getAccuracy();
         } else {
             return DEFAULT_ACCURACY;
+        }
+    }
+
+    /**
+     * return speed in km/h
+     * @param prevLocation
+     * @param currLocation
+     * @return
+     */
+    public static float calculateSpeed(UserLocation prevLocation, UserLocation currLocation) {
+        try {
+            float distance = prevLocation.distanceTo(currLocation);
+            long time = currLocation.getTimestamp().getTime() - prevLocation.getTimestamp().getTime();
+            float speed = (distance * 1000.0f) / ((float) time / (1000.0f * 60.0f * 60.0f));
+            return Math.max(speed, 1.0f);
+        } catch (Exception e) {
+            return 1.0f;
         }
     }
 
@@ -120,6 +142,6 @@ public class UserLocation {
     @NonNull
     @Override
     public String toString() {
-        return "No" + id + ": Long: " + longitude + " - Lati: " + latitude + " - Speed = " + timestamp;
+        return "No" + id + ": Long: " + longitude + " ; Lati: " + latitude + " - Speed = " + timestamp;
     }
 }

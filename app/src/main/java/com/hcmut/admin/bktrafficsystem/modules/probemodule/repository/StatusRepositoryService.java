@@ -1,13 +1,11 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository;
 
-import android.arch.lifecycle.LiveData;
-
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 import java.util.List;
 
 public interface StatusRepositoryService {
-    void loadStatusRenderData(UserLocation userLocation, double zoom);
-    LiveData<List<PolylineOptions>> getStatusRenderData();
+    List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, double zoom);
+    List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, int radiusInMeters);
 }

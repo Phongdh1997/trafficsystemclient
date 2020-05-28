@@ -16,11 +16,9 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProbeMapUi {
 
@@ -30,13 +28,14 @@ public class ProbeMapUi {
     private AppCompatActivity activity;
     private GoogleMap gmaps;
 
-    private List<Polyline> prevStatusRenderPolylines;
     private Polyline prevDirectionRenderPolyline;
     private MapViewModel mapViewModel;
+    private StatusOverlayRender statusOverlayRender;
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
+        statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
 
         getViewModel();
         addViewModelObserver();
@@ -51,6 +50,8 @@ public class ProbeMapUi {
         mapViewModel.stopStatusRenderTimer();
     }
 
+    public void onCameraMoved() {}
+
     private void addEvents() {
 
     }
@@ -61,28 +62,15 @@ public class ProbeMapUi {
 
     private void addViewModelObserver() {
         // get live data
-        LiveData<List<PolylineOptions>> statusPolylineOptionsLiveData = mapViewModel.getStatusRenderPolylineOptionsLiveData();
         LiveData<StatusRenderEvent> statusRenderEventLiveData = mapViewModel.getStatusRenderEventLiveData();
         LiveData<PolylineOptions> directionRenderPolylineOptionsLiveData = mapViewModel.getDirectionRenderPolylineOptionsLiveData();
         LiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData = mapViewModel.getCurrentUserLocationEventLiveData();
 
         // set observer
-        statusPolylineOptionsLiveData.observe(activity, new Observer<List<PolylineOptions>>() {
-            @Override
-            public void onChanged(List<PolylineOptions> statusPolylineOptionsList) {
-                removePrevStatusRender();
-                prevStatusRenderPolylines = renderNewStatus(statusPolylineOptionsList);
-            }
-        });
         statusRenderEventLiveData.observe(activity, new Observer<StatusRenderEvent>() {
             @Override
             public void onChanged(StatusRenderEvent statusRenderEvent) {
-                Log.e("status", "rendering");
-                // double zoom = gmaps.getCameraPosition().zoom;
-                double zoom = 15.0;
-                //UserLocation userLocation = LocationCollectionManager.getInstance(getContext()).getLastUserLocation();
-                UserLocation userLocation = new UserLocation(10.776425, 106.663520);
-                mapViewModel.rendering(userLocation, zoom);
+                clearTileOverlayRender();
             }
         });
         directionRenderPolylineOptionsLiveData.observe(activity, new Observer<PolylineOptions>() {
@@ -115,28 +103,16 @@ public class ProbeMapUi {
         });
     }
 
+    private void clearTileOverlayRender() {
+        if (statusOverlayRender != null) {
+            statusOverlayRender.notifyDataChange();
+        }
+    }
+
     private void removePrevDirectionRender() {
         if (prevDirectionRenderPolyline != null) {
             prevDirectionRenderPolyline.remove();
             prevDirectionRenderPolyline = null;
         }
-    }
-
-    private void removePrevStatusRender() {
-        if (prevStatusRenderPolylines != null) {
-            for (Polyline polyline : prevStatusRenderPolylines) {
-                polyline.remove();
-            }
-            prevStatusRenderPolylines.clear();
-            prevStatusRenderPolylines = null;
-        }
-    }
-
-    private List<Polyline> renderNewStatus(List<PolylineOptions> statusPolylineOptionsList) {
-        List<Polyline> polylines = new ArrayList<>();
-        for (PolylineOptions statusPolylineOptions: statusPolylineOptionsList) {
-            polylines.add(gmaps.addPolyline(statusPolylineOptions));
-        }
-        return polylines;
     }
 }

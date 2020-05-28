@@ -42,11 +42,15 @@ public class LocationRequire implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        int velocity = (int) (getLastKnownLocation.distanceTo(location)*3.6/5); // convert km/h
-        LocationUtil.setLastVelocity(velocity, velocities);
-        int avgVelocity = LocationUtil.getAvgVelocity(velocities);
-        mListener.onUpdate(new LatLng(location.getLatitude(), location.getLongitude()), avgVelocity);
-        getLastKnownLocation = location;
+        try {
+            int velocity = (int) (getLastKnownLocation.distanceTo(location) * 3.6 / 5); // convert km/h
+            LocationUtil.setLastVelocity(velocity, velocities);
+            int avgVelocity = LocationUtil.getAvgVelocity(velocities);
+            mListener.onUpdate(new LatLng(location.getLatitude(), location.getLongitude()), avgVelocity);
+            getLastKnownLocation = location;
+        } catch (Exception e) {
+
+        }
     }
 
     @Override

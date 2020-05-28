@@ -98,8 +98,6 @@ public class SearchWayData {
                 builder.append(coord.getLat());
                 builder.append(",");
                 builder.append(coord.getLng());
-                builder.append(",");
-                builder.append(coord.getSegmentId());
                 builder.append("}");
             }
             coordsString = builder.toString();
@@ -116,10 +114,10 @@ public class SearchWayData {
         @SerializedName("lng")
         @Expose
         private double lng;
-
-        @SerializedName("segment_id")
-        @Expose
-        private int segmentId;
+//
+//        @SerializedName("segment_id")
+//        @Expose
+//        private int segmentId;
 
         /**
          * No args constructor for use in serialization
@@ -137,14 +135,6 @@ public class SearchWayData {
             super();
             this.lat = lat;
             this.lng = lng;
-        }
-
-        public int getSegmentId() {
-            return segmentId;
-        }
-
-        public void setSegmentId(int segmentId) {
-            this.segmentId = segmentId;
         }
 
         public double getLat() {

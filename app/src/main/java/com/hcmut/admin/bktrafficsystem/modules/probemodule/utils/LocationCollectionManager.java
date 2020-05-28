@@ -15,11 +15,20 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.hcmut.admin.bktrafficsystem.api.ApiService;
+import com.hcmut.admin.bktrafficsystem.api.CallApi;
+import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
+import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.LocationRepositoryService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.LocationRemoteRepository;
 import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOPPED_NOTIFICATION_ID;
 import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOP_LOCATION_SERVICE_ALERT_NOTIFICATION_ID;
@@ -36,7 +45,7 @@ public class LocationCollectionManager {
     private static LocationCollectionManager locationCollectionManager;
 
     private Context context;
-    private LocationRepositoryService locationRepositoryService;
+    private ApiService apiService;
     private UserLocation lastUserLocation;
     private MutableLiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
 
@@ -50,9 +59,8 @@ public class LocationCollectionManager {
         this.context = context.getApplicationContext();
         fusedLocationProviderClient = LocationServices
                 .getFusedLocationProviderClient(context.getApplicationContext());
-        locationRepositoryService = new LocationRemoteRepository();
         currentUserLocationEventLiveData = new MutableLiveData<>();
-
+        apiService = CallApi.createService();
     }
 
     public void setStopServiceEvent(StopServiceEvent stopServiceEvent) {
@@ -121,11 +129,28 @@ public class LocationCollectionManager {
             Location location = locationResult.getLastLocation();
             if (location != null) {
                 UserLocation currUserLocation = new UserLocation(location);
-                locationRepositoryService.postLocationRecord(lastUserLocation, currUserLocation); // send location record to server
+                postReport(currUserLocation);
                 lastUserLocation = currUserLocation;
                 handleSleepOrWakeupService(currUserLocation);
             }
         }
+    }
+
+    private void postReport(UserLocation currUserLocation) {
+        if (lastUserLocation == null) return;
+        String accessAuth = MapActivity.currentUser.getAccessToken();
+        ReportRequest reportRequest = new ReportRequest(lastUserLocation, currUserLocation);
+        apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Log.e("post GPS report", "code " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e("post GPS report", "fail");
+            }
+        });
     }
 
     private void handleSleepOrWakeupService(UserLocation currUserLocation) {

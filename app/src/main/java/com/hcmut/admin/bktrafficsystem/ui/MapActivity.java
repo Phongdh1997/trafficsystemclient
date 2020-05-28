@@ -77,6 +77,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -113,6 +114,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.TrafficReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
@@ -160,7 +162,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private static final float DEFAULT_ZOOM = 15f;
 
+    private static final float MAP_LOAD_RANGE = 500; // meter
+
     private LocationRequire locationRequire = null;
+    public static User currentUser;
     //varsm
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
@@ -348,6 +353,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Button btnCurrentLocationReport;
     private ImageButton btnMore;
     private LinearLayout layoutMoreFeature;
+
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -687,6 +693,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
+        mMap.setMaxZoomPreference(17);
 
         //
         //  init Probe Map Module
@@ -901,6 +908,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 intent.putExtra("VELOCITY", velocity);
                 intent.putExtra("SEGMENT_ID", segmentId);
                 startActivity(intent);
+            }
+        });
+
+        mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int i) {
+                // TODO:
             }
         });
 
@@ -1179,10 +1193,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void initDrawerView(View drawerView) {
-        User user = SharedPrefUtils.getUser(MapActivity.this);
+        currentUser = SharedPrefUtils.getUser(MapActivity.this);
         //Get user data
-        userName = user.getUserName();
-        imgUrl = user.getImgUrl();
+        userName = currentUser.getUserName();
+        imgUrl = currentUser.getImgUrl();
 
         NavigationView navView = (NavigationView) drawerView;
         //Header of navView
