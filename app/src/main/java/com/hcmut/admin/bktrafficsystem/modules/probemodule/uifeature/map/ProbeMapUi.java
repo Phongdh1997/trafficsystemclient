@@ -104,7 +104,9 @@ public class ProbeMapUi {
     }
 
     private void clearTileOverlayRender() {
-        statusOverlayRender.notifyDataChange();
+        if (statusOverlayRender != null) {
+            statusOverlayRender.notifyDataChange();
+        }
     }
 
     private void removePrevDirectionRender() {
