@@ -56,6 +56,7 @@ public class LocationCollectionManager {
                 .getFusedLocationProviderClient(context.getApplicationContext());
         currentUserLocationEventLiveData = new MutableLiveData<>();
         apiService = CallApi.createService();
+        sleepWakeupLocationService = new SleepWakeupLocationService(context);
     }
 
     public void setStopServiceEvent(SleepWakeupLocationService.StopServiceEvent stopServiceEvent) {

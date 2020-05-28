@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.SleepWakeupLocationService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory;
 
@@ -44,7 +45,7 @@ public class AppForegroundService extends Service {
         locationHandlerThread.start();
         locationCollectionManager = LocationCollectionManager.getInstance(getApplicationContext());
         locationCollectionManager.beginTraceLocation(locationHandlerThread.getLooper());
-        locationCollectionManager.setStopServiceEvent(new LocationCollectionManager.StopServiceEvent() {
+        locationCollectionManager.setStopServiceEvent(new SleepWakeupLocationService.StopServiceEvent() {
             @Override
             public void onStop() {
                 stopForeground(true);
