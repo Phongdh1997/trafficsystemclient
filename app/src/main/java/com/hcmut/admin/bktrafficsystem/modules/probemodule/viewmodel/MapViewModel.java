@@ -61,31 +61,6 @@ public class MapViewModel extends AndroidViewModel {
     }
 
     /**
-     * View action: load traffic status from server and notify to map to render
-     */
-    public void rendering(UserLocation userLocation, double zoom) {
-        statusRender.loadTrafficStatus(userLocation, zoom);
-    }
-
-    /**
-     * View action:
-     */
-    public void triggerRender(LatLng cameraTarget, float zoom) {
-        statusRender.triggerRender(cameraTarget, zoom);
-    }
-
-    /**
-     * set statusOverlayRender to model
-     */
-    public void setTileOverlayRender(StatusOverlayRender statusOverlayRender) {
-        statusRender.setStatusOverlayRender(statusOverlayRender);
-    }
-
-    public void loadStatus(UserLocation userLocation, float zoom) {
-        statusRender.loadTrafficStatus(userLocation, zoom);
-    }
-
-    /**
      * View action
      */
     public void direct(UserLocation startPoint, UserLocation endPoint) {

@@ -2,14 +2,8 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,27 +11,21 @@ import java.util.TimerTask;
 public class StatusRender {
 
     private static final int TIMER_DELAY = 0;
-    private static final int TIMER_PERIOD = 30000;
+    private static final int TIMER_PERIOD = 60000 * 3; // 3 minus
 
     private boolean isTimerRunning;
 
     private MutableLiveData<StatusRenderEvent> statusRenderEventLiveData;
 
-    private StatusRepositoryService statusRepositoryService;
     private Timer statusRenderTimer;
 
     public StatusRender() {
         isTimerRunning = false;
         statusRenderEventLiveData = new MutableLiveData<>();
-        statusRepositoryService = new StatusRemoteRepository();
     }
 
     public LiveData<StatusRenderEvent> getStatusRenderEvent () {
         return statusRenderEventLiveData;
-    }
-
-    public void loadTrafficStatus(UserLocation userLocation, double zoom) {
-        statusRepositoryService.loadStatusRenderData(userLocation, zoom);
     }
 
     public void startStatusRenderTimer() {
@@ -58,15 +46,5 @@ public class StatusRender {
             statusRenderTimer.cancel();
             isTimerRunning = false;
         } catch (Exception e) {}
-    }
-
-    public void triggerRender(LatLng cameraTarget, float zoom) {
-        StatusRenderEvent statusRenderEvent = new StatusRenderEvent(false);
-        statusRenderEvent.setCameraTargetAndZoom(cameraTarget, zoom);
-        statusRenderEventLiveData.postValue(statusRenderEvent);
-    }
-
-    public void setStatusOverlayRender(StatusOverlayRender statusOverlayRender) {
-        statusRepositoryService.setStatusOverlayRender(statusOverlayRender);
     }
 }

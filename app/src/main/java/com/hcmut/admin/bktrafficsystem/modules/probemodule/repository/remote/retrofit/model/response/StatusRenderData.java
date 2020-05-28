@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -15,7 +16,7 @@ import java.util.List;
 public class StatusRenderData {
     @SerializedName("segment")
     @Expose
-    private Long segment;
+    private long segment;
     @SerializedName("color")
     @Expose
     private String color;
@@ -41,6 +42,10 @@ public class StatusRenderData {
         return polyline;
     }
 
+    public long getSegment() {
+        return segment;
+    }
+
     public void setPolyline(Polyline polyline) {
         this.polyline = polyline;
     }
@@ -48,6 +53,20 @@ public class StatusRenderData {
     public List<LatLng> getLatLngPolyline() {
         if (polyline != null) {
             return polyline.getLatLngPolyline();
+        }
+        return null;
+    }
+
+    public boolean isInLatLngBounds(LatLngBounds bounds) {
+        LatLng latLng = polyline.getStartPointLatLng();
+        if (latLng != null) {
+            return bounds.contains(latLng);
+        }
+        return false;
+    }
+    public LatLng getStartPointLatLng() {
+        if (polyline != null) {
+            return polyline.getStartPointLatLng();
         }
         return null;
     }
@@ -72,6 +91,13 @@ public class StatusRenderData {
                 l.add(new LatLng(coordinates.get(0).get(1), coordinates.get(0).get(0)));
                 l.add(new LatLng(coordinates.get(1).get(1), coordinates.get(1).get(0)));
                 return l;
+            } catch (Exception e) {}
+            return null;
+        }
+
+        public LatLng getStartPointLatLng() {
+            try {
+                return new LatLng(coordinates.get(0).get(1), coordinates.get(0).get(0));
             } catch (Exception e) {}
             return null;
         }

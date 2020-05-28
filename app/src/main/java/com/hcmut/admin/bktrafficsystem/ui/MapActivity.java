@@ -165,6 +165,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final float MAP_LOAD_RANGE = 500; // meter
 
     private LocationRequire locationRequire = null;
+    public static User currentUser;
     //varsm
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
@@ -474,7 +475,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onStart() {
         super.onStart();
         if (probeMapUi != null) {
-            //probeMapUi.startStatusRenderTimer();
+            probeMapUi.startStatusRenderTimer();
         }
     }
 
@@ -692,12 +693,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
+        mMap.setMaxZoomPreference(17);
 
         //
         //  init Probe Map Module
         //
         probeMapUi = new ProbeMapUi(this, mMap);
-        //probeMapUi.startStatusRenderTimer();
+        probeMapUi.startStatusRenderTimer();
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
@@ -912,7 +914,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int i) {
-                //probeMapUi.onMapMoved();
+                // TODO:
             }
         });
 
@@ -1191,10 +1193,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void initDrawerView(View drawerView) {
-        User user = SharedPrefUtils.getUser(MapActivity.this);
+        currentUser = SharedPrefUtils.getUser(MapActivity.this);
         //Get user data
-        userName = user.getUserName();
-        imgUrl = user.getImgUrl();
+        userName = currentUser.getUserName();
+        imgUrl = currentUser.getImgUrl();
 
         NavigationView navView = (NavigationView) drawerView;
         //Header of navView

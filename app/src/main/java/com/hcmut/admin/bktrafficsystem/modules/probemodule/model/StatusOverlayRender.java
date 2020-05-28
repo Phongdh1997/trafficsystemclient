@@ -1,16 +1,11 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.CustomTileProvider;
 
 /**
  * Đại diện cho nguồn dữ liệu status sẽ được render lên TileOverlay
@@ -20,40 +15,20 @@ public class StatusOverlayRender {
 
     private TileOverlay statusTileOverlay;
     private CustomTileProvider statusTileProvider;
-    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
-    public StatusOverlayRender(GoogleMap map, ProbeMapUi probeMapUi) {
+    public StatusOverlayRender(GoogleMap map, Context context) {
         this.map = map;
-        statusTileProvider = new CustomTileProvider(new ArrayList<StatusRenderData>(), probeMapUi);
+        statusTileProvider = new CustomTileProvider(context);
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(statusTileProvider));
-    }
-
-    /**
-     * Add new data source to old data source, don't clear Tile Cache
-     * @param statusDataSource
-     */
-    public void addDataSource(List<StatusRenderData> statusDataSource) {
-        statusTileProvider.addDataSource(statusDataSource);
+        notifyDataChange();
     }
 
     /**
      * clear Tile Cache, current data source will be displayed
      */
     public void notifyDataChange() {
-        mainThreadHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                statusTileOverlay.clearTileCache();
-            }
-        });
-    }
-
-    /**
-     * clear render and data source
-     */
-    public void clearRender() {
-        statusTileProvider.clearDataSource();
-        notifyDataChange();
+        statusTileOverlay.clearTileCache();
+        statusTileProvider.clearTileDataCached();
     }
 }
