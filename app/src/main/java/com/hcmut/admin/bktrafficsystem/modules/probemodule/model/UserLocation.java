@@ -39,6 +39,7 @@ public class UserLocation {
     public UserLocation(LatLng latLng) {
         this.latitude = latLng.latitude;
         this.longitude = latLng.longitude;
+        this.timestamp = Calendar.getInstance().getTime();
     }
 
     public UserLocation(int id, double longitude, double latitude) {
@@ -94,7 +95,7 @@ public class UserLocation {
         try {
             float distance = prevLocation.distanceTo(currLocation);
             long time = currLocation.getTimestamp().getTime() - prevLocation.getTimestamp().getTime();
-            float speed = (distance * 1000.0f) / ((float) time / (1000.0f * 60.0f * 60.0f));
+            float speed = 3.6f * (distance / (time / 1000f));
             return Math.max(speed, 1.0f);
         } catch (Exception e) {
             return 1.0f;

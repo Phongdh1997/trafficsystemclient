@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class ReportRequest {
-    private float velocity;
+    private int velocity;
     private double currentLat;
     private double currentLng;
     private double nextLat;
@@ -28,11 +28,11 @@ public class ReportRequest {
         this.currentLng = prevLocation.getLongitude();
         this.nextLat = currentLocation.getLatitude();
         this.nextLng = currentLocation.getLongitude();
-        this.velocity = UserLocation.calculateSpeed(prevLocation, currentLocation);
+        this.velocity = Math.round(UserLocation.calculateSpeed(prevLocation, currentLocation));
         this.type = "system";
     }
 
-    public ReportRequest(float velocity, double currentLat, double currentLng, double nextLat, double nextLng, ArrayList<String> causes, String description, ArrayList<String> images) {
+    public ReportRequest(int velocity, double currentLat, double currentLng, double nextLat, double nextLng, ArrayList<String> causes, String description, ArrayList<String> images) {
         this.velocity = velocity;
         this.currentLat = currentLat;
         this.currentLng = currentLng;
