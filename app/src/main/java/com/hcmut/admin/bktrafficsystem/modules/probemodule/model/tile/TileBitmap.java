@@ -22,15 +22,15 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public class TileBitmap {
-    private final boolean IS_HIGHER_API_25 = Build.VERSION.SDK_INT > 25;
+    private final int TILE_ZOOM_15_SCALE = 3;
     private final int mTileSize = 256;
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
-    private final int mScale = 1;
+    private final int mScale = TILE_ZOOM_15_SCALE;
     private final int mDimension = mScale * mTileSize;
     private static final int DEFAULT_COLOR = Color.BLACK;
     private Paint paint = new Paint();
 
-    public Tile getTileWithScale(int x, int y, int zoom, @Nullable List<StatusRenderDataEntity> statusDatas) {
+    public Bitmap getTileWithScale(int x, int y, int zoom, @Nullable List<StatusRenderDataEntity> statusDatas) {
         if (statusDatas == null || statusDatas.size() == 0) {
             return null;
         }
@@ -45,13 +45,7 @@ public class TileBitmap {
         Canvas c = new Canvas(bitmap);
         c.setMatrix(matrix);
         c = drawCanvasFromArray(c, zoom, statusDatas);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        Tile tile = new Tile(mDimension, mDimension, baos.toByteArray());
-        if (IS_HIGHER_API_25) {
-            bitmap.recycle();
-        }
-        return tile;
+        return bitmap;
     }
 
     /**

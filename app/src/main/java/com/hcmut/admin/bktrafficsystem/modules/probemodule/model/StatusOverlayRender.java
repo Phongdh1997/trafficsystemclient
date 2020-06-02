@@ -1,11 +1,13 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.CustomTileProvider;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileBitmapRender;
 
 /**
  * Đại diện cho nguồn dữ liệu status sẽ được render lên TileOverlay
@@ -22,6 +24,10 @@ public class StatusOverlayRender {
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(statusTileProvider));
         notifyDataChange();
+    }
+
+    public LiveData<TileBitmapRender> getTileBitmapLiveData () {
+        return statusTileProvider.getTileBitmapLiveData();
     }
 
     /**

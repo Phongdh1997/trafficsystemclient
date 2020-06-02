@@ -3,7 +3,9 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,6 +20,8 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLoca
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.BitmapTileRenderHandler;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileBitmapRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
 
 public class ProbeMapUi {
@@ -31,11 +35,13 @@ public class ProbeMapUi {
     private Polyline prevDirectionRenderPolyline;
     private MapViewModel mapViewModel;
     private StatusOverlayRender statusOverlayRender;
+    private BitmapTileRenderHandler bitmapTileRenderHandler;
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
         statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
+        bitmapTileRenderHandler = new BitmapTileRenderHandler(80, 30);
 
         getViewModel();
         addViewModelObserver();
@@ -101,6 +107,16 @@ public class ProbeMapUi {
                 }
             }
         });
+
+        if (statusOverlayRender != null) {
+            LiveData<TileBitmapRender> tileBitmapLiveData = statusOverlayRender.getTileBitmapLiveData();
+            tileBitmapLiveData.observe(activity, new Observer<TileBitmapRender>() {
+                @Override
+                public void onChanged(@Nullable TileBitmapRender tileBitmapRender) {
+                    bitmapTileRenderHandler.renderBitmapToMap(tileBitmapRender, gmaps);
+                }
+            });
+        }
     }
 
     private void clearTileOverlayRender() {

@@ -27,11 +27,12 @@ public class TrafficTileLoader {
     public static final String TILE_LOAD_FAIL = "tile_load_fail";
 
     /**
-     * radius of tile level 14 in meters
+     * radius of tile level in meters
      * ref: https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/
      */
-    private static final int TILE_RADIUS = 1730;
-    private static final int LOAD_ZOOM = 14;
+    private static final int TILE_RADIUS_LEVEL_14 = 1730;
+    private static final int TILE_RADIUS_LEVEL_15 = 865;
+    private static final int LOAD_ZOOM = 15;
 
     private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
@@ -123,7 +124,7 @@ public class TrafficTileLoader {
                 LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tileCoordinates);
                 UserLocation userLocation = new UserLocation(bounds.getCenter());
                 Log.e("tile status", tileCoordinates.toString() + "loading, " + userLocation.toString());
-                List<StatusRenderData> datas = statusRepositoryService.loadStatusRenderData(userLocation, TILE_RADIUS);
+                List<StatusRenderData> datas = statusRepositoryService.loadStatusRenderData(userLocation, TILE_RADIUS_LEVEL_15);
                 if (datas != null) {
                     roomDatabaseService.insertTrafficStatus(datas);
                     loadedTiles.put(tileCoordinates, TILE_LOADED);
