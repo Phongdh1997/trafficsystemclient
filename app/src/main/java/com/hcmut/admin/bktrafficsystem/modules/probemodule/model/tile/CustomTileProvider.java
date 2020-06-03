@@ -40,7 +40,7 @@ public class CustomTileProvider implements TileProvider {
         }
         try {
             TileCoordinates tileCoordinates = TileCoordinates.getTileCoordinates(x, y, zoom);
-            List<StatusRenderDataEntity> statusDatas = trafficTileLoader.loadTileDataFromLocal(tileCoordinates);
+            List<StatusRenderDataEntity> statusDatas = trafficTileLoader.loadData(tileCoordinates);
             Bitmap bitmap = tileBitmapHelper.getTileWithScale(x, y, zoom, statusDatas);
             if (bitmap != null) {
                 LatLngBounds latLngBounds = MyLatLngBoundsUtil.tileToLatLngBound(tileCoordinates);
