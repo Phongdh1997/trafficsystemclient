@@ -32,7 +32,7 @@ public class TrafficTileLoader {
      */
     private static final int TILE_RADIUS_LEVEL_14 = 1730;
     private static final int TILE_RADIUS_LEVEL_15 = 865;
-    private static final int LOAD_ZOOM = 15;
+    private static final int LOAD_ZOOM = 14;
 
     private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
@@ -62,19 +62,19 @@ public class TrafficTileLoader {
      * Load data for tileCoordinates from local
      * if tile not loaded then load from server
      *
-     * @param tileCoordinates
+     * @param renderTile
      * @return
      */
-    public List<StatusRenderDataEntity> loadTileDataFromLocal(TileCoordinates tileCoordinates) {
-        final LatLngBounds loadingLatLngBounds = MyLatLngBoundsUtil.tileToLatLngBound(tileCoordinates);
-        final LatLng centerPoint = loadingLatLngBounds.getCenter();
+    public List<StatusRenderDataEntity> loadData(TileCoordinates renderTile) {
+        final LatLngBounds renderLatLngBounds = MyLatLngBoundsUtil.tileToLatLngBound(renderTile);
+        final LatLng centerPoint = renderLatLngBounds.getCenter();
         try {
             TileCoordinates tileWithLOAD_ZOOM = MyLatLngBoundsUtil.getTileNumber(centerPoint.latitude, centerPoint.longitude, LOAD_ZOOM);
             String tileStatus = loadedTiles.get(tileWithLOAD_ZOOM);
             if (tileStatus == null) {
                 loadDataFromServer(tileWithLOAD_ZOOM);
             } else if (tileStatus.equals(TILE_LOADED)) {
-                return roomDatabaseService.getTrafficStatus(loadingLatLngBounds);
+                return roomDatabaseService.getTrafficStatus(renderLatLngBounds);
             }
         } catch (Exception e) {}
         return null;
@@ -124,7 +124,7 @@ public class TrafficTileLoader {
                 LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tileCoordinates);
                 UserLocation userLocation = new UserLocation(bounds.getCenter());
                 Log.e("tile status", tileCoordinates.toString() + "loading, " + userLocation.toString());
-                List<StatusRenderData> datas = statusRepositoryService.loadStatusRenderData(userLocation, TILE_RADIUS_LEVEL_15);
+                List<StatusRenderData> datas = statusRepositoryService.loadStatusRenderData(userLocation, TILE_RADIUS_LEVEL_14);
                 if (datas != null) {
                     roomDatabaseService.insertTrafficStatus(datas);
                     loadedTiles.put(tileCoordinates, TILE_LOADED);

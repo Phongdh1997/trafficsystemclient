@@ -19,4 +19,10 @@ public class TileBitmapRender {
     public LatLngBounds getLatLngBounds() {
         return latLngBounds;
     }
+
+    public void recycleBitmap () {
+        try {
+            bitmap.recycle();
+        } catch (Exception e) {}
+    }
 }

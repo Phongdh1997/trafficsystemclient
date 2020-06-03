@@ -1,5 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
@@ -36,6 +38,8 @@ public class BitmapTileRenderHandler {
         if (groundOverlayQueue.size() > CACHE_LIMIT && isClearing) {
             clearCache();
         }
+
+        tileBitmapRender.recycleBitmap();
     }
 
     private void clearCache() {
@@ -43,6 +47,7 @@ public class BitmapTileRenderHandler {
         for (int i = 0; i < NUMBER_CLEARING; i++) {
             Objects.requireNonNull(groundOverlayQueue.poll()).remove();
         }
+        Log.e("clear", "clear cache");
         isClearing = false;
     }
 }

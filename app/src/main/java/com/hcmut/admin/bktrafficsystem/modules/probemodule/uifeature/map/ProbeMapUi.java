@@ -41,7 +41,7 @@ public class ProbeMapUi {
         this.activity = activity;
         this.gmaps = map;
         statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
-        bitmapTileRenderHandler = new BitmapTileRenderHandler(80, 30);
+        bitmapTileRenderHandler = new BitmapTileRenderHandler(30, 10);
 
         getViewModel();
         addViewModelObserver();

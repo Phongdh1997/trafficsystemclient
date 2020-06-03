@@ -49,4 +49,13 @@ public class MyLatLngBoundsUtil {
             ytile = ((1 << zoom) - 1);
         return TileCoordinates.getTileCoordinates(xtile, ytile, zoom);
     }
+
+    public static TileCoordinates convertTile(TileCoordinates source, int zoom) {
+        LatLng center = MyLatLngBoundsUtil.tileToLatLngBound(source).getCenter();
+        try {
+            return MyLatLngBoundsUtil.getTileNumber(center.latitude, center.longitude, zoom);
+        } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
+        }
+        return null;
+    }
 }
