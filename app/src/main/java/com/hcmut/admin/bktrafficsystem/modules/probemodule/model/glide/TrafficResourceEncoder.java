@@ -1,0 +1,31 @@
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide;
+
+import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+
+import com.bumptech.glide.load.EncodeStrategy;
+import com.bumptech.glide.load.Options;
+import com.bumptech.glide.load.ResourceEncoder;
+import com.bumptech.glide.load.engine.Resource;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+public class TrafficResourceEncoder implements ResourceEncoder<Bitmap> {
+    @NonNull
+    @Override
+    public EncodeStrategy getEncodeStrategy(@NonNull Options options) {
+        return EncodeStrategy.TRANSFORMED;
+    }
+
+    @Override
+    public boolean encode(@NonNull Resource<Bitmap> data, @NonNull File file, @NonNull Options options) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            data.get().compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            return true;
+        } catch (FileNotFoundException e) {}
+        return false;
+    }
+}
