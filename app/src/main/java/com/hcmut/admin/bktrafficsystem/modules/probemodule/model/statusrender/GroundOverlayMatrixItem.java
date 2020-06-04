@@ -42,9 +42,6 @@ public class GroundOverlayMatrixItem {
                 }
             });
         }
-        try {
-            bitmap.recycle();
-        } catch (Exception e) {}
     }
 
     public void invalidate (@NotNull final Bitmap bitmap, @NotNull final TileCoordinates tileCoordinates, @NotNull final GroundOverlayMatrixItem idleMatrixItem) {
@@ -61,9 +58,6 @@ public class GroundOverlayMatrixItem {
                 }
             });
         }
-        try {
-            bitmap.recycle();
-        } catch (Exception e) {}
     }
 
     public GroundOverlay getGroundOverlay() {

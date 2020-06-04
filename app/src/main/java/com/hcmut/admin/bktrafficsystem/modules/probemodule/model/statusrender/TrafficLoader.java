@@ -20,8 +20,8 @@ public class TrafficLoader {
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
     private TrafficBitmap trafficBitmap;
 
-    public TrafficLoader(GroundOverlayMatrix groundOverlayMatrix) {
-        trafficBitmap = new TrafficBitmap(groundOverlayMatrix);
+    public TrafficLoader(GroundOverlayMatrix groundOverlayMatrix, Context context) {
+        trafficBitmap = new TrafficBitmap(groundOverlayMatrix, context);
     }
 
     /**

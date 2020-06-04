@@ -1,13 +1,18 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.bumptech.glide.request.FutureTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.BitmapGlideModel;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nullable;
 
@@ -30,19 +37,27 @@ public class GroundOverlayMatrix {
     private Queue<GroundOverlayMatrixItem> idleOverlay = new LinkedList<>();
     private WeakReference<GoogleMap> googleMapWeakReference;
     private TrafficLoader trafficLoader;
+    private Executor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
+    private GlideBitmapHelper glideBitmapHelper;
 
-    public GroundOverlayMatrix(GoogleMap googleMap) {
+    public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
         googleMapWeakReference = new WeakReference<>(googleMap);
-        trafficLoader = new TrafficLoader(this);
+        trafficLoader = new TrafficLoader(this, context);
+        glideBitmapHelper = GlideBitmapHelper.getInstance(context);
     }
 
-    public void renderMatrix(TileCoordinates centerTile) {
-        List<TileCoordinates> notLoadedTile = getNotLoadedTile(centerTile);
-        Log.e("matrix", "not loaded size: " + notLoadedTile.size());
-        Log.e("matrix", "idle size: " + idleOverlay.size());
-        for (TileCoordinates tile : notLoadedTile) {
-            renderTile(tile);
-        }
+    public synchronized void renderMatrix(final TileCoordinates centerTile) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<TileCoordinates> notLoadedTile = getNotLoadedTile(centerTile);
+                Log.e("matrix", "not loaded size: " + notLoadedTile.size());
+                Log.e("matrix", "idle size: " + idleOverlay.size());
+                for (TileCoordinates tile : notLoadedTile) {
+                    renderTile(tile);
+                }
+            }
+        });
     }
 
     /**
@@ -53,16 +68,17 @@ public class GroundOverlayMatrix {
      * @param tile
      */
     private void renderTile(TileCoordinates tile) {
-        Bitmap bitmap = loadBitmapFromGlide();
+        Bitmap bitmap = glideBitmapHelper.loadBitmapFromGlide(tile);
         if (bitmap != null) {   // bitmap is in Glide
             invalidate(tile, bitmap);
+            Log.e("matrix", "have data in glide");
         } else {
             GroundOverlayMatrixItem renderMatrixItem = overlayMatrix.get(tile);
             if (renderMatrixItem != null) {
                 switch (renderMatrixItem.getState()) {
                     case GroundOverlayMatrixItem.INIT_OVERLAY:
-                        trafficLoader.loadDataFromServer(tile);
                         renderMatrixItem.setState(GroundOverlayMatrixItem.LOADING_OVERLAY);
+                        trafficLoader.loadDataFromServer(tile);
                         break;
                     case GroundOverlayMatrixItem.LOADING_OVERLAY:
                         break;
@@ -84,19 +100,11 @@ public class GroundOverlayMatrix {
     public void invalidate(TileCoordinates tileCoordinates, @Nullable Bitmap bitmap) {
         Bitmap renderBitmap = bitmap;
         if (renderBitmap == null) {
-            renderBitmap = loadBitmapFromGlide();
+            renderBitmap = glideBitmapHelper.loadBitmapFromGlide(tileCoordinates);
         }
         if (renderBitmap != null) {
             renderBitmapToTile(tileCoordinates, renderBitmap);
         }
-    }
-
-    /**
-     * TODO:
-     * @return
-     */
-    private Bitmap loadBitmapFromGlide() {
-        return null;
     }
 
     /**

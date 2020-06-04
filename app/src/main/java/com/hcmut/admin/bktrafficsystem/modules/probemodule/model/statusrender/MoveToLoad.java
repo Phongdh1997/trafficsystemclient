@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -13,8 +14,8 @@ public class MoveToLoad {
     private TileCoordinates lastCenterTile;
     private GroundOverlayMatrix groundOverlayMatrix;
 
-    public MoveToLoad (GoogleMap googleMap) {
-        groundOverlayMatrix = new GroundOverlayMatrix(googleMap);
+    public MoveToLoad (GoogleMap googleMap, Context context) {
+        groundOverlayMatrix = new GroundOverlayMatrix(googleMap, context);
     }
 
     public void cameraMove(GoogleMap googleMap) {

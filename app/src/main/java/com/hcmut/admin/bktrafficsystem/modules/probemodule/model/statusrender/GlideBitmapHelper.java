@@ -1,0 +1,50 @@
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+
+import com.bumptech.glide.request.FutureTarget;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.BitmapGlideModel;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+
+public class GlideBitmapHelper {
+    private Context context;
+
+    private static GlideBitmapHelper glideBitmapHelper;
+
+    private GlideBitmapHelper(Context context) {
+        this.context = context;
+    }
+
+    public static GlideBitmapHelper getInstance (Context context) {
+        if (glideBitmapHelper == null) {
+            glideBitmapHelper = new GlideBitmapHelper(context);
+        }
+        return glideBitmapHelper;
+    }
+
+    /**
+     * TODO:
+     * @return
+     */
+    public Bitmap loadBitmapFromGlide(TileCoordinates tile) {
+        BitmapGlideModel model = new BitmapGlideModel(tile, null);
+        FutureTarget<Bitmap> target = GlideApp
+                .with(context)
+                .asBitmap()
+                .load(model)
+                .submit();
+        try {
+            return target.get();
+        } catch (Exception e) {}
+        return null;
+    }
+
+    @SuppressLint("CheckResult")
+    public void storeBitmapToGlide (TileCoordinates tile, Bitmap bitmap) {
+        BitmapGlideModel model = new BitmapGlideModel(tile, bitmap);
+        GlideApp.with(context).load(model).submit();
+    }
+}

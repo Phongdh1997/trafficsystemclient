@@ -703,7 +703,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //
         probeMapUi = new ProbeMapUi(this, mMap);
         probeMapUi.startStatusRenderTimer();
-        moveToLoad = new MoveToLoad(mMap);
+        moveToLoad = new MoveToLoad(mMap, getApplicationContext());
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
