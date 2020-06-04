@@ -22,6 +22,22 @@ public class TileCoordinates {
         return new TileCoordinates(x, y, z);
     }
 
+    public TileCoordinates getTileLeft() throws TileCoordinatesNotValid {
+        return TileCoordinates.getTileCoordinates(x - 1, y, z);
+    }
+
+    public TileCoordinates getTileRight() throws TileCoordinatesNotValid {
+        return TileCoordinates.getTileCoordinates(x + 1, y, z);
+    }
+
+    public TileCoordinates getTileTop() throws TileCoordinatesNotValid {
+        return TileCoordinates.getTileCoordinates(x, y - 1, z);
+    }
+
+    public TileCoordinates getTileBot() throws TileCoordinatesNotValid {
+        return TileCoordinates.getTileCoordinates(x, y + 1, z);
+    }
+
     @Override
     public int hashCode() {
         return x + y + z;
@@ -39,7 +55,7 @@ public class TileCoordinates {
     @NonNull
     @Override
     public String toString() {
-        return "x: " + x + ", y: " + y + ", z: " + z;
+        return "(x: " + x + ", y: " + y + ", z: " + z + ")";
     }
 
     public static class TileCoordinatesNotValid extends Exception {

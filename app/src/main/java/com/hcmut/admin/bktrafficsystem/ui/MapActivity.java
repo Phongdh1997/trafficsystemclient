@@ -115,6 +115,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MoveToLoad;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
@@ -353,6 +354,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Button btnCurrentLocationReport;
     private ImageButton btnMore;
     private LinearLayout layoutMoreFeature;
+
+    private MoveToLoad moveToLoad;
 
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
@@ -700,6 +703,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //
         probeMapUi = new ProbeMapUi(this, mMap);
         probeMapUi.startStatusRenderTimer();
+        moveToLoad = new MoveToLoad(mMap);
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
@@ -914,7 +918,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int i) {
-                // TODO:
+                moveToLoad.cameraMove(mMap);
+            }
+        });
+
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                moveToLoad.cameraMove(mMap);
             }
         });
 

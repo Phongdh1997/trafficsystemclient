@@ -40,8 +40,8 @@ public class ProbeMapUi {
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
-        statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
-        bitmapTileRenderHandler = new BitmapTileRenderHandler(30, 10);
+        //statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
+        //bitmapTileRenderHandler = new BitmapTileRenderHandler(30, 10);
 
         getViewModel();
         addViewModelObserver();
@@ -107,16 +107,6 @@ public class ProbeMapUi {
                 }
             }
         });
-
-        if (statusOverlayRender != null) {
-            LiveData<TileBitmapRender> tileBitmapLiveData = statusOverlayRender.getTileBitmapLiveData();
-            tileBitmapLiveData.observe(activity, new Observer<TileBitmapRender>() {
-                @Override
-                public void onChanged(@Nullable TileBitmapRender tileBitmapRender) {
-                    bitmapTileRenderHandler.renderBitmapToMap(tileBitmapRender, gmaps);
-                }
-            });
-        }
     }
 
     private void clearTileOverlayRender() {

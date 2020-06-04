@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.BitmapLineData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,23 @@ public class StatusRenderData {
     public LatLng getStartPointLatLng() {
         if (polyline != null) {
             return polyline.getStartPointLatLng();
+        }
+        return null;
+    }
+
+    public static List<BitmapLineData> parseBitmapLineData (List<StatusRenderData> statusRenderDataList) {
+        if (statusRenderDataList != null && statusRenderDataList.size() > 0) {
+            List<BitmapLineData> lineDataList = new ArrayList<>();
+            List<LatLng> line;
+            String color;
+            for (StatusRenderData statusRenderData : statusRenderDataList) {
+                line = statusRenderData.getLatLngPolyline();
+                color = statusRenderData.getColor();
+                if (line != null && line.size() == 2 && color != null) {
+                    lineDataList.add(new BitmapLineData(line.get(0), line.get(1), color));
+                }
+            }
+            return lineDataList;
         }
         return null;
     }
