@@ -27,12 +27,12 @@ public class TrafficGlideModule extends AppGlideModule {
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         int diskCacheSizeBytes = 1024 * 1024 * 300; // 300 MB
         MemorySizeCalculator calculator = new MemorySizeCalculator.Builder(context)
-                .setMemoryCacheScreens(3)
-                .setBitmapPoolScreens(3)
+                .setMemoryCacheScreens(1)
+                .setBitmapPoolScreens(1)
                 .build();
         BITMAP_POOL = new LruBitmapPool(calculator.getBitmapPoolSize());
-        //builder.setMemoryCache(new LruResourceCache(calculator.getMemoryCacheSize()));
-        //builder.setBitmapPool(BITMAP_POOL);
+        builder.setMemoryCache(new LruResourceCache(calculator.getMemoryCacheSize()));
+        builder.setBitmapPool(BITMAP_POOL);
         builder.setDiskCache(
                 new InternalCacheDiskCacheFactory(context, diskCacheSizeBytes));
         builder.setDefaultRequestOptions(
@@ -43,7 +43,5 @@ public class TrafficGlideModule extends AppGlideModule {
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
         registry.append(BitmapGlideModel.class, Bitmap.class, new TrafficModelLoader.TrafficModelLoaderFactory());
-        //registry.append(Bitmap.class, new TrafficResourceEncoder());
-        //egistry.append(File.class, Bitmap.class, new TrafficResourceDecoder());
     }
 }
