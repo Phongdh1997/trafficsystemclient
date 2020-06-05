@@ -56,7 +56,7 @@ public class ProbeMapUi {
     }
 
     public void onCameraMove() {
-        moveToLoad.cameraMove(gmaps);
+        //moveToLoad.cameraMove(gmaps);
     }
 
     private void addEvents() {

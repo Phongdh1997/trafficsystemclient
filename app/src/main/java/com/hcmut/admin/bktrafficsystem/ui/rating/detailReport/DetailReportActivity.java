@@ -105,7 +105,7 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
 
 
     private void getDetailReport() {
-        new CallApi().createService().getDetailTrafficReport(reportId).enqueue(new Callback<BaseResponse<ReportResponse>>() {
+        CallApi.createService().getDetailTrafficReport(reportId).enqueue(new Callback<BaseResponse<ReportResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<ReportResponse>> call, final Response<BaseResponse<ReportResponse>> response) {
                 if (response.body() != null && response.body().getData() != null) {
@@ -207,7 +207,7 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onPositiveButtonClicked(int rate, @NotNull String comment) {
-        new CallApi().createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
+        CallApi.createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
                 , reportId, (float) rate / 5).enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<PostRatingResponse>> call, Response<BaseResponse<PostRatingResponse>> response) {

@@ -633,7 +633,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
         //Init other var
-        callApi = new CallApi().createService();
+        callApi = CallApi.createService();
         mapUtils = new MapUtils();
         inputFormFragment = new UserInputFormFragment();
         if (!Places.isInitialized()) {

@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             confirmPassword.requestFocus();
         } else {
             progressDialog = ProgressDialog.show(RegisterActivity.this, "", getString(R.string.loading), true);
-            new CallApi().createService().register(username.getText().toString(), password.getText().toString(),
+            CallApi.createService().register(username.getText().toString(), password.getText().toString(),
                     name.getText().toString(), email.getText().toString(), phoneNumber.getText().toString())
                     .enqueue(new Callback<BaseResponse<LoginResponse>>() {
                         @Override

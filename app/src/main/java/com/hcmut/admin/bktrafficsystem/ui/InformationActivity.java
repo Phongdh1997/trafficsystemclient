@@ -238,7 +238,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part imageBody = MultipartBody.Part.createFormData("file", file.getName(), reqFile);
 
-            new CallApi().createService().uploadFile(imageBody)
+            CallApi.createService().uploadFile(imageBody)
                     .enqueue(new Callback<BaseResponse<String>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<String>> call, Response<BaseResponse<String>> response) {
@@ -272,9 +272,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void onResponse(){
-        CallApi callApi = new CallApi();
-
-        callApi.createService().updateUserInfo(user.getAccessToken(), name.getText().toString(), email.getText().toString(),
+        CallApi.createService().updateUserInfo(user.getAccessToken(), name.getText().toString(), email.getText().toString(),
                 avatarString, phoneNumber.getText().toString()).enqueue(new Callback<BaseResponse<UserResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<UserResponse>> call, Response<BaseResponse<UserResponse>> response) {

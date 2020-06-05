@@ -1127,7 +1127,7 @@ public class UserInputFormFragment extends Fragment {
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
         MultipartBody.Part parts = MultipartBody.Part.createFormData("file", file.getName(), fileReqBody);
 
-        new CallApi().createService().uploadFile(parts)
+        CallApi.createService().uploadFile(parts)
                 .enqueue(new Callback<BaseResponse<String>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {

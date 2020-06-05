@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void signIn() {
         progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.loading), true);
-        new CallApi().createService().login(username.getText().toString(), password.getText().toString())
+        CallApi.createService().login(username.getText().toString(), password.getText().toString())
                 .enqueue(new Callback<BaseResponse<LoginResponse>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<LoginResponse>> call, Response<BaseResponse<LoginResponse>> response) {
@@ -284,7 +284,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void updateUIGoogle(final GoogleSignInAccount account) {
         progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.loading), true);
         //Get access token from server
-        new CallApi().createService().loginWithGoogle(account.getId(), account.getIdToken()).enqueue(new Callback<BaseResponse<LoginResponse>>() {
+        CallApi.createService().loginWithGoogle(account.getId(), account.getIdToken()).enqueue(new Callback<BaseResponse<LoginResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<LoginResponse>> call, Response<BaseResponse<LoginResponse>> response) {
 //                User user = new User();
@@ -330,7 +330,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                             LoginParam loginParam = new LoginParam(id, accessToken.getToken(), FACEBOOK_LOGIN_TYPE);
                             //Get access token from server
-                            new CallApi().createService().loginWithFacebook(id, accessToken.getToken())
+                            CallApi.createService().loginWithFacebook(id, accessToken.getToken())
                                     .enqueue(new Callback<BaseResponse<LoginResponse>>() {
                                 @Override
                                 public void onResponse(Call<BaseResponse<LoginResponse>> call, Response<BaseResponse<LoginResponse>> response) {
