@@ -20,6 +20,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLoca
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.StatusRenderEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.StatusOverlayRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MoveToLoad;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.BitmapTileRenderHandler;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileBitmapRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
@@ -34,14 +35,12 @@ public class ProbeMapUi {
 
     private Polyline prevDirectionRenderPolyline;
     private MapViewModel mapViewModel;
-    private StatusOverlayRender statusOverlayRender;
-    private BitmapTileRenderHandler bitmapTileRenderHandler;
+    private MoveToLoad moveToLoad;
 
     public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
         this.activity = activity;
         this.gmaps = map;
-        //statusOverlayRender = new StatusOverlayRender(gmaps, activity.getApplicationContext());
-        //bitmapTileRenderHandler = new BitmapTileRenderHandler(30, 10);
+        moveToLoad = new MoveToLoad(gmaps, activity.getApplicationContext());
 
         getViewModel();
         addViewModelObserver();
@@ -56,7 +55,9 @@ public class ProbeMapUi {
         mapViewModel.stopStatusRenderTimer();
     }
 
-    public void onCameraMoved() {}
+    public void onCameraMove() {
+        moveToLoad.cameraMove(gmaps);
+    }
 
     private void addEvents() {
 
@@ -76,7 +77,7 @@ public class ProbeMapUi {
         statusRenderEventLiveData.observe(activity, new Observer<StatusRenderEvent>() {
             @Override
             public void onChanged(StatusRenderEvent statusRenderEvent) {
-                clearTileOverlayRender();
+
             }
         });
         directionRenderPolylineOptionsLiveData.observe(activity, new Observer<PolylineOptions>() {
@@ -107,12 +108,6 @@ public class ProbeMapUi {
                 }
             }
         });
-    }
-
-    private void clearTileOverlayRender() {
-        if (statusOverlayRender != null) {
-            statusOverlayRender.notifyDataChange();
-        }
     }
 
     private void removePrevDirectionRender() {
