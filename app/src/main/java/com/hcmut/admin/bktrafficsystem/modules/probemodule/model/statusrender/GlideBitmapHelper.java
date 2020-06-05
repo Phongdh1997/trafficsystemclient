@@ -65,6 +65,8 @@ public class GlideBitmapHelper {
     @SuppressLint("CheckResult")
     public void storeBitmapToGlide (TileCoordinates tile, Bitmap bitmap) {
         BitmapGlideModel model = new BitmapGlideModel(tile, bitmap);
-        GlideApp.with(context).load(model).submit();
+        GlideApp.with(context)
+                .load(model)
+                .submit();
     }
 }

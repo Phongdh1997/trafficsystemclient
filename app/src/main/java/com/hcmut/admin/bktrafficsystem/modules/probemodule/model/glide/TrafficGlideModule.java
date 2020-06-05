@@ -11,6 +11,7 @@ import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
 import com.bumptech.glide.load.engine.cache.ExternalPreferredCacheDiskCacheFactory;
+import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
 import com.bumptech.glide.module.AppGlideModule;
@@ -24,19 +25,16 @@ public class TrafficGlideModule extends AppGlideModule {
 
     @Override
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
-        int diskCacheSizeBytes = 1024 * 1024 * 350; // 350 MB
+        int diskCacheSizeBytes = 1024 * 1024 * 300; // 300 MB
         MemorySizeCalculator calculator = new MemorySizeCalculator.Builder(context)
-                .setMemoryCacheScreens(1)
-                .setBitmapPoolScreens(1)
+                .setMemoryCacheScreens(3)
+                .setBitmapPoolScreens(3)
                 .build();
         BITMAP_POOL = new LruBitmapPool(calculator.getBitmapPoolSize());
-        builder.setMemoryCache(new LruResourceCache(calculator.getMemoryCacheSize()));
-        builder.setBitmapPool(BITMAP_POOL);
+        //builder.setMemoryCache(new LruResourceCache(calculator.getMemoryCacheSize()));
+        //builder.setBitmapPool(BITMAP_POOL);
         builder.setDiskCache(
-                new ExternalPreferredCacheDiskCacheFactory(
-                        context,
-                        "cacheFolderName",
-                        diskCacheSizeBytes));
+                new InternalCacheDiskCacheFactory(context, diskCacheSizeBytes));
         builder.setDefaultRequestOptions(
                 new RequestOptions()
                         .disallowHardwareConfig());
@@ -45,7 +43,7 @@ public class TrafficGlideModule extends AppGlideModule {
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
         registry.append(BitmapGlideModel.class, Bitmap.class, new TrafficModelLoader.TrafficModelLoaderFactory());
-        registry.append(Bitmap.class, new TrafficResourceEncoder());
-        registry.append(File.class, Bitmap.class, new TrafficResourceDecoder());
+        //registry.append(Bitmap.class, new TrafficResourceEncoder());
+        //egistry.append(File.class, Bitmap.class, new TrafficResourceDecoder());
     }
 }
