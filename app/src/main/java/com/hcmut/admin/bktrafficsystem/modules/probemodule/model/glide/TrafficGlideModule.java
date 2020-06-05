@@ -26,8 +26,8 @@ public class TrafficGlideModule extends AppGlideModule {
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         int diskCacheSizeBytes = 1024 * 1024 * 350; // 350 MB
         MemorySizeCalculator calculator = new MemorySizeCalculator.Builder(context)
-                .setMemoryCacheScreens(3)
-                .setBitmapPoolScreens(3)
+                .setMemoryCacheScreens(1)
+                .setBitmapPoolScreens(1)
                 .build();
         BITMAP_POOL = new LruBitmapPool(calculator.getBitmapPoolSize());
         builder.setMemoryCache(new LruResourceCache(calculator.getMemoryCacheSize()));

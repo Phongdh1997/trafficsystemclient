@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.request.FutureTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,6 +45,7 @@ public class GroundOverlayMatrix {
         googleMapWeakReference = new WeakReference<>(googleMap);
         trafficLoader = new TrafficLoader(this, context);
         glideBitmapHelper = GlideBitmapHelper.getInstance(context);
+        glideBitmapHelper.clearDiskCache(executor);
     }
 
     public synchronized void renderMatrix(final TileCoordinates centerTile) {
@@ -116,7 +118,7 @@ public class GroundOverlayMatrix {
         if (googleMap == null) return;
 
         GroundOverlayMatrixItem renderMatrixItem = overlayMatrix.get(tileCoordinates);
-        if (renderMatrixItem != null) {   // tile coordinates is in matrix
+        if (renderMatrixItem != null && !renderMatrixItem.isOvelayLoaded()) {   // tile coordinates is in matrix
             // find an available ground overlay to this tile
             GroundOverlayMatrixItem idleMatrixItem = idleOverlay.poll();
             if (idleMatrixItem != null) {  // if have available Overlay
@@ -207,12 +209,6 @@ public class GroundOverlayMatrix {
             matrix.put(bot, new GroundOverlayMatrixItem());
             matrix.put(top.getTileTop(), new GroundOverlayMatrixItem());
             matrix.put(bot.getTileBot(), new GroundOverlayMatrixItem());
-
-            Log.e("matrix", center.toString());
-            Log.e("matrix", top.toString());
-            Log.e("matrix", bot.toString());
-            Log.e("matrix", top.getTileTop().toString());
-            Log.e("matrix", bot.getTileBot().toString());
         } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
             tileCoordinatesNotValid.printStackTrace();
         }

@@ -2,6 +2,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.bumptech.glide.load.EncodeStrategy;
 import com.bumptech.glide.load.Options;
@@ -23,7 +24,10 @@ public class TrafficResourceEncoder implements ResourceEncoder<Bitmap> {
     public boolean encode(@NonNull Resource<Bitmap> data, @NonNull File file, @NonNull Options options) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
-            data.get().compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            Bitmap bitmap = data.get();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            bitmap.recycle();
+            Log.e("glide", "encode");
             return true;
         } catch (FileNotFoundException e) {}
         return false;

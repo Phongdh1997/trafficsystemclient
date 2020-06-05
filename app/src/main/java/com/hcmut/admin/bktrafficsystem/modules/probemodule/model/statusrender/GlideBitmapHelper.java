@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.request.FutureTarget;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.BitmapGlideModel;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+
+import java.util.concurrent.Executor;
 
 public class GlideBitmapHelper {
     private Context context;
@@ -23,6 +26,23 @@ public class GlideBitmapHelper {
             glideBitmapHelper = new GlideBitmapHelper(context);
         }
         return glideBitmapHelper;
+    }
+
+    public void setMemoryCategory(MemoryCategory category) {
+        GlideApp.get(context).setMemoryCategory(category);
+    }
+
+    public void clearMemory() {
+        GlideApp.get(context).clearMemory();
+    }
+
+    public void clearDiskCache (Executor executor) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                GlideApp.get(context).clearDiskCache();
+            }
+        });
     }
 
     /**

@@ -66,6 +66,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -115,6 +116,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GlideBitmapHelper;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MoveToLoad;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
@@ -704,6 +706,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         probeMapUi = new ProbeMapUi(this, mMap);
         probeMapUi.startStatusRenderTimer();
         moveToLoad = new MoveToLoad(mMap, getApplicationContext());
+        GlideBitmapHelper glideBitmapHelper = GlideBitmapHelper.getInstance(getApplicationContext());
+        glideBitmapHelper.clearMemory();
+        glideBitmapHelper.setMemoryCategory(MemoryCategory.LOW);
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;

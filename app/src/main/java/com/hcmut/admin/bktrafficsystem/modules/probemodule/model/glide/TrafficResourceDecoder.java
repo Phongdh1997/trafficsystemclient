@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.ResourceDecoder;
@@ -27,6 +28,7 @@ public class TrafficResourceDecoder implements ResourceDecoder<File, Bitmap> {
         BitmapFactory.Options bitmapOption = new BitmapFactory.Options();
         bitmapOption.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(source.getPath(), bitmapOption);
+        Log.e("glide", "decode");
         return BitmapResource.obtain(bitmap, TrafficGlideModule.BITMAP_POOL);
     }
 }
