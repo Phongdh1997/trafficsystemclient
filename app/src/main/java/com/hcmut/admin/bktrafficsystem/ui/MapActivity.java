@@ -1459,51 +1459,39 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             /*   if (mLocationPermissionsGranted) {*/
-            Task location = mFusedLocationProviderClient.getLastLocation();
-            location.addOnCompleteListener(new OnCompleteListener() {
+            mFusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "onComplete: location found!");
-                        //get location -> latlng
-                        Location currentLocation = (Location) task.getResult();
-                        if (currentLocation == null) {
-                            androidExt.showSuccessDialog(MapActivity.this, "Vui lòng bật định vị vị trí", new ClickDialogListener.OK() {
+                public void onSuccess(Location location) {
+                    LatLng locationLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15.0f),
+                            new GoogleMap.CancelableCallback() {
                                 @Override
-                                public void onCLickOK() {
-                                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                public void onFinish() {
+                                    setupInfoWindow();
+                                    current = Calendar.getInstance().getTimeInMillis();
+                                    renderCurrentPosition(oldCameraPos);
+                                }
+
+                                @Override
+                                public void onCancel() {
+
                                 }
                             });
-                            return;
-                        }
-                        LatLng locationLatLng = new LatLng(currentLocation.getLatitude(),
-                                currentLocation.getLongitude());
-
-                        Log.d(TAG, "moveCamera: moving the camera to lat: " + locationLatLng.latitude
-                                + ", lng: " + locationLatLng.longitude);
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 16.0f), new GoogleMap.CancelableCallback() {
-                            @Override
-                            public void onFinish() {
-                                setupInfoWindow();
-                                current = Calendar.getInstance().getTimeInMillis();
-                                renderCurrentPosition(oldCameraPos);
-                            }
-
-                            @Override
-                            public void onCancel() {
-
-                            }
-                        });
-
-                    } else {
-                        Log.d(TAG, "onComplete: current location is null");
-                    }
                 }
             });
-            /*}*/
         } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
+    }
+
+    public void checkGPSTurnOn () {
+        androidExt.showSuccessDialog(MapActivity.this, "Vui lòng bật định vị vị trí", new ClickDialogListener.OK() {
+            @Override
+            public void onCLickOK() {
+                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
     }
 
   /*  public void showKeyboard(Activity activity){
