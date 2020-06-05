@@ -1757,61 +1757,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (progressDialog != null) progressDialog.dismiss();
         int zoom = (int) mMap.getCameraPosition().zoom;
         if (zoom > 13 && zoom < 22) {
-//            progressDialog = ProgressDialog.show(MapActivity.this, "", getString(R.string.loading), true);
             setDate();
-            callApi.getTrafficStatus(position.latitude, position.longitude, zoom)
-                    .enqueue(new Callback<BaseResponse<List<TrafficStatusResponse>>>() {
-                        @Override
-                        public void onResponse(Call<BaseResponse<List<TrafficStatusResponse>>> call, final Response<BaseResponse<List<TrafficStatusResponse>>> response) {
-                            if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
-                                final List<TrafficStatusResponse> list = response.body().getData();
-                                ExecutorService mExecutor = Executors.newFixedThreadPool(NUMBER_OF_CORES * 2);
-                                mExecutor.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        for (int i = 0; i < list.size(); i++) {
-                                            Handler mainHandler = new Handler(Looper.getMainLooper());
-                                            final int finalI = i;
-                                            Runnable myRunnable = new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    PolylineOptions  polylineOptions = new PolylineOptions().add(
-                                                            list.get(finalI).getPolylineResponse().getStart(),
-                                                            list.get(finalI).getPolylineResponse().getEnd()
-                                                    ).width(5).geodesic(true)
-                                                            .clickable(true)
-                                                            .color(Color.parseColor(list.get(finalI).getColor()));
-                                                    Polyline polyline = mMap.addPolyline(polylineOptions);
-                                                    polyline.setTag(list.get(finalI));
-                                                    allPolylineTraffic.add(polyline);
-                                                }
-                                            };
-                                            mainHandler.post(myRunnable);
-                                        }
-                                    }
-                                });
-
-                                mExecutor.shutdown();
-                                try {
-                                    mExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                removeOldPolyline();
-                            }
-
-//                            progressDialog.dismiss();
-                        }
-
-                        @Override
-                        public void onFailure
-                                (Call<BaseResponse<List<TrafficStatusResponse>>> call, Throwable t) {
-                            Log.d("Response: ", t.getMessage());
-//                            progressDialog.dismiss();
-                        }
-                    });
-
             callApi.getTrafficReport(position.latitude, position.longitude).enqueue(new Callback<BaseResponse<List<TrafficReportResponse>>>() {
                 @Override
                 public void onResponse(Call<BaseResponse<List<TrafficReportResponse>>> call, Response<BaseResponse<List<TrafficReportResponse>>> response) {
