@@ -1459,7 +1459,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     .addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    LatLng locationLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    if (location == null) return;
+                    LatLng locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15.0f),
                             new GoogleMap.CancelableCallback() {
                                 @Override
