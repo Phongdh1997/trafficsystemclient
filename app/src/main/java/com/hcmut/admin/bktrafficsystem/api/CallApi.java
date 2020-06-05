@@ -1,7 +1,5 @@
 package com.hcmut.admin.bktrafficsystem.api;
 
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -26,7 +24,6 @@ public class CallApi {
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(base_URL)
                 .client(okHttpClient.build())
-                .callbackExecutor(RetrofitClient.THREAD_POOL_EXECUTOR)
                 .build();
     }
 
