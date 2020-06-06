@@ -10,11 +10,13 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.content.BroadcastReceiver;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -158,7 +160,12 @@ import static com.hcmut.admin.bktrafficsystem.util.LocationUtil.getAddressByLatL
  * Created by User on 10/2/2017.
  */
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener, DatePickerDialog.OnDateSetListener, View.OnClickListener {
+public class MapActivity extends AppCompatActivity implements
+        OnMapReadyCallback,
+        DirectionFinderListener,
+        DatePickerDialog.OnDateSetListener,
+        View.OnClickListener {
+
     private static final String TAG = "MapActivity";
 
     public static final int REQUEST_CODE_UPDATE_INFO = 105;
@@ -254,6 +261,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private ImageView btnOption;
     private AppFeaturePopup appFeaturePopup;
+    private SupportMapFragment mapFragment;
 
     protected BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
         @Override
@@ -652,8 +660,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void initMap() {
         Log.d(TAG, "initMap: initializing map");
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(MapActivity.this);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
     private void setDate() {

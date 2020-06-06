@@ -21,8 +21,7 @@
         android:label="@string/appicationName"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:largeHeap="true">
+        android:theme="@style/AppTheme.NoActionBar">
 
         <activity
             android:name="com.hcmut.admin.bktrafficsystem.ui.SplashActivity"
