@@ -131,7 +131,6 @@ import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
-import com.hcmut.admin.bktrafficsystem.util.Compass;
 import com.hcmut.admin.bktrafficsystem.util.CustomDrawerButton;
 import com.hcmut.admin.bktrafficsystem.util.LocationRequire;
 import com.hcmut.admin.bktrafficsystem.util.LocationUtil;
@@ -251,7 +250,6 @@ public class MapActivity extends AppCompatActivity implements
     private ApiService callApi = null;
     private Location currentLocation;
     private String pathId = null;
-    Compass compass;
     private LatLng endFindRoad;
     private boolean isClickPolyline = false;
 
@@ -616,14 +614,6 @@ public class MapActivity extends AppCompatActivity implements
         clReview.setOnClickListener(this);
         tvDateTime.setOnClickListener(this);
 
-        compass = new Compass(this);
-        compass.setListener(new Compass.CompassListener() {
-            @Override
-            public void onNewAzimuth(float azimuth) {
-                mBearing = azimuth;
-            }
-        });
-        compass.start();
         this.locationRequire = new LocationRequire(this);
         this.locationRequire.start();
         this.locationRequire.setLocationUpdateListener(new LocationRequire.LocationUpdateListener() {
@@ -2051,7 +2041,6 @@ public class MapActivity extends AppCompatActivity implements
         if (pathId != null) {
             toggleNotify(pathId, "false");
         }
-        compass.stop();
         super.onDestroy();
     }
 
