@@ -63,14 +63,14 @@ public class ProbeMapUi {
         gmaps.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int i) {
-                moveToLoad.cameraMove(gmaps);
+                //moveToLoad.cameraMove(gmaps);
             }
         });
 
         gmaps.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                moveToLoad.cameraMove(gmaps);
+                //moveToLoad.cameraMove(gmaps);
             }
         });
     }

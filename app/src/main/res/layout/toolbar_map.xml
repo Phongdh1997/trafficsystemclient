@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.hcmut.admin.bktrafficsystem.util.CustomDrawerButton
+        <ImageView
             android:id="@+id/ic_menu"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_centerVertical="true"
             android:layout_margin="0dp"
             android:padding="6dp"
-            android:src="@drawable/ic_menu_map"
+            android:src="@drawable/ic_search"
             fab:layout_constraintBottom_toBottomOf="parent"
             fab:layout_constraintStart_toStartOf="parent"
             fab:layout_constraintTop_toTopOf="parent" />

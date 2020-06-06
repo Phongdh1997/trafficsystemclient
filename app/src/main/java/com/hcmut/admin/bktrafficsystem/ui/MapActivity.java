@@ -219,16 +219,12 @@ public class MapActivity extends AppCompatActivity implements
     private TextView usnTxtView, tvDateTime, tv_speed, tv_travel_types;
     private ImageView avtImgView, clrOriginBtn, clrDestBtn, clrStartBtn;
     private CardView customToolbar;
-    private CustomDrawerButton customDrawerButton;
     private String accountType;
     private CardView destinationBox;
     private ConstraintLayout ctlToolbar, interactBox, clReview;
     private AppCompatImageButton btnBackToSearch;
     //Draw and clear markers in interaction mode
     private Spinner travelTypesSpinner;
-    DrawerLayout mapLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-    private NavigationView navView;
 
     //others
     private LatLng oldCameraPos;
@@ -561,7 +557,6 @@ public class MapActivity extends AppCompatActivity implements
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        initDrawerView(navView);
         showTimePickerDialog();
 
         //register broadcast
@@ -588,7 +583,6 @@ public class MapActivity extends AppCompatActivity implements
 
     private void initView() {
         //Map views
-        navView = findViewById(R.id.nav_view);
         mSearchEdt = findViewById(R.id.search_edt);
         mStartLocationEditext = findViewById(R.id.start_location_edt);
         mDestEdt = findViewById(R.id.destination_edt);
@@ -599,7 +593,6 @@ public class MapActivity extends AppCompatActivity implements
         clrDestBtn = findViewById(R.id.ic_clear_end);
         clrStartBtn = findViewById(R.id.ic_clear_start);
         travelTypesSpinner = findViewById(R.id.travel_types_spinner);
-        mapLayout = findViewById(R.id.map_activity_layout);
         destinationBox = findViewById(R.id.ctlDestination);
         interactBox = findViewById(R.id.interact_box);
         agreeBtn = findViewById(R.id.agreeBtn);
@@ -1000,34 +993,6 @@ public class MapActivity extends AppCompatActivity implements
             }
         });
 
-        customDrawerButton = findViewById(R.id.ic_menu);
-        customDrawerButton.setDrawerLayout(mapLayout);
-        customDrawerButton.getDrawerLayout().addDrawerListener(customDrawerButton);
-        customDrawerButton.setOnClickListener(this);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, mapLayout, R.string.app_name, R.string.app_name);
-        mapLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-        findViewById(R.id.ic_menu).setOnClickListener(this);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int itemId = menuItem.getItemId();
-//                Toast.makeText(MapActivity.this, "Item: " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
-                switch (itemId) {
-                    case R.id.account:
-                        viewInfo();
-                        break;
-                    case R.id.logout:
-                        logout();
-                        break;
-                    case R.id.guideline:
-                        viewUserGuide();
-                        break;
-                }
-                return true;
-            }
-        });
-
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item, R.id.vehicle_txv, getResources().getStringArray(R.array.travel_types_array));
         travelTypesSpinner.setAdapter(spinnerArrayAdapter);
@@ -1198,36 +1163,6 @@ public class MapActivity extends AppCompatActivity implements
                         }
                     }
                 }
-            }
-        });
-    }
-
-    private void initDrawerView(View drawerView) {
-        currentUser = SharedPrefUtils.getUser(MapActivity.this);
-        //Get user data
-        userName = currentUser.getUserName();
-        imgUrl = currentUser.getImgUrl();
-
-        NavigationView navView = (NavigationView) drawerView;
-        //Header of navView
-        View headerLayout = navView.getHeaderView(0);
-        //Map views
-        avtImgView = headerLayout.findViewById(R.id.avt_imv);
-        usnTxtView = headerLayout.findViewById(R.id.usn_txv);
-        //Set data
-        if (imgUrl != null) {
-            new ImageDownloader(avtImgView).execute(imgUrl);
-        }
-        if (userName != null) usnTxtView.setText(userName);
-        //Menu of navView
-        Menu navMenu = navView.getMenu();
-        MenuItem itemSwitch = navMenu.findItem(R.id.nav_rating);
-        switchCompat = itemSwitch.getActionView().findViewById(R.id.drawer_switch);
-        switchCompat.setChecked(isRatingMode);
-        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                handleRatingMode(isChecked);
             }
         });
     }
@@ -1840,10 +1775,6 @@ public class MapActivity extends AppCompatActivity implements
             case R.id.ctlDestination: {
                 break;
             }
-            case R.id.ic_menu: {
-                customDrawerButton.changeState();
-                break;
-            }
             case R.id.tv_travel_types: {
                 travelTypesSpinner.performClick();
                 break;
@@ -1953,9 +1884,6 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (customDrawerButton.getDrawerLayout().isDrawerOpen(Gravity.LEFT)) {
-            customDrawerButton.changeState();
-        }
         //Toast.makeText(MapActivity.this,"On Back Press!!!",Toast.LENGTH_LONG).show();
         if (isInputFormOpen) {
             removeInputForm(inputFormFragment);
@@ -1966,7 +1894,7 @@ public class MapActivity extends AppCompatActivity implements
             inputFormFragment.uncheckCBoxes();
             showInputForm(inputFormFragment);
             btnOption.setVisibility(View.GONE);
-        } else if (!customDrawerButton.getDrawerLayout().isDrawerOpen(Gravity.LEFT)){
+        } else {
             Date currentTime = new Date();
             if (pressTime == null) {
                 pressTime = currentTime;
