@@ -115,6 +115,8 @@ import com.hcmut.admin.bktrafficsystem.model.response.TrafficReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListDownloader;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GlideBitmapHelper;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
@@ -1217,8 +1219,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         avtImgView = headerLayout.findViewById(R.id.avt_imv);
         usnTxtView = headerLayout.findViewById(R.id.usn_txv);
         //Set data
-        if (imgUrl != null && !imgUrl.isEmpty())
-            Glide.with(MapActivity.this).load(imgUrl).into(avtImgView);
+        if (imgUrl != null) {
+            new ImageDownloader(avtImgView).execute(imgUrl);
+        }
         if (userName != null) usnTxtView.setText(userName);
         //Menu of navView
         Menu navMenu = navView.getMenu();
@@ -2107,8 +2110,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (resultCode == Activity.RESULT_OK) {
                 String img = SharedPrefUtils.getUser(this).getImgUrl();
                 String name = SharedPrefUtils.getUser(this).getUserName();
-                if (img != null && !img.isEmpty())
-                    Glide.with(MapActivity.this).load(img).into(avtImgView);
+                if (img != null) {
+                    new ImageDownloader(avtImgView).execute(img);
+                }
                 if (name != null) usnTxtView.setText(name);
             } else {
                 // DetailActivity không thành công, không có data trả về.

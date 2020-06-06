@@ -48,6 +48,8 @@ import com.hcmut.admin.bktrafficsystem.model.UserInput;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListDownloader;
 import com.hcmut.admin.bktrafficsystem.util.Async_ReSizeImageFromBitmap;
 import com.hcmut.admin.bktrafficsystem.util.Async_ResizeImageFromUri;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
@@ -652,30 +654,36 @@ public class UserInputFormFragment extends Fragment {
             public void onClick(View view) {
                 images.remove(0);
                 if (images.size() == 3) {
-                    Glide.with(getContext()).load(images.get(0)).into(imgView1);
-                    Glide.with(getContext()).load(images.get(1)).into(imgView2);
-                    Glide.with(getContext()).load(images.get(2)).into(imgView3);
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView4);
+                    new ImageListDownloader.Builder()
+                            .addImage(images.get(0), imgView1)
+                            .addImage(images.get(1), imgView2)
+                            .addImage(images.get(2), imgView3)
+                            .build()
+                            .execute();
+                    imgView4.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgFour.setVisibility(View.GONE);
                     view4.setVisibility(View.GONE);
                 }
                 if (images.size() == 2) {
-                    Glide.with(getContext()).load(images.get(0)).into(imgView1);
-                    Glide.with(getContext()).load(images.get(1)).into(imgView2);
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView3);
+                    new ImageListDownloader.Builder()
+                            .addImage(images.get(0), imgView1)
+                            .addImage(images.get(1), imgView2)
+                            .build()
+                            .execute();
+                    imgView3.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgThree.setVisibility(View.GONE);
                     view3.setVisibility(View.GONE);
                     imgView4.setVisibility(View.GONE);
                 }
                 if (images.size() == 1) {
-                    Glide.with(getContext()).load(images.get(0)).into(imgView1);
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView2);
+                    new ImageDownloader(imgView1).execute(images.get(0));
+                    imgView2.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgTwo.setVisibility(View.GONE);
                     view2.setVisibility(View.GONE);
                     imgView3.setVisibility(View.GONE);
                 }
                 if (images.size() == 0) {
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView1);
+                    imgView1.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgOne.setVisibility(View.GONE);
                     view1.setVisibility(View.GONE);
                     imgView2.setVisibility(View.GONE);
@@ -688,19 +696,22 @@ public class UserInputFormFragment extends Fragment {
             public void onClick(View view) {
                 images.remove(1);
                 if (images.size() == 3) {
-                    Glide.with(getContext()).load(images.get(1)).into(imgView2);
-                    Glide.with(getContext()).load(images.get(2)).into(imgView3);
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView4);
+                    new ImageListDownloader.Builder()
+                            .addImage(images.get(1), imgView2)
+                            .addImage(images.get(2), imgView3)
+                            .build()
+                            .execute();
+                    imgView4.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgFour.setVisibility(View.GONE);
                 }
                 if (images.size() == 2) {
-                    Glide.with(getContext()).load(images.get(1)).into(imgView2);
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView3);
+                    new ImageDownloader(imgView2).execute(images.get(1));
+                    imgView3.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgThree.setVisibility(View.GONE);
                     imgView4.setVisibility(View.GONE);
                 }
                 if (images.size() == 1) {
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView2);
+                    imgView2.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgTwo.setVisibility(View.GONE);
                     imgView3.setVisibility(View.GONE);
                 }
@@ -712,12 +723,12 @@ public class UserInputFormFragment extends Fragment {
             public void onClick(View view) {
                 images.remove(2);
                 if (images.size() == 3) {
-                    Glide.with(getContext()).load(images.get(2)).into(imgView3);
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView4);
+                    new ImageDownloader(imgView3).execute(images.get(2));
+                    imgView4.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgFour.setVisibility(View.GONE);
                 }
                 if (images.size() == 2) {
-                    Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView3);
+                    imgView3.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                     delImgThree.setVisibility(View.GONE);
                     imgView4.setVisibility(View.GONE);
                 }
@@ -728,7 +739,7 @@ public class UserInputFormFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 images.remove(3);
-                Glide.with(getContext()).load(R.drawable.ic_add_img).into(imgView4);
+                imgView4.setImageDrawable(getContext().getDrawable(R.drawable.ic_add_img));
                 delImgFour.setVisibility(View.GONE);
             }
         });
@@ -1171,7 +1182,7 @@ public class UserInputFormFragment extends Fragment {
                                     imageView = imgView4;
                                 }
                             }
-                            Glide.with(getContext()).load(response.body().getData()).into(imageView);
+                            new ImageDownloader(imageView).execute(response.body().getData());
                         }
                     }
 
