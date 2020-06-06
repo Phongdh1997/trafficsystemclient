@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -25,6 +26,8 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.BitmapTile
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileBitmapRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.viewmodel.MapViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ProbeMapUi {
 
     /**
@@ -37,14 +40,15 @@ public class ProbeMapUi {
     private MapViewModel mapViewModel;
     private MoveToLoad moveToLoad;
 
-    public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map) {
+    public ProbeMapUi(@NonNull AppCompatActivity activity, @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
         this.activity = activity;
         this.gmaps = map;
-        moveToLoad = new MoveToLoad(gmaps, activity.getApplicationContext());
+        moveToLoad = new MoveToLoad(gmaps, activity.getApplicationContext(), mapFragment);
 
         getViewModel();
         addViewModelObserver();
         addEvents();
+        setupGmap();
     }
 
     public void startStatusRenderTimer() {
@@ -55,8 +59,20 @@ public class ProbeMapUi {
         mapViewModel.stopStatusRenderTimer();
     }
 
-    public void onCameraMove() {
-        //moveToLoad.cameraMove(gmaps);
+    public void setupGmap () {
+        gmaps.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int i) {
+                moveToLoad.cameraMove(gmaps);
+            }
+        });
+
+        gmaps.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                moveToLoad.cameraMove(gmaps);
+            }
+        });
     }
 
     private void addEvents() {

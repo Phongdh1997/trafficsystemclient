@@ -451,18 +451,18 @@ public class MapActivity extends AppCompatActivity implements
         // show dialog ask user to turn on collect GPS data
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
         if (!gpsDataSetting) {
-            new AlertDialog.Builder(MapActivity.this)
-                    .setTitle("Dữ liệu vị trí")
-                    .setMessage("Thu thập dữ liệu vị trí đang tắt, bạn có muốn bật nó?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            initLocationService();
-                            setGpsDataSetting(true);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+//            new AlertDialog.Builder(MapActivity.this)
+//                    .setTitle("Dữ liệu vị trí")
+//                    .setMessage("Thu thập dữ liệu vị trí đang tắt, bạn có muốn bật nó?")
+//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            initLocationService();
+//                            setGpsDataSetting(true);
+//                        }
+//                    })
+//                    .setNegativeButton(android.R.string.no, null)
+//                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                    .show();
         } else {
             initLocationService();
         }
@@ -712,7 +712,7 @@ public class MapActivity extends AppCompatActivity implements
         //
         //  init Probe Map Module
         //
-        probeMapUi = new ProbeMapUi(this, mMap);
+        probeMapUi = new ProbeMapUi(this, mMap, mapFragment);
         probeMapUi.startStatusRenderTimer();
         GlideBitmapHelper glideBitmapHelper = GlideBitmapHelper.getInstance(getApplicationContext());
         glideBitmapHelper.clearMemory();
@@ -925,20 +925,6 @@ public class MapActivity extends AppCompatActivity implements
                 intent.putExtra("VELOCITY", velocity);
                 intent.putExtra("SEGMENT_ID", segmentId);
                 startActivity(intent);
-            }
-        });
-
-        mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-            @Override
-            public void onCameraMoveStarted(int i) {
-                probeMapUi.onCameraMove();
-            }
-        });
-
-        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                probeMapUi.onCameraMove();
             }
         });
 

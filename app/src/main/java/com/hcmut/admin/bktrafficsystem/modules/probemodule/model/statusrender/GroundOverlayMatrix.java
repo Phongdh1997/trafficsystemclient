@@ -38,28 +38,22 @@ public class GroundOverlayMatrix {
     private Queue<GroundOverlayMatrixItem> idleOverlay = new LinkedList<>();
     private WeakReference<GoogleMap> googleMapWeakReference;
     private TrafficLoader trafficLoader;
-    private Executor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
     private GlideBitmapHelper glideBitmapHelper;
 
     public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
         googleMapWeakReference = new WeakReference<>(googleMap);
         trafficLoader = new TrafficLoader(this, context);
         glideBitmapHelper = GlideBitmapHelper.getInstance(context);
-        glideBitmapHelper.clearDiskCache(executor);
+        glideBitmapHelper.clearDiskCache(RetrofitClient.THREAD_POOL_EXECUTOR);
     }
 
     public synchronized void renderMatrix(final TileCoordinates centerTile) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                List<TileCoordinates> notLoadedTile = getNotLoadedTile(centerTile);
-                Log.e("matrix", "not loaded size: " + notLoadedTile.size());
-                Log.e("matrix", "idle size: " + idleOverlay.size());
-                for (TileCoordinates tile : notLoadedTile) {
-                    renderTile(tile);
-                }
-            }
-        });
+        List<TileCoordinates> notLoadedTile = getNotLoadedTile(centerTile);
+        Log.e("matrix", "not loaded size: " + notLoadedTile.size());
+        Log.e("matrix", "idle size: " + idleOverlay.size());
+        for (TileCoordinates tile : notLoadedTile) {
+            renderTile(tile);
+        }
     }
 
     /**
