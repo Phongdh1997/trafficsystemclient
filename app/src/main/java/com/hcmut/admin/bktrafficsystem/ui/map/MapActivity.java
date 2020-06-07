@@ -432,20 +432,7 @@ public class MapActivity extends AppCompatActivity implements
 
         // show dialog ask user to turn on collect GPS data
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
-        if (!gpsDataSetting) {
-//            new AlertDialog.Builder(MapActivity.this)
-//                    .setTitle("Dữ liệu vị trí")
-//                    .setMessage("Thu thập dữ liệu vị trí đang tắt, bạn có muốn bật nó?")
-//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            initLocationService();
-//                            setGpsDataSetting(true);
-//                        }
-//                    })
-//                    .setNegativeButton(android.R.string.no, null)
-//                    .setIcon(android.R.drawable.ic_dialog_alert)
-//                    .show();
-        } else {
+        if (gpsDataSetting) {
             initLocationService();
         }
     }
