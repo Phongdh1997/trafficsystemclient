@@ -1,11 +1,9 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
-import android.app.Notification;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.location.Location;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 
@@ -18,21 +16,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.hcmut.admin.bktrafficsystem.api.ApiService;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
-import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
-import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.SleepWakeupLocationService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.LocationRepositoryService;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.LocationRemoteRepository;
-import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOPPED_NOTIFICATION_ID;
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOP_LOCATION_SERVICE_ALERT_NOTIFICATION_ID;
 
 public class LocationCollectionManager {
 

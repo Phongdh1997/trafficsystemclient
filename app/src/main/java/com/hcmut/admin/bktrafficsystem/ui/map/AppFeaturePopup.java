@@ -1,12 +1,5 @@
-package com.hcmut.admin.bktrafficsystem.ui;
+package com.hcmut.admin.bktrafficsystem.ui.map;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import java.lang.ref.WeakReference;
 

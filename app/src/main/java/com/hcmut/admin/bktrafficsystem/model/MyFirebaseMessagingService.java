@@ -11,18 +11,16 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory;
-import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 

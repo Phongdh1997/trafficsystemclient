@@ -35,7 +35,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -50,6 +49,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListDownloader;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.Async_ReSizeImageFromBitmap;
 import com.hcmut.admin.bktrafficsystem.util.Async_ResizeImageFromUri;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
