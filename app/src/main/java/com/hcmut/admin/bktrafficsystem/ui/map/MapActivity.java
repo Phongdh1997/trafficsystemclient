@@ -517,6 +517,7 @@ public class MapActivity extends AppCompatActivity implements
         accountType = user.getAccountType();
         userName = user.getUserName();
         imgUrl = user.getImgUrl();
+        currentUser = user;
 
         initView();
         //Init map
