@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.business;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
+import com.hcmut.admin.bktrafficsystem.ui.map.ProbeForgroundServiceManager;
 
 public class LocationWakefulReceiver extends BroadcastReceiver {
     public static long WAKEUP_DELAY_MILLIS = 60000 * 10;    // 10 minutes

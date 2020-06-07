@@ -110,9 +110,6 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GlideBitmapHelper;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationServiceAlarmUtil;
 import com.hcmut.admin.bktrafficsystem.ui.InformationActivity;
@@ -242,7 +239,6 @@ public class MapActivity extends AppCompatActivity implements
     private boolean isClickPolyline = false;
 
     private ImageView btnOption;
-    private AppFeaturePopup appFeaturePopup;
     private SupportMapFragment mapFragment;
 
     protected BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
@@ -338,7 +334,7 @@ public class MapActivity extends AppCompatActivity implements
      * ================================================
      */
     private ProbeForgroundServiceManager appForgroundServiceManager;
-    private ProbeMainUi probeMainUi;
+    private AppFeaturePopup appFeaturePopup;
     private ProbeMapUi probeMapUi;
 
     private Switch btnGPSColectionSwitch;
@@ -367,7 +363,6 @@ public class MapActivity extends AppCompatActivity implements
      */
     private void initProbeModuleVariable() {
         appForgroundServiceManager = new ProbeForgroundServiceManager(this);
-        probeMainUi = new ProbeMainUi(this, mGps);
 
         appFeaturePopup = new AppFeaturePopup(this);
         btnOption = findViewById(R.id.btnOption);
@@ -381,6 +376,16 @@ public class MapActivity extends AppCompatActivity implements
         btnGPSColectionSwitch.setChecked(gpsDataSetting);
 
         addEvents();
+    }
+
+    private void initProbeModuleVariableWhenMapLoaded() {
+        probeMapUi = new ProbeMapUi(getApplicationContext(), mMap, mapFragment);
+        probeMapUi.setupRenderStatus();
+
+        // setup GlideHelper
+        GlideBitmapHelper glideBitmapHelper = GlideBitmapHelper.getInstance(getApplicationContext());
+        glideBitmapHelper.clearMemory();
+        glideBitmapHelper.setMemoryCategory(MemoryCategory.LOW);
     }
 
     /**
@@ -455,9 +460,6 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (probeMapUi != null) {
-            probeMapUi.startStatusRenderTimer();
-        }
     }
 
     public void initLocationService() {
@@ -471,9 +473,6 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        if (probeMapUi != null) {
-            probeMapUi.stopStatusRenderTimer();
-        }
     }
 
     @Override
@@ -666,15 +665,7 @@ public class MapActivity extends AppCompatActivity implements
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
         mMap.setMaxZoomPreference(17);
-
-        //
-        //  init Probe Map Module
-        //
-        probeMapUi = new ProbeMapUi(this, mMap, mapFragment);
-        probeMapUi.startStatusRenderTimer();
-        GlideBitmapHelper glideBitmapHelper = GlideBitmapHelper.getInstance(getApplicationContext());
-        glideBitmapHelper.clearMemory();
-        glideBitmapHelper.setMemoryCategory(MemoryCategory.LOW);
+        initProbeModuleVariableWhenMapLoaded();
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;

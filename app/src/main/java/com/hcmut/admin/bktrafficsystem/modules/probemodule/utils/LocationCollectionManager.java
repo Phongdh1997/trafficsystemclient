@@ -1,7 +1,5 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.location.Location;
 import android.os.Looper;
@@ -12,11 +10,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.hcmut.admin.bktrafficsystem.api.ApiService;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.event.CurrentUserLocationEvent;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.SleepWakeupLocationService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
@@ -37,7 +33,6 @@ public class LocationCollectionManager {
     private Context context;
     private ApiService apiService;
     private UserLocation lastUserLocation;
-    private MutableLiveData<CurrentUserLocationEvent> currentUserLocationEventLiveData;
 
     private SleepWakeupLocationService sleepWakeupLocationService;
 
@@ -45,7 +40,6 @@ public class LocationCollectionManager {
         this.context = context.getApplicationContext();
         fusedLocationProviderClient = LocationServices
                 .getFusedLocationProviderClient(context.getApplicationContext());
-        currentUserLocationEventLiveData = new MutableLiveData<>();
         apiService = CallApi.createService();
         sleepWakeupLocationService = new SleepWakeupLocationService(context);
     }
@@ -81,30 +75,6 @@ public class LocationCollectionManager {
         if (fusedLocationProviderClient != null && callback != null) {
             fusedLocationProviderClient.removeLocationUpdates(callback);
             callback = null;
-        }
-    }
-
-    public LiveData<CurrentUserLocationEvent> getCurrentUserLocationEventLiveData() {
-        return currentUserLocationEventLiveData;
-    }
-
-    /**
-     * Load current user location and post to live data
-     */
-    public void loadCurrentLocation(final boolean isMoveToCurrentLocation) {
-        if (fusedLocationProviderClient != null) {
-            fusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                UserLocation userLocation = new UserLocation(location.getLatitude(), location.getLongitude());
-                                currentUserLocationEventLiveData.postValue(new CurrentUserLocationEvent(userLocation, isMoveToCurrentLocation));
-                            } else {
-                                currentUserLocationEventLiveData.postValue(new CurrentUserLocationEvent(null));
-                            }
-                        }
-                    });
         }
     }
 
