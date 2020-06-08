@@ -75,8 +75,6 @@ public class TrafficBitmap {
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setAlpha(getAlpha(zoom));
 
-        Path path = new Path();
-
         //Path path = new Path();
 
         if (lineDataList != null) {
@@ -96,13 +94,13 @@ public class TrafficBitmap {
                 stopY = (float) screenPt2.y * 10;
 
                 // draw polyline
-                // paint.setColor(Color.parseColor(lineData.color));
-                // c.drawLine(startX, startY, stopX, stopY, paint);
+                paint.setColor(Color.parseColor(lineData.color));
+                c.drawLine(startX, startY, stopX, stopY, paint);
 
-                path.moveTo(startX, startY);
-                path.lineTo(stopX, stopY);
+                //path.moveTo(startX, startY);
+                //path.lineTo(stopX, stopY);
             }
-            c.drawPath(path, paint);
+            //c.drawPath(path, paint);
         }
         return c;
     }
