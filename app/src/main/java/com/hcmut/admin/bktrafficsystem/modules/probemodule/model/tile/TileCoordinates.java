@@ -25,6 +25,19 @@ public class TileCoordinates {
     }
 
     /**
+     *
+     * @param tile
+     * @return  how far does this tile is to the given tile
+     */
+    public int getNearLevel (TileCoordinates tile) {
+        if (x == tile.x) {
+            return Math.abs(y - tile.y);
+        } else {
+            return Math.abs(x - tile.x);
+        }
+    }
+
+    /**
      * Get tile priority with given CenterTile
      * IMMEDIATE:   Tile is near centerTile 1 level
      * HIGH:        Tile is near centerTile 2 level
@@ -34,13 +47,7 @@ public class TileCoordinates {
      * @return
      */
     public Priority getTilePriority (TileCoordinates centerTile) {
-        int level;
-        if (x == centerTile.x) {
-            level = Math.abs(y - centerTile.y);
-        } else {
-            level = Math.abs(x - centerTile.x);
-        }
-        switch (level) {
+        switch (getNearLevel(centerTile)) {
             case 0:
             case 1:
                 return Priority.IMMEDIATE;

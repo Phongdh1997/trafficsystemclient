@@ -48,7 +48,8 @@ public abstract class StatusRender {
                 lastCenterTile = currentTile;
                 return currentTile;
             }
-            if (!currentTile.equals(lastCenterTile)) {  // move to other tile
+            Log.e("level", "" + currentTile.getNearLevel(lastCenterTile));
+            if (currentTile.getNearLevel(lastCenterTile) > 1) {  // move to other tile
                 Log.e("move", "move to other tile");
                 lastCenterTile = currentTile;
                 return currentTile;
