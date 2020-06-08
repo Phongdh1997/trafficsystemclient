@@ -29,11 +29,11 @@ public class GroundOverlayMatrixItem {
         state = INIT_OVERLAY;
     }
 
-    public void invalidate (@NotNull Bitmap bitmap, @NotNull TileCoordinates tileCoordinates, @NotNull final GoogleMap googleMap) {
+    public void invalidate (@NotNull Bitmap bitmap, @NotNull TileCoordinates target, @NotNull final GoogleMap googleMap) {
         if (!state.equals(LOADED_OVERLAY)) {
             final GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
             groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
-            groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(tileCoordinates));
+            groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
