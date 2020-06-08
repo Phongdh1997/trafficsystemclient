@@ -1,6 +1,5 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,13 +7,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.BitmapGlideModel;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 
 import java.util.List;
 
@@ -28,13 +23,7 @@ public class TrafficBitmap {
     private final int mDimension = mScale * mTileSize;
     private final int DEFAULT_COLOR = Color.BLACK;
 
-    private GlideBitmapHelper glideBitmapHelper;
-
-    private GroundOverlayMatrix groundOverlayMatrix;
-
-    public TrafficBitmap(GroundOverlayMatrix groundOverlayMatrix, Context context) {
-        this.groundOverlayMatrix = groundOverlayMatrix;
-        glideBitmapHelper = GlideBitmapHelper.getInstance(context);
+    public TrafficBitmap() {
     }
 
     /**
@@ -44,11 +33,8 @@ public class TrafficBitmap {
      * @param tile
      * @param lineDataList
      */
-    public void createTrafficBitmap (TileCoordinates tile, @Nullable List<BitmapLineData> lineDataList) {
-        Bitmap bitmap = draw(tile.x, tile.y, tile.z, lineDataList);
-        if (bitmap != null) {
-            groundOverlayMatrix.invalidate(tile, bitmap);
-        }
+    public Bitmap createTrafficBitmap (TileCoordinates tile, @Nullable List<BitmapLineData> lineDataList) {
+        return draw(tile.x, tile.y, tile.z, lineDataList);
     }
 
     private Bitmap draw(int x, int y, int zoom, @Nullable List<BitmapLineData> lineDataList) {

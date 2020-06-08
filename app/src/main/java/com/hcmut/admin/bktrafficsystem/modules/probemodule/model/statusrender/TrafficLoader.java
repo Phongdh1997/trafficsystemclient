@@ -17,12 +17,10 @@ import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class TrafficLoader {
-    private ThreadPoolExecutor executor = RetrofitClient.THREAD_POOL_EXECUTOR;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
-    private TrafficBitmap trafficBitmap;
 
-    public TrafficLoader(GroundOverlayMatrix groundOverlayMatrix, Context context) {
-        trafficBitmap = new TrafficBitmap(groundOverlayMatrix, context);
+    public TrafficLoader() {
+
     }
 
     /**
@@ -32,21 +30,11 @@ public class TrafficLoader {
      * @param tile
      * @return
      */
-    public void loadDataFromServer(final TileCoordinates tile, final HashMap<TileCoordinates, String> tileStates) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tile);
-                UserLocation userLocation = new UserLocation(bounds.getCenter());
-                Log.e("tile status", tile.toString() + "loading, " + userLocation.toString());
-                List<StatusRenderData> datas = statusRepositoryService
-                        .loadStatusRenderData(userLocation, getTileRadius(tile));
-                trafficBitmap.createTrafficBitmap(tile, StatusRenderData.parseBitmapLineData(datas));
-                if (datas == null) {
-                    tileStates.put(tile, GroundOverlayMatrix.LOAD_FAIL_OVERLAY);
-                }
-            }
-        });
+    public List<StatusRenderData> loadDataFromServer(final TileCoordinates tile) {
+        LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tile);
+        UserLocation userLocation = new UserLocation(bounds.getCenter());
+        Log.e("tile status", tile.toString() + "loading, " + userLocation.toString());
+        return statusRepositoryService.loadStatusRenderData(userLocation, getTileRadius(tile));
     }
 
     /**

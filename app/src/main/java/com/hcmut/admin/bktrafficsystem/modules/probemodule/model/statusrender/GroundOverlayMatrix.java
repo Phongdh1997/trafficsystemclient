@@ -1,38 +1,17 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import com.bumptech.glide.MemoryCategory;
-import com.bumptech.glide.request.FutureTarget;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.BitmapGlideModel;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
-
-import org.jetbrains.annotations.NotNull;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-
-import javax.annotation.Nullable;
 
 public class GroundOverlayMatrix {
     public static final String LOADED_OVERLAY = "LOADED_OVERLAY";
@@ -40,16 +19,12 @@ public class GroundOverlayMatrix {
     public static final String LOAD_FAIL_OVERLAY = "LOAD_FAIL_OVERLAY";
 
     private HashMap<TileCoordinates, String> tileStates = new HashMap<>();
-    private WeakReference<GoogleMap> googleMapWeakReference;
     private TrafficLoader trafficLoader;
-    private GlideBitmapHelper glideBitmapHelper;
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    private TileRenderHandler tileRenderHandler;
 
-    public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
-        googleMapWeakReference = new WeakReference<>(googleMap);
-        trafficLoader = new TrafficLoader(this, context);
-        glideBitmapHelper = GlideBitmapHelper.getInstance(context);
-        glideBitmapHelper.clearDiskCache(RetrofitClient.THREAD_POOL_EXECUTOR);
+    public GroundOverlayMatrix(GoogleMap googleMap) {
+        trafficLoader = new TrafficLoader();
+        tileRenderHandler = new BitmapTileRenderHandlerImpl(googleMap, tileStates);
     }
 
     public synchronized void renderMatrix(final TileCoordinates centerTile) {
@@ -70,8 +45,7 @@ public class GroundOverlayMatrix {
     private void renderTile(TileCoordinates tile) {
         String tileState = tileStates.get(tile);
         if (tileState == null) {
-            tileStates.put(tile, LOADING_OVERLAY);
-            trafficLoader.loadDataFromServer(tile, tileStates);
+            loadDataFromServer(tile);
         } else {
             switch (tileState) {
                 case LOADING_OVERLAY:
@@ -80,43 +54,30 @@ public class GroundOverlayMatrix {
                     Log.e("maxtrix", "loaded");
                     break;
                 case LOAD_FAIL_OVERLAY:
-                    tileStates.put(tile, LOADING_OVERLAY);
-                    trafficLoader.loadDataFromServer(tile, tileStates);
+                    loadDataFromServer(tile);
                     break;
             }
         }
     }
 
     /**
-     * Invalidate matrix item
-     * if bitmap is null then load from Glide
-     * @param tileCoordinates
-     * @param bitmap
+     * Load data from server
+     * Dispatch loaded data to TileRenderHandler
+     * @param tile
      */
-    public void invalidate(TileCoordinates tileCoordinates, @Nullable Bitmap bitmap) {
-        if (bitmap != null) {
-            performRenderBitmapToTile(tileCoordinates, bitmap);
-        }
-    }
-
-    /**
-     * Trigger to refresh tile with available bitmap
-     * tile is rendered when it is in matrix
-     */
-    private void performRenderBitmapToTile(final TileCoordinates target, @NotNull Bitmap bitmap) {
-        final GoogleMap googleMap = googleMapWeakReference.get();
-        if (googleMap != null) {
-            final GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
-            groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
-            groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
-            mainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    googleMap.addGroundOverlay(groundOverlayOptions);
-                    tileStates.put(target, LOADED_OVERLAY);
+    private void loadDataFromServer (final TileCoordinates tile) {
+        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                tileStates.put(tile, LOADING_OVERLAY);
+                List<StatusRenderData> datas = trafficLoader.loadDataFromServer(tile);
+                if (datas != null) {
+                    tileRenderHandler.render(tile, StatusRenderData.parseBitmapLineData(datas), tileStates);
+                } else {
+                    tileStates.put(tile, LOAD_FAIL_OVERLAY);
                 }
-            });
-        }
+            }
+        });
     }
 
     private List<TileCoordinates> generateMatrixItems (TileCoordinates centerTile) {
