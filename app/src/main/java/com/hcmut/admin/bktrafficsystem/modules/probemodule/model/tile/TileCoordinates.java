@@ -3,6 +3,8 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
+
 public class TileCoordinates {
     public final int x;
     public final int y;
@@ -20,6 +22,35 @@ public class TileCoordinates {
             throw new TileCoordinatesNotValid();
         }
         return new TileCoordinates(x, y, z);
+    }
+
+    /**
+     * Get tile priority with given CenterTile
+     * IMMEDIATE:   Tile is near centerTile 1 level
+     * HIGH:        Tile is near centerTile 2 level
+     * MEDIUM:      Tile is near centerTile 3 level
+     * LOW: everything else
+     * @param centerTile
+     * @return
+     */
+    public Priority getTilePriority (TileCoordinates centerTile) {
+        int level;
+        if (x == centerTile.x) {
+            level = Math.abs(y - centerTile.y);
+        } else {
+            level = Math.abs(x - centerTile.x);
+        }
+        switch (level) {
+            case 0:
+            case 1:
+                return Priority.IMMEDIATE;
+            case 2:
+                return Priority.HIGH;
+            case 3:
+                return Priority.MEDIUM;
+            default:
+                return Priority.LOW;
+        }
     }
 
     public TileCoordinates getTileLeft() throws TileCoordinatesNotValid {

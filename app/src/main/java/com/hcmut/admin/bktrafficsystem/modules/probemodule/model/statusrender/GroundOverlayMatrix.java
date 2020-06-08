@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityFutureTask;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityRunable;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
@@ -31,7 +34,7 @@ public class GroundOverlayMatrix {
         List<TileCoordinates> tileItems = generateMatrixItems(centerTile);
         Log.e("matrix", "not loaded size: " + tileItems.size());
         for (TileCoordinates tile : tileItems) {
-            renderTile(tile);
+            renderTile(tile, tile.getTilePriority(centerTile));
         }
     }
 
@@ -42,10 +45,10 @@ public class GroundOverlayMatrix {
      * else load traffic data from server:
      * @param tile
      */
-    private void renderTile(TileCoordinates tile) {
+    private void renderTile(TileCoordinates tile, Priority priority) {
         String tileState = tileStates.get(tile);
         if (tileState == null) {
-            loadDataFromServer(tile);
+            loadDataFromServer(tile, priority);
         } else {
             switch (tileState) {
                 case LOADING_OVERLAY:
@@ -54,7 +57,7 @@ public class GroundOverlayMatrix {
                     Log.e("maxtrix", "loaded");
                     break;
                 case LOAD_FAIL_OVERLAY:
-                    loadDataFromServer(tile);
+                    loadDataFromServer(tile, priority);
                     break;
             }
         }
@@ -65,8 +68,9 @@ public class GroundOverlayMatrix {
      * Dispatch loaded data to TileRenderHandler
      * @param tile
      */
-    private void loadDataFromServer (final TileCoordinates tile) {
-        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+    private void loadDataFromServer (final TileCoordinates tile, Priority priority) {
+        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new PriorityFutureTask(
+                new PriorityRunable(priority){
             @Override
             public void run() {
                 tileStates.put(tile, LOADING_OVERLAY);
@@ -77,7 +81,7 @@ public class GroundOverlayMatrix {
                     tileStates.put(tile, LOAD_FAIL_OVERLAY);
                 }
             }
-        });
+        }));
     }
 
     private List<TileCoordinates> generateMatrixItems (TileCoordinates centerTile) {
