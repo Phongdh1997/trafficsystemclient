@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class TileRenderHandler {
-    private HashMap<TileCoordinates, String> tileStates;
+    protected HashMap<TileCoordinates, String> tileStates;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public TileRenderHandler(HashMap<TileCoordinates, String> tileStates) {

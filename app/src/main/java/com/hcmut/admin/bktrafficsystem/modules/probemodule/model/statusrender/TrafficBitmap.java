@@ -17,7 +17,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public class TrafficBitmap {
-    public static final int TILE_ZOOM_15_SCALE = 4;
+    public static final int TILE_ZOOM_15_SCALE = 3;
     public static final int mTileSize = 256;
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = TILE_ZOOM_15_SCALE;

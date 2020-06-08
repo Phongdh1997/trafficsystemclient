@@ -6,6 +6,7 @@ import android.os.Looper;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
@@ -23,11 +24,13 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
 
     private WeakReference<GoogleMap> googleMapWeakReference;
     private TrafficBitmap trafficBitmap;
+    private TileOverlayPool tileOverlayPool;
 
     public BitmapTileRenderHandlerImpl (GoogleMap googleMap, HashMap<TileCoordinates, String> tileStates) {
         super(tileStates);
         googleMapWeakReference = new WeakReference<>(googleMap);
         trafficBitmap = new TrafficBitmap();
+        tileOverlayPool = new TileOverlayPool(super.tileStates);
     }
 
     @Override
@@ -53,23 +56,31 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
      * Trigger to refresh tile with available bitmap
      * tile is rendered when it is in matrix
      */
-    private void performRenderBitmapToTile(final TileCoordinates target, @NotNull Bitmap bitmap) {
+    private void performRenderBitmapToTile(final TileCoordinates target, @NotNull final Bitmap bitmap) {
         final GoogleMap googleMap = googleMapWeakReference.get();
         if (googleMap != null) {
-            final GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
-            groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
-            groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    googleMap.addGroundOverlay(groundOverlayOptions);
+                    GroundOverlay groundOverlay = tileOverlayPool.poll();
+                    if (groundOverlay != null) {
+                        groundOverlay.setImage(BitmapDescriptorFactory.fromBitmap(bitmap));
+                        groundOverlay.setPositionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
+                    } else {
+                        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
+                        groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+                        groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
+                        groundOverlay = googleMap.addGroundOverlay(groundOverlayOptions);
+
+                    }
                     setTileState(target, GroundOverlayMatrix.LOADED_OVERLAY);
+                    tileOverlayPool.recycle(target, groundOverlay);
+                    try {
+                        bitmap.recycle();
+                    } catch (Exception e) {
+                    }
                 }
             });
-        }
-        try {
-            bitmap.recycle();
-        } catch (Exception e) {
         }
     }
 }
