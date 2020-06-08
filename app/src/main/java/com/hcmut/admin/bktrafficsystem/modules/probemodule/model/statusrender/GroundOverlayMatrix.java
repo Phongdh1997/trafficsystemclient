@@ -76,7 +76,7 @@ public class GroundOverlayMatrix {
                 tileStates.put(tile, LOADING_OVERLAY);
                 List<StatusRenderData> datas = trafficLoader.loadDataFromServer(tile);
                 if (datas != null) {
-                    tileRenderHandler.render(tile, StatusRenderData.parseBitmapLineData(datas), tileStates);
+                    tileRenderHandler.render(tile, datas, tileStates);
                 } else {
                     tileStates.put(tile, LOAD_FAIL_OVERLAY);
                 }

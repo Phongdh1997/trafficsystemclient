@@ -32,8 +32,8 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
     }
 
     @Override
-    public void render(TileCoordinates tile, List<BitmapLineData> datas, HashMap<TileCoordinates, String> tileStates) {
-        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas);
+    public void render(TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates) {
+        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, StatusRenderData.parseBitmapLineData(datas));
         if (bitmap != null) {
             invalidate(tile, bitmap);
         }
