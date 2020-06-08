@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.Log;
 
 import com.google.maps.android.geometry.Point;
@@ -16,7 +17,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public class TrafficBitmap {
-    public static final int TILE_ZOOM_15_SCALE = 3;
+    public static final int TILE_ZOOM_15_SCALE = 4;
     public static final int mTileSize = 256;
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = TILE_ZOOM_15_SCALE;
@@ -74,6 +75,8 @@ public class TrafficBitmap {
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setAlpha(getAlpha(zoom));
 
+        Path path = new Path();
+
         //Path path = new Path();
 
         if (lineDataList != null) {
@@ -93,13 +96,13 @@ public class TrafficBitmap {
                 stopY = (float) screenPt2.y * 10;
 
                 // draw polyline
-                paint.setColor(Color.parseColor(lineData.color));
-                c.drawLine(startX, startY, stopX, stopY, paint);
+                // paint.setColor(Color.parseColor(lineData.color));
+                // c.drawLine(startX, startY, stopX, stopY, paint);
 
-                //path.moveTo(startX, startY);
-                //path.lineTo(stopX, stopY);
+                path.moveTo(startX, startY);
+                path.lineTo(stopX, stopY);
             }
-            //c.drawPath(path, paint);
+            c.drawPath(path, paint);
         }
         return c;
     }
