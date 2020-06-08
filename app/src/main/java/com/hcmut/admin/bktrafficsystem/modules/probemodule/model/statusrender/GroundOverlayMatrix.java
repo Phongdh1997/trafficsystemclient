@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -24,10 +25,12 @@ public class GroundOverlayMatrix {
     private HashMap<TileCoordinates, String> tileStates = new HashMap<>();
     private TrafficLoader trafficLoader;
     private TileRenderHandler tileRenderHandler;
+    private GlideBitmapHelper glideBitmapHelper;
 
-    public GroundOverlayMatrix(GoogleMap googleMap) {
+    public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
         trafficLoader = new TrafficLoader();
         tileRenderHandler = new BitmapTileRenderHandlerImpl(googleMap, tileStates);
+        glideBitmapHelper = GlideBitmapHelper.getInstance(context.getApplicationContext());
     }
 
     public synchronized void renderMatrix(final TileCoordinates centerTile) {
@@ -69,19 +72,26 @@ public class GroundOverlayMatrix {
      * @param tile
      */
     private void loadDataFromServer (final TileCoordinates tile, Priority priority) {
-        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new PriorityFutureTask(
-                new PriorityRunable(priority){
-            @Override
-            public void run() {
-                tileStates.put(tile, LOADING_OVERLAY);
-                List<StatusRenderData> datas = trafficLoader.loadDataFromServer(tile);
-                if (datas != null) {
-                    tileRenderHandler.render(tile, datas, tileStates);
-                } else {
-                    tileStates.put(tile, LOAD_FAIL_OVERLAY);
-                }
-            }
-        }));
+        Bitmap bitmap = glideBitmapHelper.loadBitmapFromGlide(tile);
+        if (bitmap != null) {
+            Log.e("glide", "have image");
+            tileRenderHandler.render(tile, bitmap, tileStates);
+        } else {
+            RetrofitClient.THREAD_POOL_EXECUTOR.execute(new PriorityFutureTask(
+                    new PriorityRunable(priority) {
+                        @Override
+                        public void run() {
+                            tileStates.put(tile, LOADING_OVERLAY);
+                            List<StatusRenderData> datas = trafficLoader.loadDataFromServer(tile);
+                            if (datas != null) {
+                                Bitmap returnBitmap = tileRenderHandler.render(tile, datas, tileStates);
+                                glideBitmapHelper.storeBitmapToGlide(tile, returnBitmap);
+                            } else {
+                                tileStates.put(tile, LOAD_FAIL_OVERLAY);
+                            }
+                        }
+                    }));
+        }
     }
 
     private List<TileCoordinates> generateMatrixItems (TileCoordinates centerTile) {

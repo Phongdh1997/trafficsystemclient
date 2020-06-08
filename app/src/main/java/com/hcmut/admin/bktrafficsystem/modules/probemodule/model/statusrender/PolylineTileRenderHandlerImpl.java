@@ -1,5 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
+import android.graphics.Bitmap;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
@@ -18,7 +20,7 @@ public class PolylineTileRenderHandlerImpl extends TileRenderHandler {
     }
 
     @Override
-    public void render(final TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates) {
+    public Bitmap render(final TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates) {
         final List<PolylineOptions> polylineOptionsList = StatusRenderData.parsePolylineOption(datas);
         if (polylineOptionsList != null && polylineOptionsList.size() > 0) {
             runOnUiThread(new Runnable() {
@@ -34,5 +36,11 @@ public class PolylineTileRenderHandlerImpl extends TileRenderHandler {
                 }
             });
         }
+        return null;
+    }
+
+    @Override
+    public void render(TileCoordinates tile, Bitmap bitmap, HashMap<TileCoordinates, String> tileStates) {
+
     }
 }

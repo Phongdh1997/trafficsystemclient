@@ -34,9 +34,17 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
     }
 
     @Override
-    public void render(TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates) {
+    public Bitmap render(TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates) {
         Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, StatusRenderData.parseBitmapLineData(datas));
         if (bitmap != null) {
+            invalidate(tile, bitmap);
+        }
+        return bitmap;
+    }
+
+    @Override
+    public void render(TileCoordinates tile, Bitmap bitmap, HashMap<TileCoordinates, String> tileStates) {
+        if (tile != null && bitmap != null) {
             invalidate(tile, bitmap);
         }
     }
@@ -75,10 +83,6 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
                     }
                     setTileState(target, GroundOverlayMatrix.LOADED_OVERLAY);
                     tileOverlayPool.recycle(target, groundOverlay);
-                    try {
-                        bitmap.recycle();
-                    } catch (Exception e) {
-                    }
                 }
             });
         }

@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -19,7 +20,9 @@ public abstract class TileRenderHandler {
         this.tileStates = tileStates;
     }
 
-    public abstract void render(TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates);
+    public abstract Bitmap render(TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates);
+
+    public abstract void render(TileCoordinates tile, Bitmap bitmap, HashMap<TileCoordinates, String> tileStates);
 
     protected void setTileState(TileCoordinates tile, String state) {
         tileStates.put(tile, state);

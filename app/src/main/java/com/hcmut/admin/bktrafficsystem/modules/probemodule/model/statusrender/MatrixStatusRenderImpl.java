@@ -18,7 +18,7 @@ public class MatrixStatusRenderImpl extends StatusRender {
 
     public MatrixStatusRenderImpl(GoogleMap googleMap, Context context, SupportMapFragment mapFragment) {
         super(mapFragment);
-        groundOverlayMatrix = new GroundOverlayMatrix(googleMap);
+        groundOverlayMatrix = new GroundOverlayMatrix(googleMap, context);
     }
 
     @Override
