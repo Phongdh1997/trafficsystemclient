@@ -12,6 +12,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.ret
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -31,7 +32,7 @@ public class TrafficLoader {
      * @param tile
      * @return
      */
-    public void loadDataFromServer(final TileCoordinates tile) {
+    public void loadDataFromServer(final TileCoordinates tile, final HashMap<TileCoordinates, String> tileStates) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -41,6 +42,9 @@ public class TrafficLoader {
                 List<StatusRenderData> datas = statusRepositoryService
                         .loadStatusRenderData(userLocation, getTileRadius(tile));
                 trafficBitmap.createTrafficBitmap(tile, StatusRenderData.parseBitmapLineData(datas));
+                if (datas == null) {
+                    tileStates.put(tile, GroundOverlayMatrix.LOAD_FAIL_OVERLAY);
+                }
             }
         });
     }

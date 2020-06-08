@@ -47,7 +47,6 @@ public class TrafficBitmap {
     public void createTrafficBitmap (TileCoordinates tile, @Nullable List<BitmapLineData> lineDataList) {
         Bitmap bitmap = draw(tile.x, tile.y, tile.z, lineDataList);
         if (bitmap != null) {
-            glideBitmapHelper.storeBitmapToGlide(tile, bitmap);
             groundOverlayMatrix.invalidate(tile, bitmap);
         }
     }

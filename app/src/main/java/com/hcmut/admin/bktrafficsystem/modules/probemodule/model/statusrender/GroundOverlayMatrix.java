@@ -2,6 +2,8 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.bumptech.glide.MemoryCategory;
@@ -33,12 +35,15 @@ import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 
 public class GroundOverlayMatrix {
-    private final int matrixSize = 5;   // M = N = matrixSize
-    private HashMap<TileCoordinates, GroundOverlayMatrixItem> overlayMatrix = new HashMap<>();
-    private Queue<GroundOverlayMatrixItem> idleOverlay = new LinkedList<>();
+    public static final String LOADED_OVERLAY = "LOADED_OVERLAY";
+    public static final String LOADING_OVERLAY = "LOADING_OVERLAY";
+    public static final String LOAD_FAIL_OVERLAY = "LOAD_FAIL_OVERLAY";
+
+    private HashMap<TileCoordinates, String> tileStates = new HashMap<>();
     private WeakReference<GoogleMap> googleMapWeakReference;
     private TrafficLoader trafficLoader;
     private GlideBitmapHelper glideBitmapHelper;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
         googleMapWeakReference = new WeakReference<>(googleMap);
@@ -48,10 +53,9 @@ public class GroundOverlayMatrix {
     }
 
     public synchronized void renderMatrix(final TileCoordinates centerTile) {
-        List<TileCoordinates> notLoadedTile = getNotLoadedTile(centerTile);
-        Log.e("matrix", "not loaded size: " + notLoadedTile.size());
-        Log.e("matrix", "idle size: " + idleOverlay.size());
-        for (TileCoordinates tile : notLoadedTile) {
+        List<TileCoordinates> tileItems = generateMatrixItems(centerTile);
+        Log.e("matrix", "not loaded size: " + tileItems.size());
+        for (TileCoordinates tile : tileItems) {
             renderTile(tile);
         }
     }
@@ -64,25 +68,21 @@ public class GroundOverlayMatrix {
      * @param tile
      */
     private void renderTile(TileCoordinates tile) {
-        Bitmap bitmap = glideBitmapHelper.loadBitmapFromGlide(tile);
-        if (bitmap != null) {   // bitmap is in Glide
-            invalidate(tile, bitmap);
-            Log.e("matrix", "have data in glide");
+        String tileState = tileStates.get(tile);
+        if (tileState == null) {
+            tileStates.put(tile, LOADING_OVERLAY);
+            trafficLoader.loadDataFromServer(tile, tileStates);
         } else {
-            GroundOverlayMatrixItem renderMatrixItem = overlayMatrix.get(tile);
-            if (renderMatrixItem != null) {
-                switch (renderMatrixItem.getState()) {
-                    case GroundOverlayMatrixItem.INIT_OVERLAY:
-                        renderMatrixItem.setState(GroundOverlayMatrixItem.LOADING_OVERLAY);
-                        trafficLoader.loadDataFromServer(tile);
-                        break;
-                    case GroundOverlayMatrixItem.LOADING_OVERLAY:
-                        break;
-                    case GroundOverlayMatrixItem.LOADED_OVERLAY:
-                        break;
-                    case GroundOverlayMatrixItem.LOAD_FAIL_OVERLAY:
-                        break;
-                }
+            switch (tileState) {
+                case LOADING_OVERLAY:
+                    break;
+                case LOADED_OVERLAY:
+                    Log.e("maxtrix", "loaded");
+                    break;
+                case LOAD_FAIL_OVERLAY:
+                    tileStates.put(tile, LOADING_OVERLAY);
+                    trafficLoader.loadDataFromServer(tile, tileStates);
+                    break;
             }
         }
     }
@@ -94,12 +94,8 @@ public class GroundOverlayMatrix {
      * @param bitmap
      */
     public void invalidate(TileCoordinates tileCoordinates, @Nullable Bitmap bitmap) {
-        Bitmap renderBitmap = bitmap;
-        if (renderBitmap == null) {
-            renderBitmap = glideBitmapHelper.loadBitmapFromGlide(tileCoordinates);
-        }
-        if (renderBitmap != null) {
-            renderBitmapToTile(tileCoordinates, renderBitmap);
+        if (bitmap != null) {
+            performRenderBitmapToTile(tileCoordinates, bitmap);
         }
     }
 
@@ -107,64 +103,29 @@ public class GroundOverlayMatrix {
      * Trigger to refresh tile with available bitmap
      * tile is rendered when it is in matrix
      */
-    private void renderBitmapToTile(TileCoordinates tileCoordinates, @NotNull Bitmap bitmap) {
-        GoogleMap googleMap = googleMapWeakReference.get();
-        if (googleMap == null) return;
-
-        GroundOverlayMatrixItem renderMatrixItem = overlayMatrix.get(tileCoordinates);
-        if (renderMatrixItem != null && !renderMatrixItem.isOvelayLoaded()) {   // tile coordinates is in matrix
-            // find an available ground overlay to this tile
-            GroundOverlayMatrixItem idleMatrixItem = idleOverlay.poll();
-            if (idleMatrixItem != null) {  // if have available Overlay
-                renderMatrixItem.invalidate(bitmap, tileCoordinates, idleMatrixItem);
-            } else {    // create new overlay
-                renderMatrixItem.invalidate(bitmap, tileCoordinates, googleMap);
-            }
+    private void performRenderBitmapToTile(final TileCoordinates target, @NotNull Bitmap bitmap) {
+        final GoogleMap googleMap = googleMapWeakReference.get();
+        if (googleMap != null) {
+            final GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
+            groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+            groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    googleMap.addGroundOverlay(groundOverlayOptions);
+                    tileStates.put(target, LOADED_OVERLAY);
+                }
+            });
         }
     }
 
-    /**
-     * Create new matrix and add idleOverlay
-     * @param centerTile
-     * @return not loaded tile
-     */
-    private List<TileCoordinates> getNotLoadedTile (TileCoordinates centerTile) {
-        HashMap<TileCoordinates, GroundOverlayMatrixItem> newMatrixItems = generateMatrixItems(centerTile);
-        if (overlayMatrix.size() == 0) {
-            overlayMatrix = newMatrixItems;
-            return new ArrayList<>(newMatrixItems.keySet());
+    private List<TileCoordinates> generateMatrixItems (TileCoordinates centerTile) {
+        List<TileCoordinates> tileCoordinatesList = new ArrayList<>();
+        List<TileCoordinates> rowItems = getRowItems(centerTile);
+        for (TileCoordinates item : rowItems) {
+            tileCoordinatesList.addAll(getColumnItems(item));
         }
-
-        // find not loaded tile
-        List<TileCoordinates> notLoadedTile = new ArrayList<>();
-        TileCoordinates currentKey;
-        for (Map.Entry<TileCoordinates, GroundOverlayMatrixItem> entry : newMatrixItems.entrySet()) {
-            currentKey = entry.getKey();
-            if (overlayMatrix.containsKey(currentKey)) {
-                entry.setValue(overlayMatrix.get(currentKey));
-                overlayMatrix.remove(currentKey);
-            } else {
-                notLoadedTile.add(entry.getKey());
-            }
-        }
-        GroundOverlayMatrixItem overlayMatrixItem;
-        for (Map.Entry<TileCoordinates, GroundOverlayMatrixItem> entry : overlayMatrix.entrySet()) {
-            overlayMatrixItem = entry.getValue();
-            if (overlayMatrixItem.isOvelayLoaded()) {
-                idleOverlay.add(overlayMatrixItem);
-            }
-        }
-        overlayMatrix = newMatrixItems;
-        return notLoadedTile;
-    }
-
-    private HashMap<TileCoordinates, GroundOverlayMatrixItem> generateMatrixItems (TileCoordinates centerTile) {
-        HashMap<TileCoordinates, GroundOverlayMatrixItem> matrix = new HashMap<>();
-        HashMap<TileCoordinates, GroundOverlayMatrixItem> rowItems = getRowItems(centerTile);
-        for (TileCoordinates tileCoordinates : rowItems.keySet()) {
-            matrix.putAll(getColumnItems(tileCoordinates));
-        }
-        return matrix;
+        return tileCoordinatesList;
     }
 
     /**
@@ -172,20 +133,20 @@ public class GroundOverlayMatrix {
      * @param center
      * @return
      */
-    private HashMap<TileCoordinates, GroundOverlayMatrixItem> getRowItems (TileCoordinates center) {
-        HashMap<TileCoordinates, GroundOverlayMatrixItem> matrix = new HashMap<>();
-        matrix.put(center, new GroundOverlayMatrixItem());
+    private List<TileCoordinates> getRowItems (TileCoordinates center) {
+        List<TileCoordinates> tiles = new ArrayList<>();
+        tiles.add(center);
         try {
             TileCoordinates left = center.getTileLeft();
             TileCoordinates right = center.getTileRight();
-            matrix.put(left, new GroundOverlayMatrixItem());
-            matrix.put(right, new GroundOverlayMatrixItem());
-            matrix.put(left.getTileLeft(), new GroundOverlayMatrixItem());
-            matrix.put(right.getTileRight(), new GroundOverlayMatrixItem());
+            tiles.add(left);
+            tiles.add(right);
+            tiles.add(left.getTileLeft());
+            tiles.add(right.getTileRight());
         } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
             tileCoordinatesNotValid.printStackTrace();
         }
-        return matrix;
+        return tiles;
     }
 
     /**
@@ -193,19 +154,19 @@ public class GroundOverlayMatrix {
      * @param center
      * @return
      */
-    private HashMap<TileCoordinates, GroundOverlayMatrixItem> getColumnItems (TileCoordinates center) {
-        HashMap<TileCoordinates, GroundOverlayMatrixItem> matrix = new HashMap<>();
-        matrix.put(center, new GroundOverlayMatrixItem());
+    private List<TileCoordinates> getColumnItems (TileCoordinates center) {
+        List<TileCoordinates> tiles = new ArrayList<>();
+        tiles.add(center);
         try {
             TileCoordinates top = center.getTileTop();
             TileCoordinates bot = center.getTileBot();
-            matrix.put(top, new GroundOverlayMatrixItem());
-            matrix.put(bot, new GroundOverlayMatrixItem());
-            matrix.put(top.getTileTop(), new GroundOverlayMatrixItem());
-            matrix.put(bot.getTileBot(), new GroundOverlayMatrixItem());
+            tiles.add(top);
+            tiles.add(bot);
+            tiles.add(top.getTileTop());
+            tiles.add(bot.getTileBot());
         } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
             tileCoordinatesNotValid.printStackTrace();
         }
-        return matrix;
+        return tiles;
     }
 }
