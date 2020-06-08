@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -77,14 +78,40 @@ public class StatusRenderData {
             List<BitmapLineData> lineDataList = new ArrayList<>();
             List<LatLng> line;
             String color;
-            for (StatusRenderData statusRenderData : statusRenderDataList) {
-                line = statusRenderData.getLatLngPolyline();
-                color = statusRenderData.getColor();
-                if (line != null && line.size() == 2 && color != null) {
-                    lineDataList.add(new BitmapLineData(line.get(0), line.get(1), color));
+            try {
+                for (StatusRenderData statusRenderData : statusRenderDataList) {
+                    line = statusRenderData.getLatLngPolyline();
+                    color = statusRenderData.getColor();
+                    if (line != null && line.size() == 2 && color != null) {
+                        lineDataList.add(new BitmapLineData(line.get(0), line.get(1), color));
+                    }
                 }
-            }
+            } catch (Exception e) {}
             return lineDataList;
+        }
+        return null;
+    }
+
+    public static List<PolylineOptions> parsePolylineOption (List<StatusRenderData> statusRenderDataList) {
+        if (statusRenderDataList != null && statusRenderDataList.size() > 0) {
+            List<PolylineOptions> polylineOptionsList = new ArrayList<>();
+            List<LatLng> line;
+            String color;
+            PolylineOptions polylineOptions;
+            try {
+                for (StatusRenderData statusRenderData : statusRenderDataList) {
+                    line = statusRenderData.getLatLngPolyline();
+                    color = statusRenderData.getColor();
+                    if (line != null && line.size() == 2 && color != null) {
+                        polylineOptions = new PolylineOptions()
+                                .width(7)
+                                .color(Color.parseColor(color))
+                                .addAll(line);
+                        polylineOptionsList.add(polylineOptions);
+                    }
+                }
+            } catch (Exception e) {}
+            return polylineOptionsList;
         }
         return null;
     }

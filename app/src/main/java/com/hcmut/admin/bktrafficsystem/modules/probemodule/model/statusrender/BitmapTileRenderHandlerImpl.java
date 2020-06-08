@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 
 public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
 
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
     private WeakReference<GoogleMap> googleMapWeakReference;
     private TrafficBitmap trafficBitmap;
 
@@ -60,7 +59,7 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
             final GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
             groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
             groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
-            mainHandler.post(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     googleMap.addGroundOverlay(groundOverlayOptions);
