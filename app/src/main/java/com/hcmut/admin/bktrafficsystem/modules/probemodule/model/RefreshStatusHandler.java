@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 
 public class RefreshStatusHandler {
     private StatusRender statusRender;
-    private long timeFrame = 60000 * 1; // default 3 minus
+    private long timeFrame = 60000 * 3; // default 3 minus
     private WeakReference<GoogleMap> googleMapWeakReference;
     private boolean isRunning = false;
 

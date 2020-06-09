@@ -37,19 +37,19 @@ public class GoogleMapMemoryManager {
     public int getLimitMoveCount (int zoom) {
         switch (zoom) {
             case 15:
-                return 20;
+                return 60;
             case 16:
-                return 16;
+                return 40;
             case 17:
-                return 12;
+                return 20;
             case 18:
-                return 8;
+                return 16;
             case 19:
-                return 4;
+                return 14;
             case 20:
-                return 5;
+                return 12;
             case 21:
-                return 6;
+                return 10;
         }
         return 200;
     }
