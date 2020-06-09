@@ -51,7 +51,7 @@ public class GroundOverlayMatrix {
     private void renderTile(TileCoordinates tile, Priority priority) {
         String tileState = tileStates.get(tile);
         if (tileState == null) {
-            loadDataFromServer(tile, priority);
+            handleRenderTile(tile, priority);
         } else {
             switch (tileState) {
                 case LOADING_OVERLAY:
@@ -60,7 +60,7 @@ public class GroundOverlayMatrix {
                     Log.e("maxtrix", "loaded");
                     break;
                 case LOAD_FAIL_OVERLAY:
-                    loadDataFromServer(tile, priority);
+                    handleRenderTile(tile, priority);
                     break;
             }
         }
@@ -71,7 +71,7 @@ public class GroundOverlayMatrix {
      * Dispatch loaded data to TileRenderHandler
      * @param tile
      */
-    private void loadDataFromServer (final TileCoordinates tile, Priority priority) {
+    private void handleRenderTile (final TileCoordinates tile, Priority priority) {
         Bitmap bitmap = glideBitmapHelper.loadBitmapFromGlide(tile);
         if (bitmap != null) {
             Log.e("glide", "have image");
