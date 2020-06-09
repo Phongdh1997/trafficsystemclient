@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -70,19 +71,23 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    GroundOverlay groundOverlay = tileOverlayPool.poll();
-                    if (groundOverlay != null) {
-                        groundOverlay.setImage(BitmapDescriptorFactory.fromBitmap(bitmap));
-                        groundOverlay.setPositionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
-                    } else {
-                        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
-                        groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
-                        groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
-                        groundOverlay = googleMap.addGroundOverlay(groundOverlayOptions);
+                    if (target.getNearLevelToCenterTile(googleMap) < 3) {
+                        GroundOverlay groundOverlay = tileOverlayPool.poll();
+                        if (groundOverlay != null) {
+                            groundOverlay.setImage(BitmapDescriptorFactory.fromBitmap(bitmap));
+                            groundOverlay.setPositionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
+                        } else {
+                            GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
+                            groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+                            groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
+                            groundOverlay = googleMap.addGroundOverlay(groundOverlayOptions);
 
+                        }
+                        setTileState(target, GroundOverlayMatrix.LOADED_OVERLAY);
+                        tileOverlayPool.recycle(target, groundOverlay);
+                    } else {
+                        setTileState(target, GroundOverlayMatrix.LOAD_FAIL_OVERLAY);
                     }
-                    setTileState(target, GroundOverlayMatrix.LOADED_OVERLAY);
-                    tileOverlayPool.recycle(target, groundOverlay);
                 }
             });
         }

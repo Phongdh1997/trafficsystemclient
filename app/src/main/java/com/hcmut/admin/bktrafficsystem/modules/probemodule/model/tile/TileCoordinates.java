@@ -2,8 +2,15 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 public class TileCoordinates {
     public final int x;
@@ -26,10 +33,29 @@ public class TileCoordinates {
 
     /**
      *
+     * @param googleMap
+     * @return  how far does this tile is to the given tile
+     */
+    public int getNearLevelToCenterTile (@NotNull GoogleMap googleMap) {
+        LatLng target = googleMap.getCameraPosition().target;
+        try {
+            TileCoordinates centerTile = MyLatLngBoundsUtil.getTileNumber(
+                    target.latitude,
+                    target.longitude,
+                    StatusRender.TILE_ZOOM_LEVEL);
+            return getNearLevel(centerTile);
+        } catch (TileCoordinatesNotValid tileCoordinatesNotValid) {
+            tileCoordinatesNotValid.printStackTrace();
+        }
+        return 10;
+    }
+
+    /**
+     *
      * @param tile
      * @return  how far does this tile is to the given tile
      */
-    public int getNearLevel (TileCoordinates tile) {
+    public int getNearLevel (@NotNull TileCoordinates tile) {
         if (x == tile.x) {
             return Math.abs(y - tile.y);
         } else {
