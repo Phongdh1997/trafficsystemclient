@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.TileProvider;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
+@Deprecated
 public class CustomTileProvider implements TileProvider {
 
     private TrafficTileLoader trafficTileLoader;

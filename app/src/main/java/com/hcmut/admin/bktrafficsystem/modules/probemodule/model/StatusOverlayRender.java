@@ -12,6 +12,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileBitmap
 /**
  * Đại diện cho nguồn dữ liệu status sẽ được render lên TileOverlay
  */
+@Deprecated
 public class StatusOverlayRender {
     private GoogleMap map;
 

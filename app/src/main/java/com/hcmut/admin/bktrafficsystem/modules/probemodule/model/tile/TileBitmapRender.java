@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 import android.graphics.Bitmap;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+@Deprecated
 public class TileBitmapRender {
     private Bitmap bitmap;
     private LatLngBounds latLngBounds;

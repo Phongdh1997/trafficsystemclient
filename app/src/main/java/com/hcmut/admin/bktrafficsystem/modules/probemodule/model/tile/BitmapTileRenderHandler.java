@@ -13,6 +13,7 @@ import java.util.Queue;
 
 import javax.annotation.Nullable;
 
+@Deprecated
 public class BitmapTileRenderHandler {
     private final int CACHE_LIMIT;
     private final int NUMBER_CLEARING;

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
+@Deprecated
 public class TrafficTileLoader {
     public static final String TILE_LOADING = "tile_loading";
     public static final String TILE_LOADED = "tile_loaded";

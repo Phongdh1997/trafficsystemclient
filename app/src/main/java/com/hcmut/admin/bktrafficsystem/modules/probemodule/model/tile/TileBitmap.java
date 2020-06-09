@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+@Deprecated
 public class TileBitmap {
     private final int TILE_ZOOM_15_SCALE = 3;
     private final int mTileSize = 256;
