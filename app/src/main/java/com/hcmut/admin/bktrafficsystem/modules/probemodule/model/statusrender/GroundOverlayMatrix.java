@@ -22,6 +22,8 @@ public class GroundOverlayMatrix {
     public static final String LOADING_OVERLAY = "LOADING_OVERLAY";
     public static final String LOAD_FAIL_OVERLAY = "LOAD_FAIL_OVERLAY";
 
+    public static final int MATRIX_WIDTH = 5;
+
     private HashMap<TileCoordinates, String> tileStates = new HashMap<>();
     private TrafficLoader trafficLoader;
     private TileRenderHandler tileRenderHandler;

@@ -7,12 +7,13 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordi
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 
 public class TileOverlayPool {
-    private Queue<TileOverlay> idleOverlays = new LinkedList<>();
+    private List<TileOverlay> idleOverlays = new ArrayList<>();
     private HashMap<TileCoordinates, String> loadedTile;
     private final int minSize = 30;
 
@@ -25,15 +26,29 @@ public class TileOverlayPool {
      * Remove that tile from loadedTile
      * @return  GroundOverlay. return null if have not idle Overlay
      */
-    public GroundOverlay poll () {
+    public GroundOverlay poll (TileCoordinates centerTile) {
         Log.e("poolSize", "" + idleOverlays.size());
         if (idleOverlays.size() < minSize) return null;
-        TileOverlay tileOverlay = idleOverlays.poll();
+        TileOverlay tileOverlay = getOverlayOutsideOfMatrix(centerTile);
         if (tileOverlay != null) {
             loadedTile.remove(tileOverlay.getTile());
             return tileOverlay.getGroundOverlay();
         }
         return null;
+    }
+
+    private TileOverlay getOverlayOutsideOfMatrix (TileCoordinates centerTile) {
+        TileOverlay overlay = null;
+        for (TileOverlay tileOverlay : idleOverlays) {
+            if (tileOverlay.getTile().isOutsideOfMatrix(centerTile)) {
+                overlay = tileOverlay;
+                break;
+            }
+        }
+        if (overlay != null) {
+            idleOverlays.remove(overlay);
+        }
+        return overlay;
     }
 
     public void recycle(@NotNull TileCoordinates tile, @NotNull GroundOverlay groundOverlay) {

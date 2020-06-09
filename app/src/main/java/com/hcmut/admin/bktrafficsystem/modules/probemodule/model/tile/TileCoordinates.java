@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GroundOverlayMatrix;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
@@ -31,10 +32,18 @@ public class TileCoordinates {
         return new TileCoordinates(x, y, z);
     }
 
+    public boolean isOutsideOfMatrix (TileCoordinates centerTile) {
+        return !isInsideOfMatrix(centerTile);
+    }
+
+    public boolean isInsideOfMatrix (TileCoordinates centerTile) {
+        return getNearLevel(centerTile) < (GroundOverlayMatrix.MATRIX_WIDTH / 2 + 1);
+    }
+
     /**
      *
      * @param googleMap
-     * @return  how far does this tile is to the given tile
+     * @return
      */
     public static TileCoordinates getCenterTile (@NotNull GoogleMap googleMap) {
         LatLng target = googleMap.getCameraPosition().target;

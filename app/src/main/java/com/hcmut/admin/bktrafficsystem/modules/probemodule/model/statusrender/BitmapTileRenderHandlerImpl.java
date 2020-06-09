@@ -72,8 +72,8 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
                 @Override
                 public void run() {
                     TileCoordinates centerTile = TileCoordinates.getCenterTile(googleMap);
-                    if (centerTile != null && target.getNearLevel(centerTile) < 3) {
-                        GroundOverlay groundOverlay = tileOverlayPool.poll();
+                    if (centerTile != null && target.isInsideOfMatrix(centerTile)) {
+                        GroundOverlay groundOverlay = tileOverlayPool.poll(centerTile);
                         if (groundOverlay != null) {
                             groundOverlay.setImage(BitmapDescriptorFactory.fromBitmap(bitmap));
                             groundOverlay.setPositionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));
