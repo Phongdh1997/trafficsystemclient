@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class TileRenderHandler {
     protected HashMap<TileCoordinates, String> tileStates;
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    public static Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public TileRenderHandler(HashMap<TileCoordinates, String> tileStates) {
         this.tileStates = tileStates;
