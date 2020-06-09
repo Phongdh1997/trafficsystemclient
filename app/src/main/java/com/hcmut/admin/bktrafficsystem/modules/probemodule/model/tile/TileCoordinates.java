@@ -36,18 +36,17 @@ public class TileCoordinates {
      * @param googleMap
      * @return  how far does this tile is to the given tile
      */
-    public int getNearLevelToCenterTile (@NotNull GoogleMap googleMap) {
+    public static TileCoordinates getCenterTile (@NotNull GoogleMap googleMap) {
         LatLng target = googleMap.getCameraPosition().target;
         try {
-            TileCoordinates centerTile = MyLatLngBoundsUtil.getTileNumber(
+            return MyLatLngBoundsUtil.getTileNumber(
                     target.latitude,
                     target.longitude,
                     StatusRender.TILE_ZOOM_LEVEL);
-            return getNearLevel(centerTile);
         } catch (TileCoordinatesNotValid tileCoordinatesNotValid) {
             tileCoordinatesNotValid.printStackTrace();
         }
-        return 10;
+        return null;
     }
 
     /**
