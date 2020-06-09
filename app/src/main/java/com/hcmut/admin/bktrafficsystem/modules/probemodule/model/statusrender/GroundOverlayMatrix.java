@@ -43,6 +43,18 @@ public class GroundOverlayMatrix {
         }
     }
 
+    public void refresh(final TileCoordinates centerTile) {
+        glideBitmapHelper.clearMemory();
+        glideBitmapHelper.clearDiskCache(RetrofitClient.THREAD_POOL_EXECUTOR,
+                new GlideBitmapHelper.ClearDiskCacheCallBack() {
+            @Override
+            public void onFinish() {
+                tileStates.clear();
+                renderMatrix(centerTile);
+            }
+        });
+    }
+
     /**
      * TODO: Load tile to render
      *

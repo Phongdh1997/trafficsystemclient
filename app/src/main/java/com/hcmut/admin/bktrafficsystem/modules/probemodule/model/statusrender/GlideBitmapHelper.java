@@ -12,6 +12,8 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordi
 
 import java.util.concurrent.Executor;
 
+import javax.annotation.Nullable;
+
 public class GlideBitmapHelper {
     private Context context;
 
@@ -36,11 +38,14 @@ public class GlideBitmapHelper {
         GlideApp.get(context).clearMemory();
     }
 
-    public void clearDiskCache (Executor executor) {
+    public void clearDiskCache (Executor executor, @Nullable final ClearDiskCacheCallBack callBack) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 GlideApp.get(context).clearDiskCache();
+                if (callBack != null) {
+                    callBack.onFinish();
+                }
             }
         });
     }
@@ -70,5 +75,9 @@ public class GlideBitmapHelper {
                     .load(model)
                     .submit();
         }
+    }
+
+    public interface ClearDiskCacheCallBack {
+        void onFinish();
     }
 }

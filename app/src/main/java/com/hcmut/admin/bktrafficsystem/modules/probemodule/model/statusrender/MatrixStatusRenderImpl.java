@@ -25,4 +25,9 @@ public class MatrixStatusRenderImpl extends StatusRender {
     protected void handleCameraMoving(TileCoordinates currentTile) {
         groundOverlayMatrix.renderMatrix(currentTile);
     }
+
+    @Override
+    public void refreshRenderStatus(TileCoordinates centerTile) {
+        groundOverlayMatrix.refresh(centerTile);
+    }
 }

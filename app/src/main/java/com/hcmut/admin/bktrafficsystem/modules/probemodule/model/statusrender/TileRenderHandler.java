@@ -24,6 +24,8 @@ public abstract class TileRenderHandler {
 
     public abstract void render(TileCoordinates tile, Bitmap bitmap, HashMap<TileCoordinates, String> tileStates);
 
+    public abstract void clearRender ();
+
     protected void setTileState(TileCoordinates tile, String state) {
         tileStates.put(tile, state);
     }

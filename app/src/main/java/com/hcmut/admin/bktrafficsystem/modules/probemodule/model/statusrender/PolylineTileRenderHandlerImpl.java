@@ -43,4 +43,9 @@ public class PolylineTileRenderHandlerImpl extends TileRenderHandler {
     public void render(TileCoordinates tile, Bitmap bitmap, HashMap<TileCoordinates, String> tileStates) {
 
     }
+
+    @Override
+    public void clearRender() {
+
+    }
 }

@@ -50,6 +50,16 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
         }
     }
 
+    @Override
+    public void clearRender() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tileOverlayPool.clear();
+            }
+        });
+    }
+
     /**
      *
      * @param tileCoordinates
@@ -73,7 +83,7 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
                 public void run() {
                     TileCoordinates centerTile = TileCoordinates.getCenterTile(googleMap);
                     if (centerTile != null && target.isInsideOfMatrix(centerTile)) {
-                        GroundOverlay groundOverlay = tileOverlayPool.poll(centerTile);
+                        GroundOverlay groundOverlay = tileOverlayPool.poll(target, centerTile);
                         if (groundOverlay != null) {
                             groundOverlay.setImage(BitmapDescriptorFactory.fromBitmap(bitmap));
                             groundOverlay.setPositionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(target));

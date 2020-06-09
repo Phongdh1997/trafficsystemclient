@@ -7,6 +7,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MatrixStatusRenderImpl;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,5 +38,9 @@ public class ProbeMapUi {
                 statusRender.onCameraMoving(gmaps);
             }
         });
+    }
+
+    public void refreshRenderStatus () {
+        statusRender.refreshRenderStatus(TileCoordinates.getCenterTile(gmaps));
     }
 }

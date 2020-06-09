@@ -63,4 +63,6 @@ public abstract class StatusRender {
     }
 
     protected abstract void handleCameraMoving(TileCoordinates currentTile);
+
+    public abstract void refreshRenderStatus(TileCoordinates centerTile);
 }

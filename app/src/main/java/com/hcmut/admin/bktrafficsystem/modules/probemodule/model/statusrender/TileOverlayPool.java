@@ -26,10 +26,10 @@ public class TileOverlayPool {
      * Remove that tile from loadedTile
      * @return  GroundOverlay. return null if have not idle Overlay
      */
-    public GroundOverlay poll (TileCoordinates centerTile) {
+    public GroundOverlay poll (@NotNull TileCoordinates renderTile, @NotNull TileCoordinates centerTile) {
         Log.e("poolSize", "" + idleOverlays.size());
         if (idleOverlays.size() < minSize) return null;
-        TileOverlay tileOverlay = getOverlayOutsideOfMatrix(centerTile);
+        TileOverlay tileOverlay = getIdleOverlay(renderTile, centerTile);
         if (tileOverlay != null) {
             loadedTile.remove(tileOverlay.getTile());
             return tileOverlay.getGroundOverlay();
@@ -37,9 +37,18 @@ public class TileOverlayPool {
         return null;
     }
 
-    private TileOverlay getOverlayOutsideOfMatrix (TileCoordinates centerTile) {
+    /**
+     * Get tile outside of Matrix or tile of itself
+     * @param centerTile
+     * @return
+     */
+    private TileOverlay getIdleOverlay (@NotNull TileCoordinates renderTile, @NotNull TileCoordinates centerTile) {
         TileOverlay overlay = null;
         for (TileOverlay tileOverlay : idleOverlays) {
+            if (tileOverlay.getTile().equals(renderTile)) {
+                overlay = tileOverlay;
+                break;
+            }
             if (tileOverlay.getTile().isOutsideOfMatrix(centerTile)) {
                 overlay = tileOverlay;
                 break;
@@ -53,5 +62,12 @@ public class TileOverlayPool {
 
     public void recycle(@NotNull TileCoordinates tile, @NotNull GroundOverlay groundOverlay) {
         idleOverlays.add(new TileOverlay(tile, groundOverlay));
+    }
+
+    public void clear () {
+        for (TileOverlay overlay : idleOverlays) {
+            overlay.getGroundOverlay().remove();
+        }
+        idleOverlays.clear();
     }
 }

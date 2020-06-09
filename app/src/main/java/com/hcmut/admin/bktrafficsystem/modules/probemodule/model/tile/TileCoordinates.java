@@ -46,8 +46,8 @@ public class TileCoordinates {
      * @return
      */
     public static TileCoordinates getCenterTile (@NotNull GoogleMap googleMap) {
-        LatLng target = googleMap.getCameraPosition().target;
         try {
+            LatLng target = googleMap.getCameraPosition().target;
             return MyLatLngBoundsUtil.getTileNumber(
                     target.latitude,
                     target.longitude,
