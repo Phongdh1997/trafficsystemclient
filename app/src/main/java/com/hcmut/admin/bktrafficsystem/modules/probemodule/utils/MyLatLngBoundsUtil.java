@@ -1,10 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
 public class MyLatLngBoundsUtil {
     public static LatLngBounds tileToLatLngBound(TileCoordinates tileCoordinates) {

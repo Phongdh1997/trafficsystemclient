@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 import org.jetbrains.annotations.NotNull;

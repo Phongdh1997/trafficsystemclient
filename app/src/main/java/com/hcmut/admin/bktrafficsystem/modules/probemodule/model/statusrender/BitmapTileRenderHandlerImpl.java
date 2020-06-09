@@ -1,15 +1,12 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 

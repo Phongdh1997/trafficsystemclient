@@ -1,12 +1,10 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GroundOverlayMatrix;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;

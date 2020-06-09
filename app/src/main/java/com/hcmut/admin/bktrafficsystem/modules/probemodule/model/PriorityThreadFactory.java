@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
 import android.os.Process;
 

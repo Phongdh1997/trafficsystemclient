@@ -1,6 +1,5 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import android.arch.lifecycle.LiveData;
@@ -11,6 +10,7 @@ import android.graphics.Bitmap;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 

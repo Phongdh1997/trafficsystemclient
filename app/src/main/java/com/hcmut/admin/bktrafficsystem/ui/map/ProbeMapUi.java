@@ -8,7 +8,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.RefreshStatusHandler;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MatrixStatusRenderImpl;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
 import org.jetbrains.annotations.NotNull;
 

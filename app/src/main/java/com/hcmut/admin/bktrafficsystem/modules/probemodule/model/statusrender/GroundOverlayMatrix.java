@@ -8,11 +8,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityFutureTask;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityRunable;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

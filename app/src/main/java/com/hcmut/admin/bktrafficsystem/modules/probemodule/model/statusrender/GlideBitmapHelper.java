@@ -8,7 +8,7 @@ import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.request.FutureTarget;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.BitmapGlideModel;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
 import java.util.concurrent.Executor;
 

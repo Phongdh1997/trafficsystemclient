@@ -1,7 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
 import com.google.android.gms.maps.model.GroundOverlay;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
 import org.jetbrains.annotations.NotNull;
 

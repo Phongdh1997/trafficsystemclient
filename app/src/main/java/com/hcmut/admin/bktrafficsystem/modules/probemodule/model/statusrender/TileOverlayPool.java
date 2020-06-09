@@ -3,13 +3,12 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.GroundOverlay;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public class TileOverlayPool {

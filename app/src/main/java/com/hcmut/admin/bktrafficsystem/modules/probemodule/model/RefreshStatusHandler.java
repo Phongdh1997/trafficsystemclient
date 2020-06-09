@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.TileRenderHandler;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
 
 import java.lang.ref.WeakReference;
 

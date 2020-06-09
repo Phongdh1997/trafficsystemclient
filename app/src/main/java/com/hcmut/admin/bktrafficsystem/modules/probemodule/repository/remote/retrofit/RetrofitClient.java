@@ -1,9 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit;
 
-import android.os.AsyncTask;
 import android.os.Process;
 
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.PriorityThreadFactory;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityThreadFactory;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.API.APIServerRetrofitService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.API.ProbeServerRetrofitService;
 
