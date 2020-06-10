@@ -76,6 +76,7 @@ public class TrafficBitmap {
         paint.setShadowLayer(0, 0, 0, 0);
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setAlpha(getAlpha(zoom));
+        paint.setAntiAlias(true);
 
         T item = lineDataList.get(0);
         if (item instanceof BitmapLineData) {
