@@ -7,10 +7,8 @@ import android.util.Log;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationServiceAlarmUtil;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MovingDetection;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory;
-import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
 
 import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOPPED_NOTIFICATION_ID;
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.STOP_LOCATION_SERVICE_ALERT_NOTIFICATION_ID;
 
 public class SleepWakeupLocationService {
     private static final int STOP_MAX_TIMES = 15;

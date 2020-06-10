@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main;
+package com.hcmut.admin.bktrafficsystem.ui.map;
 
 
 import android.Manifest;

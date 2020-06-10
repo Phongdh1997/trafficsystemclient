@@ -1,14 +1,13 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 
-import com.hcmut.admin.bktrafficsystem.ui.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import java.lang.ref.WeakReference;
 

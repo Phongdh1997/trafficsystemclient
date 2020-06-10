@@ -1,10 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
 public class MyLatLngBoundsUtil {
     public static LatLngBounds tileToLatLngBound(TileCoordinates tileCoordinates) {
@@ -48,5 +46,14 @@ public class MyLatLngBoundsUtil {
         if (ytile >= (1 << zoom))
             ytile = ((1 << zoom) - 1);
         return TileCoordinates.getTileCoordinates(xtile, ytile, zoom);
+    }
+
+    public static TileCoordinates convertTile(TileCoordinates source, int zoom) {
+        LatLng center = MyLatLngBoundsUtil.tileToLatLngBound(source).getCenter();
+        try {
+            return MyLatLngBoundsUtil.getTileNumber(center.latitude, center.longitude, zoom);
+        } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
+        }
+        return null;
     }
 }

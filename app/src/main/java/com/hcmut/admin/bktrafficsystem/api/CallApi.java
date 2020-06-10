@@ -8,6 +8,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CallApi {
+    private CallApi() {}
+
     private static Retrofit builder() {
         String base_URL = "https://api.bktraffic.com/";
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -26,9 +28,13 @@ public class CallApi {
                 .client(okHttpClient.build())
                 .build();
     }
+    private static ApiService apiService;
 
     public static ApiService createService() {
-        return builder().create(ApiService.class);
+        if (apiService == null) {
+            apiService = builder().create(ApiService.class);
+        }
+        return apiService;
     }
 
 }

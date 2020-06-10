@@ -92,7 +92,7 @@ public class RatingActivity extends AppCompatActivity implements RatingDialogLis
                             e.printStackTrace();
                         }
                         progressDialog = ProgressDialog.show(RatingActivity.this, "", getString(R.string.loading), true);
-                        new CallApi().createService().getVelocity(date, segmentId).enqueue(new Callback<BaseResponse<List<TrafficStatusResponse>>>() {
+                        CallApi.createService().getVelocity(date, segmentId).enqueue(new Callback<BaseResponse<List<TrafficStatusResponse>>>() {
                             @Override
                             public void onResponse(Call<BaseResponse<List<TrafficStatusResponse>>> call, Response<BaseResponse<List<TrafficStatusResponse>>> response) {
                                 if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
@@ -171,7 +171,7 @@ public class RatingActivity extends AppCompatActivity implements RatingDialogLis
     }
 
     private void getReport(final String velocity) {
-        new CallApi().createService().getOldTrafficReport(date, segmentId).enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
+        CallApi.createService().getOldTrafficReport(date, segmentId).enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
             @Override
             public void onResponse(Call<BaseResponse<List<ReportResponse>>> call, final Response<BaseResponse<List<ReportResponse>>> response) {
                 if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
@@ -254,7 +254,7 @@ public class RatingActivity extends AppCompatActivity implements RatingDialogLis
 
     @Override
     public void onPositiveButtonClicked(int rate, @NotNull String comment) {
-        new CallApi().createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
+        CallApi.createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
                 , curReport.getId(), (float) rate / 5).enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<PostRatingResponse>> call, Response<BaseResponse<PostRatingResponse>> response) {

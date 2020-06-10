@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListDownloader;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import java.util.ArrayList;
@@ -68,12 +70,12 @@ public class RatingAdapter extends RecyclerView.Adapter<RatingAdapter.RecyclerVi
         }
         else {
             holder.img_list.setVisibility(View.VISIBLE);
+            ImageListDownloader.Builder builder = new ImageListDownloader.Builder();
             for (int i =0; i < data.get(position).getImages().size() ; i++){
                 holder.listImageView.get(i).setVisibility(View.VISIBLE);
-                Glide.with(holder.listImageView.get(i).getContext())
-                        .load(data.get(position).getImages().get(i))
-                        .into(holder.listImageView.get(i));
+                builder.addImage(data.get(position).getImages().get(i), holder.listImageView.get(i));
             }
+            builder.build().execute();
         }
 
         holder.tvName.setText(data.get(position).getUser().getName());
@@ -88,7 +90,7 @@ public class RatingAdapter extends RecyclerView.Adapter<RatingAdapter.RecyclerVi
         }
 
         if (data.get(position).getUser().getAvatar() != null) {
-            Glide.with(holder.imgAvatar.getContext()).load(data.get(position).getUser().getAvatar()).into(holder.imgAvatar);
+            new ImageDownloader(holder.imgAvatar).execute(data.get(position).getUser().getAvatar());
         }
         if (data.get(position).getDescription() == null || data.get(position).getDescription().equals("")) {
             holder.tvDescription.setVisibility(View.GONE);

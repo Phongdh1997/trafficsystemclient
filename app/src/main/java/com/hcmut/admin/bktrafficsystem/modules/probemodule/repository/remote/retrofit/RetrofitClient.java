@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit;
 
-import android.os.AsyncTask;
+import android.os.Process;
+
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityThreadFactory;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.API.APIServerRetrofitService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.API.ProbeServerRetrofitService;
 
@@ -28,6 +30,9 @@ public class RetrofitClient {
                 60L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>());
+
+        THREAD_POOL_EXECUTOR.setThreadFactory(new PriorityThreadFactory(
+                Process.THREAD_PRIORITY_BACKGROUND, "Threadpool"));
     }
 
     private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()

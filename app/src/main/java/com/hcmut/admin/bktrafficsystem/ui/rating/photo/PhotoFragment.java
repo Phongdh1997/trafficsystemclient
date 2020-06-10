@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
 
 public class PhotoFragment extends Fragment {
 
@@ -42,6 +43,6 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Glide.with(this).load(url).into(imageView);
+        new ImageDownloader(imageView).execute(url);
     }
 }

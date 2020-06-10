@@ -1,41 +1,47 @@
-package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tile;
+package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.os.Build;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Tile;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-@Deprecated
-public class TileBitmap {
-    private final int TILE_ZOOM_15_SCALE = 3;
-    private final int mTileSize = 256;
+public class TrafficBitmap {
+    public static final int TILE_ZOOM_15_SCALE = 3;
+    public static final int mTileSize = 256;
     private final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
     private final int mScale = TILE_ZOOM_15_SCALE;
     private final int mDimension = mScale * mTileSize;
-    private static final int DEFAULT_COLOR = Color.BLACK;
-    private Paint paint = new Paint();
+    private final int DEFAULT_COLOR = Color.BLACK;
 
-    public Bitmap getTileWithScale(int x, int y, int zoom, @Nullable List<StatusRenderDataEntity> statusDatas) {
-        if (statusDatas == null || statusDatas.size() == 0) {
+    public TrafficBitmap() {
+    }
+
+    /**
+     * - Draw bitmap
+     * - call invalidate() to render tile
+     * - cache bitmap to Glide
+     * @param tile
+     * @param lineDataList
+     */
+    public Bitmap createTrafficBitmap (TileCoordinates tile, @Nullable List<BitmapLineData> lineDataList) {
+        return draw(tile.x, tile.y, tile.z, lineDataList);
+    }
+
+    private Bitmap draw(int x, int y, int zoom, @Nullable List<BitmapLineData> lineDataList) {
+        if (lineDataList == null || lineDataList.size() == 0) {
             return null;
         }
-        Log.e("Tile", "render status, size " + statusDatas.size());
+        Log.e("Tile", "render status, size " + lineDataList.size());
         Matrix matrix = new Matrix();
 
         float scale = ((float) Math.pow(2, zoom) * mScale / 10);
@@ -45,7 +51,7 @@ public class TileBitmap {
         Bitmap bitmap = Bitmap.createBitmap(mDimension, mDimension, Bitmap.Config.ARGB_8888); //save memory on old phones
         Canvas c = new Canvas(bitmap);
         c.setMatrix(matrix);
-        c = drawCanvasFromArray(c, zoom, statusDatas);
+        c = drawCanvasFromArray(c, zoom, lineDataList);
         return bitmap;
     }
 
@@ -56,8 +62,9 @@ public class TileBitmap {
      * @param zoom
      * @return
      */
-    private Canvas drawCanvasFromArray(Canvas c, int zoom, List<StatusRenderDataEntity> statusDatas) {
+    private Canvas drawCanvasFromArray(Canvas c, int zoom, List<BitmapLineData> lineDataList) {
         //Line features
+        Paint paint = new Paint();
         paint.setStrokeWidth(getLineWidth(zoom));
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(DEFAULT_COLOR);
@@ -69,34 +76,28 @@ public class TileBitmap {
 
         //Path path = new Path();
 
-        if (statusDatas != null) {
+        if (lineDataList != null) {
             float startX;
             float startY;
             float stopX;
             float stopY;
-            LatLng startPoint;
-            LatLng endPoint;
-            for (StatusRenderDataEntity statusRenderDataEntity : statusDatas) {
-                startPoint = statusRenderDataEntity.getStartLatlng();
-                endPoint = statusRenderDataEntity.getEndLatlng();
-                if (startPoint != null && endPoint != null) {
-                    // start point
-                    Point screenPt1 = mProjection.toPoint(startPoint);
-                    startX = (float) screenPt1.x * 10;
-                    startY = (float) screenPt1.y * 10;
+            for (BitmapLineData lineData : lineDataList) {
+                // start point
+                Point screenPt1 = mProjection.toPoint(lineData.startLatLng);
+                startX = (float) screenPt1.x * 10;
+                startY = (float) screenPt1.y * 10;
 
-                    // stop point
-                    Point screenPt2 = mProjection.toPoint(endPoint);
-                    stopX = (float) screenPt2.x * 10;
-                    stopY = (float) screenPt2.y * 10;
+                // stop point
+                Point screenPt2 = mProjection.toPoint(lineData.endLatLng);
+                stopX = (float) screenPt2.x * 10;
+                stopY = (float) screenPt2.y * 10;
 
-                    // draw polyline
-                    paint.setColor(Color.parseColor(statusRenderDataEntity.color));
-                    c.drawLine(startX, startY, stopX, stopY, paint);
+                // draw polyline
+                paint.setColor(Color.parseColor(lineData.color));
+                c.drawLine(startX, startY, stopX, stopY, paint);
 
-                    //path.moveTo(startX, startY);
-                    //path.lineTo(stopX, stopY);
-                }
+                //path.moveTo(startX, startY);
+                //path.lineTo(stopX, stopY);
             }
             //c.drawPath(path, paint);
         }
@@ -123,7 +124,7 @@ public class TileBitmap {
             case 16:
                 return 0.0003f; //ok
             case 15:
-                return 0.00035f; //0k
+                return 0.0003f; //0k
             default:
                 return 0f;
         }

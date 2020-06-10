@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui;
+package com.hcmut.admin.bktrafficsystem.ui.map;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,18 +24,14 @@ import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.CardView;
@@ -43,10 +39,8 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -65,7 +59,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -77,7 +71,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -114,19 +107,18 @@ import com.hcmut.admin.bktrafficsystem.model.response.TrafficReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GlideBitmapHelper;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeForgroundServiceManager;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.main.ProbeMainUi;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.uifeature.map.ProbeMapUi;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationServiceAlarmUtil;
+import com.hcmut.admin.bktrafficsystem.ui.InformationActivity;
+import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
+import com.hcmut.admin.bktrafficsystem.ui.UserInputFormFragment;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
-import com.hcmut.admin.bktrafficsystem.util.Compass;
-import com.hcmut.admin.bktrafficsystem.util.CustomDrawerButton;
 import com.hcmut.admin.bktrafficsystem.util.LocationRequire;
 import com.hcmut.admin.bktrafficsystem.util.LocationUtil;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
@@ -140,8 +132,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -154,7 +144,12 @@ import static com.hcmut.admin.bktrafficsystem.util.LocationUtil.getAddressByLatL
  * Created by User on 10/2/2017.
  */
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener, DatePickerDialog.OnDateSetListener, View.OnClickListener {
+public class MapActivity extends AppCompatActivity implements
+        OnMapReadyCallback,
+        DirectionFinderListener,
+        DatePickerDialog.OnDateSetListener,
+        View.OnClickListener {
+
     private static final String TAG = "MapActivity";
 
     public static final int REQUEST_CODE_UPDATE_INFO = 105;
@@ -208,16 +203,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private TextView usnTxtView, tvDateTime, tv_speed, tv_travel_types;
     private ImageView avtImgView, clrOriginBtn, clrDestBtn, clrStartBtn;
     private CardView customToolbar;
-    private CustomDrawerButton customDrawerButton;
     private String accountType;
     private CardView destinationBox;
     private ConstraintLayout ctlToolbar, interactBox, clReview;
     private AppCompatImageButton btnBackToSearch;
     //Draw and clear markers in interaction mode
     private Spinner travelTypesSpinner;
-    DrawerLayout mapLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-    private NavigationView navView;
 
     //others
     private LatLng oldCameraPos;
@@ -244,12 +235,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ApiService callApi = null;
     private Location currentLocation;
     private String pathId = null;
-    Compass compass;
     private LatLng endFindRoad;
     private boolean isClickPolyline = false;
 
     private ImageView btnOption;
-    private AppFeaturePopup appFeaturePopup;
+    private SupportMapFragment mapFragment;
 
     protected BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
         @Override
@@ -344,7 +334,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * ================================================
      */
     private ProbeForgroundServiceManager appForgroundServiceManager;
-    private ProbeMainUi probeMainUi;
+    private AppFeaturePopup appFeaturePopup;
     private ProbeMapUi probeMapUi;
 
     private Switch btnGPSColectionSwitch;
@@ -373,7 +363,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     private void initProbeModuleVariable() {
         appForgroundServiceManager = new ProbeForgroundServiceManager(this);
-        probeMainUi = new ProbeMainUi(this, mGps);
 
         appFeaturePopup = new AppFeaturePopup(this);
         btnOption = findViewById(R.id.btnOption);
@@ -387,6 +376,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnGPSColectionSwitch.setChecked(gpsDataSetting);
 
         addEvents();
+    }
+
+    private void initProbeModuleVariableWhenMapLoaded() {
+        probeMapUi = new ProbeMapUi(getApplicationContext(), mMap, mapFragment);
+        probeMapUi.setupRenderStatus();
+
+        // setup GlideHelper
+        GlideBitmapHelper glideBitmapHelper = GlideBitmapHelper.getInstance(getApplicationContext());
+        glideBitmapHelper.clearMemory();
+        glideBitmapHelper.setMemoryCategory(MemoryCategory.LOW);
     }
 
     /**
@@ -438,20 +437,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // show dialog ask user to turn on collect GPS data
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
-        if (!gpsDataSetting) {
-            new AlertDialog.Builder(MapActivity.this)
-                    .setTitle("Dữ liệu vị trí")
-                    .setMessage("Thu thập dữ liệu vị trí đang tắt, bạn có muốn bật nó?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            initLocationService();
-                            setGpsDataSetting(true);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        } else {
+        if (gpsDataSetting) {
             initLocationService();
         }
     }
@@ -474,9 +460,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
-        if (probeMapUi != null) {
-            probeMapUi.startStatusRenderTimer();
-        }
     }
 
     public void initLocationService() {
@@ -489,10 +472,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     protected void onStop() {
+        probeMapUi.onStop();
         super.onStop();
-        if (probeMapUi != null) {
-            probeMapUi.stopStatusRenderTimer();
-        }
     }
 
     @Override
@@ -537,6 +518,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         accountType = user.getAccountType();
         userName = user.getUserName();
         imgUrl = user.getImgUrl();
+        currentUser = user;
 
         initView();
         //Init map
@@ -549,7 +531,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        initDrawerView(navView);
         showTimePickerDialog();
 
         //register broadcast
@@ -576,7 +557,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void initView() {
         //Map views
-        navView = findViewById(R.id.nav_view);
         mSearchEdt = findViewById(R.id.search_edt);
         mStartLocationEditext = findViewById(R.id.start_location_edt);
         mDestEdt = findViewById(R.id.destination_edt);
@@ -587,7 +567,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         clrDestBtn = findViewById(R.id.ic_clear_end);
         clrStartBtn = findViewById(R.id.ic_clear_start);
         travelTypesSpinner = findViewById(R.id.travel_types_spinner);
-        mapLayout = findViewById(R.id.map_activity_layout);
         destinationBox = findViewById(R.id.ctlDestination);
         interactBox = findViewById(R.id.interact_box);
         agreeBtn = findViewById(R.id.agreeBtn);
@@ -611,14 +590,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         clReview.setOnClickListener(this);
         tvDateTime.setOnClickListener(this);
 
-        compass = new Compass(this);
-        compass.setListener(new Compass.CompassListener() {
-            @Override
-            public void onNewAzimuth(float azimuth) {
-                mBearing = azimuth;
-            }
-        });
-        compass.start();
         this.locationRequire = new LocationRequire(this);
         this.locationRequire.start();
         this.locationRequire.setLocationUpdateListener(new LocationRequire.LocationUpdateListener() {
@@ -631,7 +602,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
         //Init other var
-        callApi = new CallApi().createService();
+        callApi = CallApi.createService();
         mapUtils = new MapUtils();
         inputFormFragment = new UserInputFormFragment();
         if (!Places.isInitialized()) {
@@ -648,8 +619,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void initMap() {
         Log.d(TAG, "initMap: initializing map");
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(MapActivity.this);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
     private void setDate() {
@@ -694,12 +667,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
         mMap.setMaxZoomPreference(17);
-
-        //
-        //  init Probe Map Module
-        //
-        probeMapUi = new ProbeMapUi(this, mMap);
-        probeMapUi.startStatusRenderTimer();
+        initProbeModuleVariableWhenMapLoaded();
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
@@ -911,13 +879,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-            @Override
-            public void onCameraMoveStarted(int i) {
-                // TODO:
-            }
-        });
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -987,34 +948,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if (layoutMoreFeature.getVisibility() == View.VISIBLE) {
                     layoutMoreFeature.setVisibility(View.GONE);
                 }
-            }
-        });
-
-        customDrawerButton = findViewById(R.id.ic_menu);
-        customDrawerButton.setDrawerLayout(mapLayout);
-        customDrawerButton.getDrawerLayout().addDrawerListener(customDrawerButton);
-        customDrawerButton.setOnClickListener(this);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, mapLayout, R.string.app_name, R.string.app_name);
-        mapLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-        findViewById(R.id.ic_menu).setOnClickListener(this);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int itemId = menuItem.getItemId();
-//                Toast.makeText(MapActivity.this, "Item: " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
-                switch (itemId) {
-                    case R.id.account:
-                        viewInfo();
-                        break;
-                    case R.id.logout:
-                        logout();
-                        break;
-                    case R.id.guideline:
-                        viewUserGuide();
-                        break;
-                }
-                return true;
             }
         });
 
@@ -1188,35 +1121,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
                     }
                 }
-            }
-        });
-    }
-
-    private void initDrawerView(View drawerView) {
-        currentUser = SharedPrefUtils.getUser(MapActivity.this);
-        //Get user data
-        userName = currentUser.getUserName();
-        imgUrl = currentUser.getImgUrl();
-
-        NavigationView navView = (NavigationView) drawerView;
-        //Header of navView
-        View headerLayout = navView.getHeaderView(0);
-        //Map views
-        avtImgView = headerLayout.findViewById(R.id.avt_imv);
-        usnTxtView = headerLayout.findViewById(R.id.usn_txv);
-        //Set data
-        if (imgUrl != null && !imgUrl.isEmpty())
-            Glide.with(MapActivity.this).load(imgUrl).into(avtImgView);
-        if (userName != null) usnTxtView.setText(userName);
-        //Menu of navView
-        Menu navMenu = navView.getMenu();
-        MenuItem itemSwitch = navMenu.findItem(R.id.nav_rating);
-        switchCompat = itemSwitch.getActionView().findViewById(R.id.drawer_switch);
-        switchCompat.setChecked(isRatingMode);
-        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                handleRatingMode(isChecked);
             }
         });
     }
@@ -1443,51 +1347,40 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             /*   if (mLocationPermissionsGranted) {*/
-            Task location = mFusedLocationProviderClient.getLastLocation();
-            location.addOnCompleteListener(new OnCompleteListener() {
+            mFusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "onComplete: location found!");
-                        //get location -> latlng
-                        Location currentLocation = (Location) task.getResult();
-                        if (currentLocation == null) {
-                            androidExt.showSuccessDialog(MapActivity.this, "Vui lòng bật định vị vị trí", new ClickDialogListener.OK() {
+                public void onSuccess(Location location) {
+                    if (location == null) return;
+                    LatLng locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15.0f),
+                            new GoogleMap.CancelableCallback() {
                                 @Override
-                                public void onCLickOK() {
-                                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                public void onFinish() {
+                                    setupInfoWindow();
+                                    current = Calendar.getInstance().getTimeInMillis();
+                                    renderCurrentPosition(oldCameraPos);
+                                }
+
+                                @Override
+                                public void onCancel() {
+
                                 }
                             });
-                            return;
-                        }
-                        LatLng locationLatLng = new LatLng(currentLocation.getLatitude(),
-                                currentLocation.getLongitude());
-
-                        Log.d(TAG, "moveCamera: moving the camera to lat: " + locationLatLng.latitude
-                                + ", lng: " + locationLatLng.longitude);
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 16.0f), new GoogleMap.CancelableCallback() {
-                            @Override
-                            public void onFinish() {
-                                setupInfoWindow();
-                                current = Calendar.getInstance().getTimeInMillis();
-                                renderCurrentPosition(oldCameraPos);
-                            }
-
-                            @Override
-                            public void onCancel() {
-
-                            }
-                        });
-
-                    } else {
-                        Log.d(TAG, "onComplete: current location is null");
-                    }
                 }
             });
-            /*}*/
         } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
+    }
+
+    public void checkGPSTurnOn () {
+        androidExt.showSuccessDialog(MapActivity.this, "Vui lòng bật định vị vị trí", new ClickDialogListener.OK() {
+            @Override
+            public void onCLickOK() {
+                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
     }
 
   /*  public void showKeyboard(Activity activity){
@@ -1741,61 +1634,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (progressDialog != null) progressDialog.dismiss();
         int zoom = (int) mMap.getCameraPosition().zoom;
         if (zoom > 13 && zoom < 22) {
-//            progressDialog = ProgressDialog.show(MapActivity.this, "", getString(R.string.loading), true);
             setDate();
-            callApi.getTrafficStatus(position.latitude, position.longitude, zoom)
-                    .enqueue(new Callback<BaseResponse<List<TrafficStatusResponse>>>() {
-                        @Override
-                        public void onResponse(Call<BaseResponse<List<TrafficStatusResponse>>> call, final Response<BaseResponse<List<TrafficStatusResponse>>> response) {
-                            if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
-                                final List<TrafficStatusResponse> list = response.body().getData();
-                                ExecutorService mExecutor = Executors.newFixedThreadPool(NUMBER_OF_CORES * 2);
-                                mExecutor.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        for (int i = 0; i < list.size(); i++) {
-                                            Handler mainHandler = new Handler(Looper.getMainLooper());
-                                            final int finalI = i;
-                                            Runnable myRunnable = new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    PolylineOptions  polylineOptions = new PolylineOptions().add(
-                                                            list.get(finalI).getPolylineResponse().getStart(),
-                                                            list.get(finalI).getPolylineResponse().getEnd()
-                                                    ).width(5).geodesic(true)
-                                                            .clickable(true)
-                                                            .color(Color.parseColor(list.get(finalI).getColor()));
-                                                    Polyline polyline = mMap.addPolyline(polylineOptions);
-                                                    polyline.setTag(list.get(finalI));
-                                                    allPolylineTraffic.add(polyline);
-                                                }
-                                            };
-                                            mainHandler.post(myRunnable);
-                                        }
-                                    }
-                                });
-
-                                mExecutor.shutdown();
-                                try {
-                                    mExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                removeOldPolyline();
-                            }
-
-//                            progressDialog.dismiss();
-                        }
-
-                        @Override
-                        public void onFailure
-                                (Call<BaseResponse<List<TrafficStatusResponse>>> call, Throwable t) {
-                            Log.d("Response: ", t.getMessage());
-//                            progressDialog.dismiss();
-                        }
-                    });
-
             callApi.getTrafficReport(position.latitude, position.longitude).enqueue(new Callback<BaseResponse<List<TrafficReportResponse>>>() {
                 @Override
                 public void onResponse(Call<BaseResponse<List<TrafficReportResponse>>> call, Response<BaseResponse<List<TrafficReportResponse>>> response) {
@@ -1892,10 +1731,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             case R.id.ctlToolbar:
             case R.id.interact_box:
             case R.id.ctlDestination: {
-                break;
-            }
-            case R.id.ic_menu: {
-                customDrawerButton.changeState();
                 break;
             }
             case R.id.tv_travel_types: {
@@ -2007,9 +1842,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onBackPressed() {
-        if (customDrawerButton.getDrawerLayout().isDrawerOpen(Gravity.LEFT)) {
-            customDrawerButton.changeState();
-        }
         //Toast.makeText(MapActivity.this,"On Back Press!!!",Toast.LENGTH_LONG).show();
         if (isInputFormOpen) {
             removeInputForm(inputFormFragment);
@@ -2020,7 +1852,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             inputFormFragment.uncheckCBoxes();
             showInputForm(inputFormFragment);
             btnOption.setVisibility(View.GONE);
-        } else if (!customDrawerButton.getDrawerLayout().isDrawerOpen(Gravity.LEFT)){
+        } else {
             Date currentTime = new Date();
             if (pressTime == null) {
                 pressTime = currentTime;
@@ -2160,8 +1992,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (resultCode == Activity.RESULT_OK) {
                 String img = SharedPrefUtils.getUser(this).getImgUrl();
                 String name = SharedPrefUtils.getUser(this).getUserName();
-                if (img != null && !img.isEmpty())
-                    Glide.with(MapActivity.this).load(img).into(avtImgView);
+                if (img != null) {
+                    new ImageDownloader(avtImgView).execute(img);
+                }
                 if (name != null) usnTxtView.setText(name);
             } else {
                 // DetailActivity không thành công, không có data trả về.
@@ -2176,7 +2009,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (pathId != null) {
             toggleNotify(pathId, "false");
         }
-        compass.stop();
         super.onDestroy();
     }
 

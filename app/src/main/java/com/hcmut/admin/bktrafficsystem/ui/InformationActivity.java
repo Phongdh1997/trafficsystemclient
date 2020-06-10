@@ -27,6 +27,7 @@ import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.UserResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
@@ -114,8 +115,12 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         });
         user = SharedPrefUtils.getUser(this);
         String imgUrl = user.getImgUrl();
-        if (imgUrl != null && !imgUrl.isEmpty()) Glide.with(InformationActivity.this).load(imgUrl).into(avatar);
-        else Glide.with(this).load(R.drawable.ic_user_avatar).into(avatar);
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            new ImageDownloader(avatar).execute(imgUrl);
+        }
+        else {
+            avatar.setImageDrawable(getDrawable(R.drawable.ic_user_avatar));
+        }
         name.setText((user.getUserName() != null) ? user.getUserName() : "");
         email.setText((user.getUserEmail() != null) ? user.getUserEmail() : "");
         phoneNumber.setText((user.getPhoneNumber() != null && ((!user.getPhoneNumber().equals("")))) ? user.getPhoneNumber() : "");
@@ -238,7 +243,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part imageBody = MultipartBody.Part.createFormData("file", file.getName(), reqFile);
 
-            new CallApi().createService().uploadFile(imageBody)
+            CallApi.createService().uploadFile(imageBody)
                     .enqueue(new Callback<BaseResponse<String>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<String>> call, Response<BaseResponse<String>> response) {
@@ -272,9 +277,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void onResponse(){
-        CallApi callApi = new CallApi();
-
-        callApi.createService().updateUserInfo(user.getAccessToken(), name.getText().toString(), email.getText().toString(),
+        CallApi.createService().updateUserInfo(user.getAccessToken(), name.getText().toString(), email.getText().toString(),
                 avatarString, phoneNumber.getText().toString()).enqueue(new Callback<BaseResponse<UserResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<UserResponse>> call, Response<BaseResponse<UserResponse>> response) {

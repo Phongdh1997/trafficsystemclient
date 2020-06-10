@@ -22,6 +22,8 @@ import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.PostRatingResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListDownloader;
 import com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.stepstone.apprating.AppRatingDialog;
@@ -105,7 +107,7 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
 
 
     private void getDetailReport() {
-        new CallApi().createService().getDetailTrafficReport(reportId).enqueue(new Callback<BaseResponse<ReportResponse>>() {
+        CallApi.createService().getDetailTrafficReport(reportId).enqueue(new Callback<BaseResponse<ReportResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<ReportResponse>> call, final Response<BaseResponse<ReportResponse>> response) {
                 if (response.body() != null && response.body().getData() != null) {
@@ -121,12 +123,12 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
                         imageView4.setVisibility(View.GONE);
                     } else {
                         img_list.setVisibility(View.VISIBLE);
+                        ImageListDownloader.Builder builder = new ImageListDownloader.Builder();
                         for (int i = 0; i < report.getImages().size(); i++) {
                             listImageView.get(i).setVisibility(View.VISIBLE);
-                            Glide.with(DetailReportActivity.this)
-                                    .load(report.getImages().get(i))
-                                    .into(listImageView.get(i));
+                            builder.addImage(report.getImages().get(i), listImageView.get(i));
                         }
+                        builder.build().execute();
                     }
                     tvName.setText(report.getUser().getName());
                     tvSpeed.setText(report.getVelocity() + " km/h");
@@ -134,12 +136,9 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
                         groupReason.setVisibility(View.VISIBLE);
                         tvReason.setText(reason.get(Integer.parseInt(report.getCauseId().get(0)) - 1));
                     } else groupReason.setVisibility(View.GONE);
-                    Glide.with(imgAvatar.getContext())
-                            .load(report.getUser().getAvatar())
-                            .apply(new RequestOptions()
-                                    .placeholder(R.drawable.icon_avatar_empty)
-                                    .fitCenter())
-                            .into(imgAvatar);
+                    imgAvatar.setImageDrawable(getDrawable(R.drawable.icon_avatar_empty));
+                    new ImageDownloader(imgAvatar).execute(report.getUser().getAvatar());
+
                     if (report.getDescription() == null || report.getDescription().isEmpty()) {
                         tvDescription.setVisibility(View.GONE);
                         tvTitleDescription.setVisibility(View.GONE);
@@ -207,7 +206,7 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onPositiveButtonClicked(int rate, @NotNull String comment) {
-        new CallApi().createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
+        CallApi.createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
                 , reportId, (float) rate / 5).enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<PostRatingResponse>> call, Response<BaseResponse<PostRatingResponse>> response) {
