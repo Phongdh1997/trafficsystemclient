@@ -666,7 +666,7 @@ public class MapActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
-        mMap.setMaxZoomPreference(17);
+        mMap.setMaxZoomPreference(20);
         initProbeModuleVariableWhenMapLoaded();
 
         updateLocationUI();
