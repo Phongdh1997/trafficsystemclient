@@ -7,6 +7,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.RoomDataba
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.TrafficDatabase;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.dao.StatusRenderDataDAO;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 import java.util.ArrayList;
@@ -20,14 +21,15 @@ public class RoomDatabaseImpl implements RoomDatabaseService {
     }
 
     @Override
-    public void insertTrafficStatus(List<StatusRenderData> datas) {
-        List<StatusRenderDataEntity> dataEntities = new ArrayList<>();
-        for (StatusRenderData data : datas) {
-            dataEntities.add(new StatusRenderDataEntity(data));
-        }
-        synchronized (this) {
-            statusRenderDataDAO.insertStatusDatas(dataEntities);
-        }
+    public void insertTrafficStatus(final List<StatusRenderDataEntity> datas) {
+        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    statusRenderDataDAO.insertStatusDatas(datas);
+                }
+            }
+        });
     }
 
     @Override

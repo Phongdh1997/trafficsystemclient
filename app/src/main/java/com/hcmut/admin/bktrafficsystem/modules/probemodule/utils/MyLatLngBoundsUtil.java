@@ -49,6 +49,9 @@ public class MyLatLngBoundsUtil {
     }
 
     public static TileCoordinates convertTile(TileCoordinates source, int zoom) {
+        if (source.z == zoom) {
+            return source;
+        }
         LatLng center = MyLatLngBoundsUtil.tileToLatLngBound(source).getCenter();
         try {
             return MyLatLngBoundsUtil.getTileNumber(center.latitude, center.longitude, zoom);
