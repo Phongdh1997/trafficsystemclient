@@ -14,10 +14,12 @@ import java.util.List;
 public class TileOverlayPool {
     private List<TileOverlay> idleOverlays = new ArrayList<>();
     private HashMap<TileCoordinates, String> loadedTile;
-    private final int minSize = 30;
+    private final int minSize;
 
     public TileOverlayPool(HashMap<TileCoordinates, String> loadedTile) {
         this.loadedTile = loadedTile;
+        minSize = GroundOverlayMatrix.MATRIX_WIDTH * GroundOverlayMatrix.MATRIX_WIDTH +
+                GroundOverlayMatrix.MATRIX_WIDTH * 2 - 1;
     }
 
     /**

@@ -14,9 +14,11 @@ public abstract class StatusRender {
     public static final int TILE_ZOOM_LEVEL = 15;
     private TileCoordinates lastCenterTile;
     private GoogleMapMemoryManager mapMemoryManager;
+    private final int NEAR_LEVEL_TO_LOAD;
 
     public StatusRender (SupportMapFragment mapFragment) {
         mapMemoryManager = new GoogleMapMemoryManager(mapFragment);
+        NEAR_LEVEL_TO_LOAD = GroundOverlayMatrix.MATRIX_WIDTH / 2;
     }
 
     public void onCameraMoving(GoogleMap googleMap){
@@ -48,7 +50,7 @@ public abstract class StatusRender {
                 return currentTile;
             }
             Log.e("level", "" + currentTile.getNearLevel(lastCenterTile));
-            if (currentTile.getNearLevel(lastCenterTile) > 1) {  // move to other tile
+            if (currentTile.getNearLevel(lastCenterTile) > NEAR_LEVEL_TO_LOAD - 1) {  // move to other tile
                 Log.e("move", "move to other tile");
                 lastCenterTile = currentTile;
                 return currentTile;

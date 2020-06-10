@@ -125,12 +125,14 @@ public class GroundOverlayMatrix {
         List<TileCoordinates> tiles = new ArrayList<>();
         tiles.add(center);
         try {
-            TileCoordinates left = center.getTileLeft();
-            TileCoordinates right = center.getTileRight();
-            tiles.add(left);
-            tiles.add(right);
-            tiles.add(left.getTileLeft());
-            tiles.add(right.getTileRight());
+            TileCoordinates leftTemp = center;
+            TileCoordinates rightTemp = center;
+            for (int i = 0; i < MATRIX_WIDTH / 2; i++) {
+                leftTemp = leftTemp.getTileLeft();
+                rightTemp = rightTemp.getTileRight();
+                tiles.add(leftTemp);
+                tiles.add(rightTemp);
+            }
         } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
             tileCoordinatesNotValid.printStackTrace();
         }
@@ -146,12 +148,14 @@ public class GroundOverlayMatrix {
         List<TileCoordinates> tiles = new ArrayList<>();
         tiles.add(center);
         try {
-            TileCoordinates top = center.getTileTop();
-            TileCoordinates bot = center.getTileBot();
-            tiles.add(top);
-            tiles.add(bot);
-            tiles.add(top.getTileTop());
-            tiles.add(bot.getTileBot());
+            TileCoordinates topTemp = center;
+            TileCoordinates botTemp = center;
+            for (int i = 0; i < MATRIX_WIDTH / 2; i++) {
+                topTemp = topTemp.getTileTop();
+                botTemp = botTemp.getTileBot();
+                tiles.add(topTemp);
+                tiles.add(botTemp);
+            }
         } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
             tileCoordinatesNotValid.printStackTrace();
         }
