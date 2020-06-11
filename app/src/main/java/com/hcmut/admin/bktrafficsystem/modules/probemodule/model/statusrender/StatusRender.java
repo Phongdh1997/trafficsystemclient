@@ -13,11 +13,9 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsU
 public abstract class StatusRender {
     public static final int TILE_ZOOM_LEVEL = 15;
     private TileCoordinates lastCenterTile;
-    private GoogleMapMemoryManager mapMemoryManager;
     private final int NEAR_LEVEL_TO_LOAD;
 
-    public StatusRender (SupportMapFragment mapFragment) {
-        mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
+    public StatusRender () {
         NEAR_LEVEL_TO_LOAD = GroundOverlayMatrix.MATRIX_WIDTH / 2;
     }
 
@@ -26,7 +24,6 @@ public abstract class StatusRender {
         if (zoom < 15f || zoom > 20) {
             return;
         }
-        mapMemoryManager.onMapMove(zoom);
         final LatLng centerPoint = googleMap.getCameraPosition().target;
         RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override

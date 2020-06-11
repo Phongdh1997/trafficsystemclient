@@ -472,7 +472,6 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-        probeMapUi.onStop();
         super.onStop();
     }
 
