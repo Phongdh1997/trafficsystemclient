@@ -4,14 +4,25 @@ import android.util.Log;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
+import java.lang.ref.WeakReference;
+
 public class GoogleMapMemoryManager {
-    private SupportMapFragment mapFragment;
+    private WeakReference<SupportMapFragment> mapFragmentWeakReference;
 
     private int moveCount = 0;
     private int lastZoom = 5;
 
-    public GoogleMapMemoryManager(SupportMapFragment mapFragment) {
-        this.mapFragment = mapFragment;
+    private static GoogleMapMemoryManager mapMemoryManager;
+
+    private GoogleMapMemoryManager(SupportMapFragment mapFragment) {
+        this.mapFragmentWeakReference = new WeakReference<>(mapFragment);
+    }
+
+    public static GoogleMapMemoryManager getInstance (SupportMapFragment mapFragment) {
+        if (mapMemoryManager == null) {
+            mapMemoryManager = new GoogleMapMemoryManager(mapFragment);
+        }
+        return mapMemoryManager;
     }
 
     public void onMapMove (float zoom) {
@@ -19,13 +30,11 @@ public class GoogleMapMemoryManager {
         Log.e("test", "zoom: " + currentZoom);
         if (currentZoom != lastZoom) {
             lastZoom = currentZoom;
-            moveCount = 0;
-            mapFragment.onLowMemory();
+            onLowMemory();
             Log.e("test", "lowMemory");
         } else {
             if (moveCount > getLimitMoveCount(currentZoom)) {
-                moveCount = 0;
-                mapFragment.onLowMemory();
+                onLowMemory();
                 Log.e("test", "lowMemory");
             } else {
                 moveCount++;
@@ -34,7 +43,15 @@ public class GoogleMapMemoryManager {
         Log.e("test", "count: " + moveCount);
     }
 
-    public int getLimitMoveCount (int zoom) {
+    public void onLowMemory () {
+        SupportMapFragment mapFragment = mapFragmentWeakReference.get();
+        if (mapFragment != null) {
+            mapFragment.onLowMemory();
+            moveCount = 0;
+        }
+    }
+
+    private int getLimitMoveCount (int zoom) {
         switch (zoom) {
             case 15:
                 return 60;

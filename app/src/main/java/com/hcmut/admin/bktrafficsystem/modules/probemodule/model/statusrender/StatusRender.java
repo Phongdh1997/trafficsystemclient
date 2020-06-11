@@ -17,7 +17,7 @@ public abstract class StatusRender {
     private final int NEAR_LEVEL_TO_LOAD;
 
     public StatusRender (SupportMapFragment mapFragment) {
-        mapMemoryManager = new GoogleMapMemoryManager(mapFragment);
+        mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
         NEAR_LEVEL_TO_LOAD = GroundOverlayMatrix.MATRIX_WIDTH / 2;
     }
 
