@@ -77,7 +77,7 @@ public class TrafficTileLoader {
             if (tileStatus == null) {
                 loadDataFromServer(tileWithLOAD_ZOOM);
             } else if (tileStatus.equals(TILE_LOADED)) {
-                return roomDatabaseService.getTrafficStatus(renderLatLngBounds);
+                return roomDatabaseService.getTrafficStatus(renderTile);
             }
         } catch (Exception e) {}
         return null;

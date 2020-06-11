@@ -7,10 +7,13 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,25 +39,21 @@ public class TrafficBitmap {
      * @param tile
      * @param lineDataList
      */
-    public <T> Bitmap createTrafficBitmap (TileCoordinates tile, @Nullable List<T> lineDataList) {
-        return drawBitmap(tile.x, tile.y, tile.z, lineDataList);
-    }
-
-    private <T> Bitmap drawBitmap(int x, int y, int zoom, @Nullable List<T> lineDataList) {
+    public  <T> Bitmap createTrafficBitmap(@NotNull TileCoordinates tile, @Nullable List<T> lineDataList) {
         if (lineDataList == null || lineDataList.size() == 0) {
             return null;
         }
         Log.e("Tile", "render status, size " + lineDataList.size());
         Matrix matrix = new Matrix();
 
-        float scale = ((float) Math.pow(2, zoom) * mScale / 10);
+        float scale = ((float) Math.pow(2, tile.z) * mScale / 10);
         matrix.postScale(scale, scale);
-        matrix.postTranslate(-x * mDimension, -y * mDimension);
+        matrix.postTranslate(-tile.x * mDimension, -tile.y * mDimension);
 
         Bitmap bitmap = Bitmap.createBitmap(mDimension, mDimension, Bitmap.Config.ARGB_8888); //save memory on old phones
         Canvas c = new Canvas(bitmap);
         c.setMatrix(matrix);
-        c = drawCanvasFromArray(c, zoom, lineDataList);
+        c = drawCanvasFromArray(c, lineDataList, tile);
         return bitmap;
     }
 
@@ -62,27 +61,27 @@ public class TrafficBitmap {
      * Here the Canvas can be drawn on based on data provided from a Spherical Mercator Projection
      *
      * @param c
-     * @param zoom
+     * @param tile
      * @return
      */
-    private <T> Canvas drawCanvasFromArray(Canvas c, int zoom, @NotNull List<T> lineDataList) {
+    private <T> Canvas drawCanvasFromArray(Canvas c, @NotNull List<T> lineDataList, TileCoordinates tile) {
         //Line features
         Paint paint = new Paint();
-        paint.setStrokeWidth(getLineWidth(zoom));
+        paint.setStrokeWidth(getLineWidth(tile.z));
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(DEFAULT_COLOR);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setShadowLayer(0, 0, 0, 0);
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        paint.setAlpha(getAlpha(zoom));
+        paint.setAlpha(getAlpha(tile.z));
         paint.setAntiAlias(true);
 
         T item = lineDataList.get(0);
         if (item instanceof BitmapLineData) {
             drawByBitmapLineData(c, paint, (List<BitmapLineData>) lineDataList);
         } else if (item instanceof StatusRenderDataEntity) {
-            drawByRenderDataEntity(c, paint, (List<StatusRenderDataEntity>) lineDataList);
+            drawByRenderDataEntity(c, paint, (List<StatusRenderDataEntity>) lineDataList, tile);
         }
         return c;
     }
@@ -111,26 +110,47 @@ public class TrafficBitmap {
         }
     }
 
-    private void drawByRenderDataEntity(Canvas c, Paint paint, List<StatusRenderDataEntity> lineDataList) {
+    private void drawByRenderDataEntity(Canvas c, Paint paint, List<StatusRenderDataEntity> lineDataList, TileCoordinates tile) {
         if (lineDataList != null) {
             float startX;
             float startY;
             float stopX;
             float stopY;
+            float middleX;
+            float middleY;
+            LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tile);
+            LatLng startPoint;
+            LatLng endPoint;
+            LatLng middlePoint;
             for (StatusRenderDataEntity lineData : lineDataList) {
                 // start point
-                Point screenPt1 = mProjection.toPoint(lineData.getStartLatlng());
+                startPoint = lineData.getStartLatlng();
+                Point screenPt1 = mProjection.toPoint(startPoint);
                 startX = (float) screenPt1.x * 10;
                 startY = (float) screenPt1.y * 10;
 
                 // stop point
-                Point screenPt2 = mProjection.toPoint(lineData.getEndLatlng());
+                endPoint = lineData.getEndLatlng();
+                Point screenPt2 = mProjection.toPoint(endPoint);
                 stopX = (float) screenPt2.x * 10;
                 stopY = (float) screenPt2.y * 10;
 
                 // draw polyline
                 paint.setColor(Color.parseColor(lineData.color));
-                c.drawLine(startX, startY, stopX, stopY, paint);
+                if (bounds.contains(startPoint)) {
+                    c.drawLine(startX, startY, stopX, stopY, paint);
+                } else if (bounds.contains(endPoint)) {
+                    c.drawLine(stopX, stopY, startX, startY, paint);
+                } else {
+                    // middle point
+                    middlePoint = MyLatLngBoundsUtil.getMiddlePoint(startPoint, endPoint);
+                    Point screenPt3 = mProjection.toPoint(middlePoint);
+                    middleX = (float) screenPt2.x * 10;
+                    middleY = (float) screenPt2.y * 10;
+
+                    c.drawLine(middleX, middleY, startX, startY, paint);
+                    c.drawLine(middleX, middleY, stopX, stopY, paint);
+                }
             }
         }
     }
@@ -147,7 +167,7 @@ public class TrafficBitmap {
             case 21:
             case 20:
             case 19:
-                return 0.00006f;
+                return 0.00010f;
             case 18:
                 return 0.00013f;//ok
             case 17:

@@ -8,7 +8,7 @@ import android.content.Context;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.dao.StatusRenderDataDAO;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 
-@Database(entities = {StatusRenderDataEntity.class}, exportSchema = false, version = 2)
+@Database(entities = {StatusRenderDataEntity.class}, exportSchema = false, version = 4)
 public abstract class TrafficDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "traffic_db";
 
