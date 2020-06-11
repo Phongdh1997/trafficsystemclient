@@ -147,13 +147,13 @@ public class TrafficBitmap {
             case 21:
             case 20:
             case 19:
-                return 0.000123f;
+                return 0.00006f;
             case 18:
-                return 0.00015f;//ok
+                return 0.00013f;//ok
             case 17:
-                return 0.00025f; //ok
+                return 0.00013f; //ok
             case 16:
-                return 0.0003f; //ok
+                return 0.0002f; //ok
             case 15:
                 return 0.0003f; //0k
             default:
