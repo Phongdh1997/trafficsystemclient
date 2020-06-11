@@ -47,7 +47,7 @@ public class TrafficDataLoader {
             }
         } else {
             Log.e("tile", "loaded from db");
-            return roomDatabaseService.getTrafficStatus(MyLatLngBoundsUtil.tileToLatLngBound(renderTile));
+            return roomDatabaseService.getTrafficStatus(renderTile);
         }
         return null;
     }
