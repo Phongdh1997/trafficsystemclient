@@ -6,6 +6,18 @@ import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener
 import com.hcmut.admin.bktrafficsystem.util.MessageDialog
 
 class AndroidExt {
+    fun comfirmPostFastReport(context: Context,
+                         description: String? = "",
+                         onYesListener: ClickDialogListener.Yes
+    ) {
+        MessageDialog(context, "Thực hiện cảnh báo nhanh", description, true)
+                .setColorTitle(R.color.green)
+                .setButtonYesText("Đồng ý")
+                .setButtonNoText("Hủy bỏ")
+                .setClickYes { onYesListener.onCLickYes() }
+                .show()
+    }
+
     fun showErrorDialog(context: Context,
                         description: String? = ""
     ) {

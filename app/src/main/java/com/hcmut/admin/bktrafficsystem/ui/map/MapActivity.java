@@ -409,7 +409,16 @@ public class MapActivity extends AppCompatActivity implements
         btnCurrentLocationReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MapActivity.this, "Chức năng đang phát triển...", Toast.LENGTH_SHORT).show();
+                String content = "fjdsahfdhsafhdsiahfuidshaufhdsuahfuidshafuih uhdsfuihsd auifhdsiua hfuidahui fhdauihf udah";
+                androidExt.comfirmPostFastReport(
+                        MapActivity.this,
+                        content,
+                        new ClickDialogListener.Yes() {
+                            @Override
+                            public void onCLickYes() {
+                                Toast.makeText(MapActivity.this, "Yes", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         });
         btnGPSColectionSwitch.setOnCheckedChangeListener(swithCheckedChangedListener);
