@@ -384,11 +384,6 @@ public class MapActivity extends AppCompatActivity implements
     private void initProbeModuleVariableWhenMapLoaded() {
         probeMapUi = new ProbeMapUi(getApplicationContext(), mMap, mapFragment);
         probeMapUi.setupRenderStatus();
-
-        // setup GlideHelper
-        GlideBitmapHelper glideBitmapHelper = GlideBitmapHelper.getInstance(getApplicationContext());
-        glideBitmapHelper.clearMemory();
-        glideBitmapHelper.setMemoryCategory(MemoryCategory.LOW);
     }
 
     /**
@@ -526,6 +521,9 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        if (probeMapUi != null) {
+            probeMapUi.startStatusRenderTimer();
+        }
     }
 
     public void initLocationService() {
@@ -539,6 +537,9 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
+        if (probeMapUi != null) {
+            probeMapUi.stopStatusRenderTimer();
+        }
     }
 
     @Override

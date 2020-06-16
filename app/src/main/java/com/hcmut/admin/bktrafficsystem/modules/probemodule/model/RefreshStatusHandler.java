@@ -1,51 +1,42 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.TileRenderHandler;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.TilerOverlayRender;
 
 import java.lang.ref.WeakReference;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RefreshStatusHandler {
-    private StatusRender statusRender;
-    private long timeFrame = 60000 * 3; // default 3 minus
-    private WeakReference<GoogleMap> googleMapWeakReference;
-    private boolean isRunning = false;
+    private static final int TIMER_DELAY = 0;
+    private static final int TIMER_PERIOD = 60000 * 1; // default 3 minus
 
-    public RefreshStatusHandler(GoogleMap googleMap, StatusRender statusRender) {
-        this.statusRender = statusRender;
-        googleMapWeakReference = new WeakReference<>(googleMap);
+    private boolean isTimerRunning = false;
+    private Timer statusRenderTimer;
+    private TilerOverlayRender overlayRender;
+
+    public RefreshStatusHandler(TilerOverlayRender overlayRender) {
+        this.overlayRender = overlayRender;
     }
 
-    public void startRefreshStatus () {
-        isRunning = true;
-        TileRenderHandler.mainHandler.postDelayed(new Runnable() {
+    public void startStatusRenderTimer() {
+        if (isTimerRunning) return;
+        statusRenderTimer = new Timer();
+        TimerTask renderTimerTask = new TimerTask() {
             @Override
             public void run() {
-                doRefreshStatus();
-                if (isRunning) {
-                    TileRenderHandler.mainHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            doRefreshStatus();
-                        }
-                    }, timeFrame);
-                }
+                overlayRender.notifyDataChange();
             }
-        }, timeFrame);
+        };
+        statusRenderTimer.schedule(renderTimerTask, TIMER_DELAY, TIMER_PERIOD);
+        isTimerRunning = true;
     }
 
-    public void stopRefreshStatus() {
-        isRunning = false;
-    }
-
-    private void doRefreshStatus () {
-        GoogleMap googleMap = googleMapWeakReference.get();
-        if (googleMap != null) {
-            statusRender.refreshRenderStatus(TileCoordinates.getCenterTile(googleMap));
-            Log.e("refresh", "refresh");
-        }
+    public void stopStatusRenderTimer() {
+        try {
+            statusRenderTimer.cancel();
+            isTimerRunning = false;
+        } catch (Exception e) {}
     }
 }

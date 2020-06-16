@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -17,13 +18,12 @@ public class TilerOverlayRender {
         trafficTileProvider = new TrafficTileProvider(context);
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(trafficTileProvider));
-        notifyDataChange();
     }
 
     /**
      * clear Tile Cache, current data source will be displayed
      */
     public void notifyDataChange() {
-
+        Log.e("test", "refresh");
     }
 }
