@@ -71,6 +71,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -1416,22 +1417,17 @@ public class MapActivity extends AppCompatActivity implements
                     .addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    if (location == null) return;
-                    LatLng locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15.0f),
-                            new GoogleMap.CancelableCallback() {
-                                @Override
-                                public void onFinish() {
-                                    setupInfoWindow();
-                                    current = Calendar.getInstance().getTimeInMillis();
-                                    renderCurrentPosition(oldCameraPos);
-                                }
+                    if (location != null) {
+                        LatLng locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15));
 
-                                @Override
-                                public void onCancel() {
-
-                                }
-                            });
+                        // render user report
+                        setupInfoWindow();
+                        current = Calendar.getInstance().getTimeInMillis();
+                        renderCurrentPosition(oldCameraPos);
+                    } else {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790063, 106.652666), 13));
+                    }
                 }
             });
         } catch (SecurityException e) {
@@ -1716,7 +1712,9 @@ public class MapActivity extends AppCompatActivity implements
                     if (listPositionAround.size() > 0) {
                         listPositionAround.clear();
                     }
-                    if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
+                    try {
+                        // TODO: sai TrafficReportResponse => get ra list rỗng
+                        Log.e("report", "size " + response.body().getData().size());
                         for (TrafficReportResponse item : response.body().getData()) {
                             Point point = new Point(item.getId(),
                                     new LatLng(item.getCenterPoint().getCoordinatesList().get(1),
@@ -1724,7 +1722,7 @@ public class MapActivity extends AppCompatActivity implements
                             listPositionAround.add(point);
                         }
                         showReportStatus();
-                    }
+                    } catch (Exception e) {}
                 }
 
                 @Override
