@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    vName = "1.0.9"
+    vName = "1.1.0"
     packageName = 'com.hcmut.admin.bktrafficsystem'
     appicationName = 'Utraffic'
 }
@@ -13,7 +13,7 @@ android {
         applicationId "com.hcmut.admin.bktrafficsystem"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 9
+        versionCode 10
         versionName vName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
