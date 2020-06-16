@@ -10,13 +10,17 @@ import java.util.TimerTask;
 
 public class RefreshStatusHandler {
     private static final int TIMER_DELAY = 0;
-    private static final int TIMER_PERIOD = 60000 * 1; // default 3 minus
+    private static final int TIMER_PERIOD = 60000 * 2; // default 3 minus
 
     private boolean isTimerRunning = false;
     private Timer statusRenderTimer;
     private TilerOverlayRender overlayRender;
 
-    public RefreshStatusHandler(TilerOverlayRender overlayRender) {
+    public RefreshStatusHandler() {
+
+    }
+
+    public void setOverlayRender (TilerOverlayRender overlayRender) {
         this.overlayRender = overlayRender;
     }
 
@@ -26,7 +30,9 @@ public class RefreshStatusHandler {
         TimerTask renderTimerTask = new TimerTask() {
             @Override
             public void run() {
-                overlayRender.notifyDataChange();
+                if (overlayRender != null) {
+                    overlayRender.notifyDataChange();
+                }
             }
         };
         statusRenderTimer.schedule(renderTimerTask, TIMER_DELAY, TIMER_PERIOD);

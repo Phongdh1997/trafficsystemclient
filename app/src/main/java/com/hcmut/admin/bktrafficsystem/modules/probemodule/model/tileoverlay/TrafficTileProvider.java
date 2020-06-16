@@ -23,6 +23,10 @@ public class TrafficTileProvider implements TileProvider {
         trafficDataLoader = new TrafficDataLoader(context);
     }
 
+    public void notifyDataChange () {
+        trafficDataLoader.notifyDataChange();
+    }
+
     @Override
     public Tile getTile(int x, int y, int z) {
         if (z < 15 || z > 20) return NO_TILE;

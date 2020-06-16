@@ -11,6 +11,10 @@ public class LoadedTileManager {
 
     private HashMap<TileCoordinates, String> loadedTiles = new HashMap<>();
 
+    public void clear () {
+        loadedTiles.clear();
+    }
+
     public synchronized boolean isNotLoaded (TileCoordinates tile) {
         if (tile != null) {
             String tileState = loadedTiles.get(tile);

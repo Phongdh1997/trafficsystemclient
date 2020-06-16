@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -12,6 +14,7 @@ public class TilerOverlayRender {
 
     private TileOverlay statusTileOverlay;
     private TrafficTileProvider trafficTileProvider;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public TilerOverlayRender(GoogleMap map, Context context) {
         this.map = map;
@@ -23,7 +26,14 @@ public class TilerOverlayRender {
     /**
      * clear Tile Cache, current data source will be displayed
      */
-    public void notifyDataChange() {
+    public synchronized void notifyDataChange() {
         Log.e("test", "refresh");
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                statusTileOverlay.clearTileCache();
+            }
+        });
+        trafficTileProvider.notifyDataChange();
     }
 }

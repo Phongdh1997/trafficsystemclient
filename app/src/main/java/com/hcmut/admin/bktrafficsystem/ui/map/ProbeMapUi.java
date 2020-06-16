@@ -25,7 +25,7 @@ public class ProbeMapUi {
         this.gmaps = map;
         tilerOverlayRender = new TilerOverlayRender(gmaps, context);
         mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
-        refreshStatusHandler = new RefreshStatusHandler(tilerOverlayRender);
+        refreshStatusHandler = new RefreshStatusHandler();
     }
 
     public void setupRenderStatus () {
@@ -36,6 +36,7 @@ public class ProbeMapUi {
             }
         });
         refreshStatusHandler.startStatusRenderTimer();
+        refreshStatusHandler.setOverlayRender(tilerOverlayRender);
     }
 
     public void startStatusRenderTimer () {

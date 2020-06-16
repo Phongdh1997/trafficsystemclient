@@ -28,6 +28,10 @@ public class TrafficDataLoader {
         roomDatabaseService = new RoomDatabaseImpl(context);
     }
 
+    public void notifyDataChange () {
+        loadedTileManager.clear();
+    }
+
     public List<StatusRenderDataEntity> loadTrafficData (TileCoordinates renderTile) {
         TileCoordinates loadTile = MyLatLngBoundsUtil.convertTile(renderTile, LOAD_TILE_LEVEL);
         if (loadedTileManager.isNotLoaded(loadTile)) {
