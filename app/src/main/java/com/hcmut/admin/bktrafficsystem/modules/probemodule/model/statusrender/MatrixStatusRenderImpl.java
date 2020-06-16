@@ -10,7 +10,7 @@ public class MatrixStatusRenderImpl extends StatusRender {
     private GroundOverlayMatrix groundOverlayMatrix;
 
     public MatrixStatusRenderImpl(GoogleMap googleMap, Context context, SupportMapFragment mapFragment) {
-        super(mapFragment);
+        super();
         groundOverlayMatrix = new GroundOverlayMatrix(googleMap, context);
     }
 

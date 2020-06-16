@@ -49,11 +49,35 @@ public class MyLatLngBoundsUtil {
     }
 
     public static TileCoordinates convertTile(TileCoordinates source, int zoom) {
+        if (source.z == zoom) {
+            return source;
+        }
         LatLng center = MyLatLngBoundsUtil.tileToLatLngBound(source).getCenter();
         try {
             return MyLatLngBoundsUtil.getTileNumber(center.latitude, center.longitude, zoom);
         } catch (TileCoordinates.TileCoordinatesNotValid tileCoordinatesNotValid) {
         }
         return null;
+    }
+
+    public static LatLng getMiddlePoint(LatLng latLng1, LatLng latLng2){
+        double lat1 = latLng1.latitude;
+        double lon1 = latLng1.longitude;
+        double lat2 = latLng2.latitude;
+        double lon2 = latLng2.longitude;
+        double dLon = Math.toRadians(lon2 - lon1);
+
+        //convert to radians
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+        lon1 = Math.toRadians(lon1);
+
+        double Bx = Math.cos(lat2) * Math.cos(dLon);
+        double By = Math.cos(lat2) * Math.sin(dLon);
+        double lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
+        double lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
+
+        //print out in degrees
+        return new LatLng(lat3, lon3);
     }
 }

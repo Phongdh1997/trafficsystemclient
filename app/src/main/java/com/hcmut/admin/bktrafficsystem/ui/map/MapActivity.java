@@ -538,7 +538,6 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-        probeMapUi.onStop();
         super.onStop();
     }
 
@@ -732,7 +731,7 @@ public class MapActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
-        mMap.setMaxZoomPreference(17);
+        mMap.setMaxZoomPreference(18);
         initProbeModuleVariableWhenMapLoaded();
 
         updateLocationUI();

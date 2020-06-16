@@ -18,6 +18,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsU
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -76,7 +77,7 @@ public class TrafficTileLoader {
             if (tileStatus == null) {
                 loadDataFromServer(tileWithLOAD_ZOOM);
             } else if (tileStatus.equals(TILE_LOADED)) {
-                return roomDatabaseService.getTrafficStatus(renderLatLngBounds);
+                return roomDatabaseService.getTrafficStatus(renderTile);
             }
         } catch (Exception e) {}
         return null;
@@ -128,7 +129,8 @@ public class TrafficTileLoader {
                 Log.e("tile status", tileCoordinates.toString() + "loading, " + userLocation.toString());
                 List<StatusRenderData> datas = statusRepositoryService.loadStatusRenderData(userLocation, TILE_RADIUS_LEVEL_14);
                 if (datas != null) {
-                    roomDatabaseService.insertTrafficStatus(datas);
+                    roomDatabaseService.insertTrafficStatus(
+                            StatusRenderDataEntity.parseStatusRenderDataEntity(datas));
                     loadedTiles.put(tileCoordinates, TILE_LOADED);
                     Log.e("tile status", tileCoordinates.toString() + "loaded");
                     Log.e("loaded", "status size " + datas.size());
