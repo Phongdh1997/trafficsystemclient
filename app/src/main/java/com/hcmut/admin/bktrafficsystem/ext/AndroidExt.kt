@@ -36,6 +36,27 @@ class AndroidExt {
                 .show()
     }
 
+    fun showSuccess(context: Context,
+                          description: String? = ""
+    ) {
+        MessageDialog(context, "Thành công", description, false)
+                .setColorTitle(R.color.green)
+                .show()
+    }
+
+    fun showDialog(context: Context,
+                          title: String? = "",
+                          description: String? = "",
+                          onOKListener: ClickDialogListener.Yes
+    ) {
+        MessageDialog(context, title, description, true)
+                .setColorTitle(R.color.green)
+                .setButtonYesText("Đồng ý")
+                .setButtonNoText("Hủy bỏ")
+                .setClickYes { onOKListener.onCLickYes() }
+                .show()
+    }
+
 
     fun showNotifyDialog(context: Context,
                           description: String? = "",

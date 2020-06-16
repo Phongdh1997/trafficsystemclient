@@ -97,6 +97,7 @@ import com.hcmut.admin.bktrafficsystem.model.MapUtils;
 import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
 import com.hcmut.admin.bktrafficsystem.model.RoadFinder;
 import com.hcmut.admin.bktrafficsystem.model.Route;
+import com.hcmut.admin.bktrafficsystem.model.param.FastReport;
 import com.hcmut.admin.bktrafficsystem.model.point.Point;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.Coord;
@@ -111,6 +112,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GlideBitmapHelper;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationServiceAlarmUtil;
 import com.hcmut.admin.bktrafficsystem.ui.InformationActivity;
 import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
@@ -409,17 +411,9 @@ public class MapActivity extends AppCompatActivity implements
         btnCurrentLocationReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String content = "fjdsahfdhsafhdsiahfuidshaufhdsuahfuidshafuih uhdsfuihsd auifhdsiua hfuidahui fhdauihf udah";
-                androidExt.comfirmPostFastReport(
-                        MapActivity.this,
-                        content,
-                        new ClickDialogListener.Yes() {
-                            @Override
-                            public void onCLickYes() {
-                                Toast.makeText(MapActivity.this, "Yes", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                postFastReport();
             }
+
         });
         btnGPSColectionSwitch.setOnCheckedChangeListener(swithCheckedChangedListener);
         AppForegroundService.getMovingStateLiveData().observe(this, new Observer<Boolean>() {
@@ -448,6 +442,68 @@ public class MapActivity extends AppCompatActivity implements
         boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
         if (gpsDataSetting) {
             initLocationService();
+        }
+    }
+
+    private void postFastReport() {
+        if (checkGPSTurnOn()) {
+            LocationCollectionManager.getInstance(getApplicationContext())
+                    .getCurrentLocation(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(final Location location) {
+                    if (location != null) {
+                        final String address = LocationUtil.getAddressByLatLng(MapActivity.this,
+                                new LatLng(location.getLatitude(), location.getLongitude()));
+                        if (address.length() < 1) {
+                            androidExt.showErrorDialog(
+                                    MapActivity.this,
+                                    "Không thể lấy được địa chỉ người dùng, Vui lòng kiểm tra lại đường truyền!");
+                            return;
+                        }
+                        androidExt.comfirmPostFastReport(
+                                MapActivity.this,
+                                address,
+                                new ClickDialogListener.Yes() {
+                                    @Override
+                                    public void onCLickYes() {
+                                        FastReport fastReport = new FastReport();
+                                        fastReport.address = address;
+                                        fastReport.distance = 200;
+                                        fastReport.personSharing = new FastReport.PersonSharing();
+                                        fastReport.speed = 15;
+                                        fastReport.latitude = location.getLatitude();
+                                        fastReport.longitude = location.getLongitude();
+                                        CallApi.getBkTrafficService().postFastRecord(fastReport)
+                                                .enqueue(new Callback<BaseResponse<Object>>() {
+                                                    @Override
+                                                    public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                                                        try {
+                                                            if (response.body().getCode() == 201) {
+                                                                androidExt.showSuccess(
+                                                                        MapActivity.this,
+                                                                        "Gửi cảnh báo thành công");
+                                                            }
+                                                        } catch (Exception e) {
+                                                            androidExt.showErrorDialog(
+                                                                    MapActivity.this,
+                                                                    "Gửi cảnh báo Thất bại, Xin kiểm tra lại kết nối mạng");
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                                                        androidExt.showErrorDialog(
+                                                                MapActivity.this,
+                                                                "Gửi cảnh báo Thất bại, Xin kiểm tra lại kết nối mạng");
+                                                    }
+                                                });
+                                    }
+                                });
+                    } else {
+                        androidExt.showErrorDialog(MapActivity.this,"Không thể lấy được vị trí người dùng, Vui lòng thử lại!");
+                    }
+                }
+            });
         }
     }
 
@@ -1383,13 +1439,22 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
-    public void checkGPSTurnOn () {
-        androidExt.showSuccessDialog(MapActivity.this, "Vui lòng bật định vị vị trí", new ClickDialogListener.OK() {
-            @Override
-            public void onCLickOK() {
-                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        });
+    public boolean checkGPSTurnOn () {
+        LocationCollectionManager locationCollectionManager = LocationCollectionManager.getInstance(getApplicationContext());
+        if (!locationCollectionManager.isGPSEnabled()) {
+            androidExt.showDialog(
+                    MapActivity.this,
+                    "Yêu cầu truy cập vị trí",
+                    "Vui lòng bật định vị vị trí để sử dụng chức năng này!",
+                    new ClickDialogListener.Yes() {
+                        @Override
+                        public void onCLickYes() {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    });
+            return false;
+        }
+        return true;
     }
 
   /*  public void showKeyboard(Activity activity){
