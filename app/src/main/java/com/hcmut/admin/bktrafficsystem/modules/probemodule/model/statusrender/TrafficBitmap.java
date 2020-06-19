@@ -121,7 +121,6 @@ public class TrafficBitmap {
             LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tile);
             LatLng startPoint;
             LatLng endPoint;
-            LatLng middlePoint;
             for (StatusRenderDataEntity lineData : lineDataList) {
                 // start point
                 startPoint = lineData.getStartLatlng();
@@ -143,8 +142,7 @@ public class TrafficBitmap {
                     c.drawLine(stopX, stopY, startX, startY, paint);
                 } else {
                     // middle point
-                    middlePoint = MyLatLngBoundsUtil.getMiddlePoint(startPoint, endPoint);
-                    Point screenPt3 = mProjection.toPoint(middlePoint);
+                    Point screenPt3 = MyLatLngBoundsUtil.getMiddlePoint(screenPt1, screenPt2);
                     middleX = (float) screenPt3.x * 10;
                     middleY = (float) screenPt3.y * 10;
 

@@ -2,7 +2,10 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.geometry.Point;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MyLatLngBoundsUtil {
     public static LatLngBounds tileToLatLngBound(TileCoordinates tileCoordinates) {
@@ -60,6 +63,7 @@ public class MyLatLngBoundsUtil {
         return null;
     }
 
+    @Deprecated
     public static LatLng getMiddlePoint(LatLng latLng1, LatLng latLng2){
         double lat1 = latLng1.latitude;
         double lon1 = latLng1.longitude;
@@ -79,5 +83,9 @@ public class MyLatLngBoundsUtil {
 
         //print out in degrees
         return new LatLng(lat3, lon3);
+    }
+
+    public static Point getMiddlePoint (@NotNull Point point1, @NotNull Point point2) {
+        return new Point(((point1.x + point2.x) / 2), ((point1.y + point2.y) / 2));
     }
 }
