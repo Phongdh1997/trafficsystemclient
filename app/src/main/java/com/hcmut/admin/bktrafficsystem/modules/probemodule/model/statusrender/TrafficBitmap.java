@@ -145,8 +145,8 @@ public class TrafficBitmap {
                     // middle point
                     middlePoint = MyLatLngBoundsUtil.getMiddlePoint(startPoint, endPoint);
                     Point screenPt3 = mProjection.toPoint(middlePoint);
-                    middleX = (float) screenPt2.x * 10;
-                    middleY = (float) screenPt2.y * 10;
+                    middleX = (float) screenPt3.x * 10;
+                    middleY = (float) screenPt3.y * 10;
 
                     c.drawLine(middleX, middleY, startX, startY, paint);
                     c.drawLine(middleX, middleY, stopX, stopY, paint);
