@@ -14,7 +14,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.Til
 import org.jetbrains.annotations.NotNull;
 
 public class ProbeMapUi {
-    public static float MAX_ZOOM_LEVEL = 20f;
+    public static float MAX_ZOOM_LEVEL = 18f;
 
     /**
      * external view

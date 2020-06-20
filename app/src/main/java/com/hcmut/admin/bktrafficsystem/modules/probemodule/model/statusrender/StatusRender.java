@@ -37,7 +37,7 @@ public abstract class StatusRender {
         }
     }
 
-    private TileCoordinates getCenterRenderTile (LatLng centerPoint) {
+    private synchronized TileCoordinates getCenterRenderTile (LatLng centerPoint) {
         try {
             TileCoordinates currentTile = MyLatLngBoundsUtil.getTileNumber(
                     centerPoint.latitude,
