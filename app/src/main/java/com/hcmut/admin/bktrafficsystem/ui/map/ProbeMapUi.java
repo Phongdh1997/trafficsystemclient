@@ -7,11 +7,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.GoogleMapMemoryManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.RefreshStatusHandler;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MatrixStatusRenderImpl;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.TilerOverlayRender;
 
 import org.jetbrains.annotations.NotNull;
 
 public class ProbeMapUi {
+    public static float MAX_ZOOM_LEVEL = 20f;
 
     /**
      * external view
@@ -20,12 +23,14 @@ public class ProbeMapUi {
     private TilerOverlayRender tilerOverlayRender;
     private GoogleMapMemoryManager mapMemoryManager;
     private RefreshStatusHandler refreshStatusHandler;
+    private StatusRender statusRender;
 
     public ProbeMapUi(Context context,  @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
         this.gmaps = map;
         tilerOverlayRender = new TilerOverlayRender(gmaps, context);
         mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
         refreshStatusHandler = new RefreshStatusHandler();
+        statusRender = new MatrixStatusRenderImpl(gmaps, context);
     }
 
     public void setupRenderStatus () {
@@ -33,6 +38,7 @@ public class ProbeMapUi {
             @Override
             public void onCameraIdle() {
                 mapMemoryManager.onMapMove(gmaps.getCameraPosition().zoom);
+                statusRender.onCameraMoving(gmaps);
             }
         });
         refreshStatusHandler.startStatusRenderTimer();

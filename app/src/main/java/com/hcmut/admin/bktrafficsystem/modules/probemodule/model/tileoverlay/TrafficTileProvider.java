@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class TrafficTileProvider implements TileProvider {
+    public static final int MAX_ZOOM_RENDER = 17;
+
     private Context context;
     private TrafficBitmap trafficBitmap;
     private TrafficDataLoader trafficDataLoader;
@@ -29,7 +31,7 @@ public class TrafficTileProvider implements TileProvider {
 
     @Override
     public Tile getTile(int x, int y, int z) {
-        if (z < 15 || z > 20) return NO_TILE;
+        if (z < 15 || z > MAX_ZOOM_RENDER) return NO_TILE;
 
         try {
             TileCoordinates renderTile = TileCoordinates.getTileCoordinates(x, y, z);

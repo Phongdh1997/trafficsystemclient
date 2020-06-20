@@ -7,8 +7,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.GoogleMapMemoryManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.TrafficTileProvider;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
+import com.hcmut.admin.bktrafficsystem.ui.map.ProbeMapUi;
 
 public abstract class StatusRender {
     public static final int TILE_ZOOM_LEVEL = 15;
@@ -20,20 +22,19 @@ public abstract class StatusRender {
     }
 
     public void onCameraMoving(GoogleMap googleMap){
-        float zoom = googleMap.getCameraPosition().zoom;
-        if (zoom < 15f || zoom > 20) {
-            return;
-        }
-        final LatLng centerPoint = googleMap.getCameraPosition().target;
-        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                TileCoordinates currentTile = getCenterRenderTile(centerPoint);
-                if (currentTile != null) {
-                    handleCameraMoving(currentTile);
+        int zoom = (int) googleMap.getCameraPosition().zoom;
+        if (zoom > TrafficTileProvider.MAX_ZOOM_RENDER) {
+            final LatLng centerPoint = googleMap.getCameraPosition().target;
+            RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+                @Override
+                public void run() {
+                    TileCoordinates currentTile = getCenterRenderTile(centerPoint);
+                    if (currentTile != null) {
+                        handleCameraMoving(currentTile);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private TileCoordinates getCenterRenderTile (LatLng centerPoint) {
