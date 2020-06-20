@@ -22,7 +22,7 @@ public class MatrixRenderHandler extends TileRenderHandler {
 
     @Override
     public <T> Bitmap render(TileCoordinates tile, List<T> datas) {
-        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas, TILE_ZOOM_15_SCALE);
+        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas, 8, 0.00018f);
         if (bitmap != null) {
             synchronized (MatrixRenderHandler.class) {
                 GroundOverlayMatrixItem groundOverlayMatrixItem = GroundOverlayMatrix.getMatrixItem(tile);

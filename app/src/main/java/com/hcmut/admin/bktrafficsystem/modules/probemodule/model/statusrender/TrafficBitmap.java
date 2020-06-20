@@ -37,7 +37,7 @@ public class TrafficBitmap {
      * @param tile
      * @param lineDataList
      */
-    public  <T> Bitmap createTrafficBitmap(@NotNull TileCoordinates tile, @Nullable List<T> lineDataList, int mScale) {
+    public  <T> Bitmap createTrafficBitmap(@NotNull TileCoordinates tile, @Nullable List<T> lineDataList, int mScale, Float lineWidth) {
         if (lineDataList == null || lineDataList.size() == 0) {
             return null;
         }
@@ -51,7 +51,7 @@ public class TrafficBitmap {
         Bitmap bitmap = Bitmap.createBitmap(dimension, dimension, Bitmap.Config.ARGB_8888); //save memory on old phones
         Canvas c = new Canvas(bitmap);
         c.setMatrix(matrix);
-        c = drawCanvasFromArray(c, lineDataList, tile);
+        c = drawCanvasFromArray(c, lineDataList, tile, lineWidth);
         return bitmap;
     }
 
@@ -62,10 +62,10 @@ public class TrafficBitmap {
      * @param tile
      * @return
      */
-    private <T> Canvas drawCanvasFromArray(Canvas c, @NotNull List<T> lineDataList, TileCoordinates tile) {
+    private <T> Canvas drawCanvasFromArray(Canvas c, @NotNull List<T> lineDataList, TileCoordinates tile, Float lineWidth) {
         //Line features
         Paint paint = new Paint();
-        paint.setStrokeWidth(getLineWidth(tile.z));
+        paint.setStrokeWidth((lineWidth == null) ? getLineWidth(tile.z) : lineWidth);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(DEFAULT_COLOR);
         paint.setStrokeCap(Paint.Cap.ROUND);
@@ -163,9 +163,9 @@ public class TrafficBitmap {
             case 21:
             case 20:
             case 19:
-                return 0.00010f;
+                return 0.00015f;
             case 18:
-                return 0.00013f;//ok
+                return 0.00015f;//ok
             case 17:
                 return 0.00013f; //ok
             case 16:

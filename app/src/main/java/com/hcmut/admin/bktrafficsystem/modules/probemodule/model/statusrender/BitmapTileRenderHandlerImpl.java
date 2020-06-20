@@ -34,7 +34,7 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
 
     @Override
     public <T> Bitmap render(TileCoordinates tile, List<T> datas) {
-        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas, TILE_ZOOM_15_SCALE);
+        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas, TILE_ZOOM_15_SCALE, null);
         if (bitmap != null) {
             invalidate(tile, bitmap);
         }
