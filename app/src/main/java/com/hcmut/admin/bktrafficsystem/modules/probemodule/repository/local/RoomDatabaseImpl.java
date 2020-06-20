@@ -35,16 +35,7 @@ public class RoomDatabaseImpl implements RoomDatabaseService {
     }
 
     @Override
-    public List<StatusRenderDataEntity> getTrafficStatus(TileCoordinates renderTile) {
-        LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(renderTile);
-        if (renderTile.z > 17) {
-            try {
-                TileCoordinates topRightTile = renderTile.getTileRight().getTileTop();
-                LatLngBounds topRightBounds = MyLatLngBoundsUtil.tileToLatLngBound(topRightTile);
-                bounds = bounds.including(topRightBounds.northeast);
-            } catch (Exception e) {
-            }
-        }
+    public List<StatusRenderDataEntity> getTrafficStatus(LatLngBounds bounds) {
         return statusRenderDataDAO.getStatusByBounds(
                 bounds.northeast.latitude,
                 bounds.northeast.longitude,
