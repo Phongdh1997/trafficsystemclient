@@ -12,6 +12,8 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.TrafficBitmap.TILE_ZOOM_15_SCALE;
+
 public class TrafficTileProvider implements TileProvider {
     public static final int MAX_ZOOM_RENDER = 17;
 
@@ -36,13 +38,14 @@ public class TrafficTileProvider implements TileProvider {
         try {
             TileCoordinates renderTile = TileCoordinates.getTileCoordinates(x, y, z);
             List<StatusRenderDataEntity> dataList = trafficDataLoader.loadTrafficData(renderTile);
-            Bitmap bitmap = trafficBitmap.createTrafficBitmap(renderTile, dataList);
+            int scale = TILE_ZOOM_15_SCALE;
+            Bitmap bitmap = trafficBitmap.createTrafficBitmap(renderTile, dataList, scale);
             if (bitmap != null) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
                 bitmap.recycle();
-                return new Tile(TrafficBitmap.mDimension, TrafficBitmap.mDimension, byteArray);
+                return new Tile(TrafficBitmap.mTileSize * scale, TrafficBitmap.mTileSize * scale, byteArray);
             }
         } catch (Exception e) {
         }

@@ -19,6 +19,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import static com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.TrafficBitmap.TILE_ZOOM_15_SCALE;
+
 public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
 
     private WeakReference<GoogleMap> googleMapWeakReference;
@@ -32,7 +34,7 @@ public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
 
     @Override
     public <T> Bitmap render(TileCoordinates tile, List<T> datas) {
-        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas);
+        Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas, TILE_ZOOM_15_SCALE);
         if (bitmap != null) {
             invalidate(tile, bitmap);
         }

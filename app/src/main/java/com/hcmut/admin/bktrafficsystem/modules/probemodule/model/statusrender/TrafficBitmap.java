@@ -25,8 +25,6 @@ public class TrafficBitmap {
     public static final int TILE_ZOOM_15_SCALE = 2;
     public static final int mTileSize = 256;
     private static final SphericalMercatorProjection mProjection = new SphericalMercatorProjection(mTileSize);
-    private static final int mScale = TILE_ZOOM_15_SCALE;
-    public static final int mDimension = mScale * mTileSize;
     private static final int DEFAULT_COLOR = Color.BLACK;
 
     public TrafficBitmap() {
@@ -39,18 +37,18 @@ public class TrafficBitmap {
      * @param tile
      * @param lineDataList
      */
-    public  <T> Bitmap createTrafficBitmap(@NotNull TileCoordinates tile, @Nullable List<T> lineDataList) {
+    public  <T> Bitmap createTrafficBitmap(@NotNull TileCoordinates tile, @Nullable List<T> lineDataList, int mScale) {
         if (lineDataList == null || lineDataList.size() == 0) {
             return null;
         }
         Log.e("Tile", "render status, size " + lineDataList.size());
+        int dimension = mScale * mTileSize;
         Matrix matrix = new Matrix();
-
         float scale = ((float) Math.pow(2, tile.z) * mScale / 10);
         matrix.postScale(scale, scale);
-        matrix.postTranslate(-tile.x * mDimension, -tile.y * mDimension);
+        matrix.postTranslate(-tile.x * dimension, -tile.y * dimension);
 
-        Bitmap bitmap = Bitmap.createBitmap(mDimension, mDimension, Bitmap.Config.ARGB_8888); //save memory on old phones
+        Bitmap bitmap = Bitmap.createBitmap(dimension, dimension, Bitmap.Config.ARGB_8888); //save memory on old phones
         Canvas c = new Canvas(bitmap);
         c.setMatrix(matrix);
         c = drawCanvasFromArray(c, lineDataList, tile);
