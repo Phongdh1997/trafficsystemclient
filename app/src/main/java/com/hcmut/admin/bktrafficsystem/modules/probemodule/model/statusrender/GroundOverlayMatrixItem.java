@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -21,12 +22,10 @@ public class GroundOverlayMatrixItem {
     public static final String LOAD_FAIL_OVERLAY = "LOAD_FAIL_OVERLAY";
 
     private GroundOverlay groundOverlay;
-    private String state;
+    private String state = INIT_OVERLAY;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public GroundOverlayMatrixItem () {
-        state = INIT_OVERLAY;
-    }
+    public GroundOverlayMatrixItem () {}
 
     public void invalidate (@NotNull Bitmap bitmap, @NotNull TileCoordinates target, @NotNull final GoogleMap googleMap) {
         if (!state.equals(LOADED_OVERLAY)) {
@@ -59,6 +58,36 @@ public class GroundOverlayMatrixItem {
         }
     }
 
+    public void invalidateItself(@NotNull final Bitmap bitmap, @NotNull final TileCoordinates tile, @NotNull final GoogleMap googleMap) {
+        if (groundOverlay != null) {
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    groundOverlay.setImage(BitmapDescriptorFactory.fromBitmap(bitmap));
+                    groundOverlay.setPositionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(tile));
+                    state = LOADED_OVERLAY;
+                    try {
+                        bitmap.recycle();
+                    } catch (Exception e) {}
+                }
+            });
+        } else {
+            final GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
+            groundOverlayOptions.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+            groundOverlayOptions.positionFromBounds(MyLatLngBoundsUtil.tileToLatLngBound(tile));
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    groundOverlay = googleMap.addGroundOverlay(groundOverlayOptions);
+                    state = LOADED_OVERLAY;
+                    try {
+                        bitmap.recycle();
+                    } catch (Exception e) {}
+                }
+            });
+        }
+    }
+
     public GroundOverlay getGroundOverlay() {
         return groundOverlay;
     }
@@ -75,11 +104,31 @@ public class GroundOverlayMatrixItem {
         return state.equals(INIT_OVERLAY);
     }
 
+    public boolean isNotLoaded() {
+        return state.equals(INIT_OVERLAY) || state.equals(LOAD_FAIL_OVERLAY);
+    }
+
     public String getState() {
         return state;
     }
 
-    public void setState(String state) {
+    private void setState(String state) {
         this.state = state;
+    }
+
+    public void overlayInit() {
+        setState(INIT_OVERLAY);
+    }
+
+    public void ovelayLoaded() {
+        setState(LOADED_OVERLAY);
+    }
+
+    public void ovelayLoading() {
+        setState(LOADING_OVERLAY);
+    }
+
+    public void overlayLoadFail() {
+        setState(LOAD_FAIL_OVERLAY);
     }
 }
