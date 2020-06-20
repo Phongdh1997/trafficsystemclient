@@ -9,6 +9,9 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityFutureTask;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityRunable;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.LoadedTileManager;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.TrafficDataLoader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
@@ -21,17 +24,14 @@ public class GroundOverlayMatrix {
     public static final String LOADING_OVERLAY = "LOADING_OVERLAY";
     public static final String LOAD_FAIL_OVERLAY = "LOAD_FAIL_OVERLAY";
 
-    public static final int MATRIX_WIDTH = 5;
+    public static final int MATRIX_WIDTH = 3;
 
-    private HashMap<TileCoordinates, String> tileStates = new HashMap<>();
-    private TrafficLoader trafficLoader;
+    TrafficDataLoader trafficDataLoader;
     private TileRenderHandler tileRenderHandler;
-    private GlideBitmapHelper glideBitmapHelper;
 
     public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
-        trafficLoader = new TrafficLoader();
-        tileRenderHandler = new BitmapTileRenderHandlerImpl(googleMap, tileStates);
-        glideBitmapHelper = GlideBitmapHelper.getInstance(context.getApplicationContext());
+        trafficDataLoader = new TrafficDataLoader(context);
+        tileRenderHandler = new BitmapTileRenderHandlerImpl(googleMap);
     }
 
     public synchronized void renderMatrix(final TileCoordinates centerTile) {
@@ -42,16 +42,9 @@ public class GroundOverlayMatrix {
         }
     }
 
+    // TODO:
     public void refresh(final TileCoordinates centerTile) {
-        glideBitmapHelper.clearMemory();
-        glideBitmapHelper.clearDiskCache(RetrofitClient.THREAD_POOL_EXECUTOR,
-                new GlideBitmapHelper.ClearDiskCacheCallBack() {
-            @Override
-            public void onFinish() {
-                tileStates.clear();
-                renderMatrix(centerTile);
-            }
-        });
+
     }
 
     /**
@@ -61,50 +54,15 @@ public class GroundOverlayMatrix {
      * else load traffic data from server:
      * @param tile
      */
-    private void renderTile(TileCoordinates tile, Priority priority) {
-        String tileState = tileStates.get(tile);
-        if (tileState == null) {
-            handleRenderTile(tile, priority);
-        } else {
-            switch (tileState) {
-                case LOADING_OVERLAY:
-                    break;
-                case LOADED_OVERLAY:
-                    Log.e("maxtrix", "loaded");
-                    break;
-                case LOAD_FAIL_OVERLAY:
-                    handleRenderTile(tile, priority);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Load data from server
-     * Dispatch loaded data to TileRenderHandler
-     * @param tile
-     */
-    private void handleRenderTile (final TileCoordinates tile, Priority priority) {
-        Bitmap bitmap = glideBitmapHelper.loadBitmapFromGlide(tile);
-        if (bitmap != null) {
-            Log.e("glide", "have image");
-            tileRenderHandler.render(tile, bitmap, tileStates);
-        } else {
-            RetrofitClient.THREAD_POOL_EXECUTOR.execute(new PriorityFutureTask(
-                    new PriorityRunable(priority) {
-                        @Override
-                        public void run() {
-                            tileStates.put(tile, LOADING_OVERLAY);
-                            List<StatusRenderData> datas = trafficLoader.loadDataFromServer(tile);
-                            if (datas != null) {
-                                Bitmap returnBitmap = tileRenderHandler.render(tile, datas, tileStates);
-                                glideBitmapHelper.storeBitmapToGlide(tile, returnBitmap);
-                            } else {
-                                tileStates.put(tile, LOAD_FAIL_OVERLAY);
-                            }
-                        }
-                    }));
-        }
+    private void renderTile(final TileCoordinates tile, Priority priority) {
+        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new PriorityFutureTask(
+                new PriorityRunable(priority) {
+                    @Override
+                    public void run() {
+                        List<StatusRenderDataEntity> datas = trafficDataLoader.loadTrafficData(tile);
+                        tileRenderHandler.render(tile, datas);
+                    }
+                }));
     }
 
     private List<TileCoordinates> generateMatrixItems (TileCoordinates centerTile) {

@@ -24,7 +24,7 @@ public class TrafficDataLoader {
     private RoomDatabaseService roomDatabaseService;
 
     public TrafficDataLoader (Context context) {
-        loadedTileManager = new LoadedTileManager();
+        loadedTileManager = LoadedTileManager.getInstance();
         roomDatabaseService = new RoomDatabaseImpl(context);
     }
 

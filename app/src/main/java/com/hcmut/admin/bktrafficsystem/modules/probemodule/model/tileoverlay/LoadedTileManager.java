@@ -10,8 +10,18 @@ public class LoadedTileManager {
     public static final String LOAD_FAIL_STATE = "LOAD_FAIL_STATE";
 
     private HashMap<TileCoordinates, String> loadedTiles = new HashMap<>();
+    private static LoadedTileManager loadedTileManager;
 
-    public void clear () {
+    private LoadedTileManager() {}
+
+    public static LoadedTileManager getInstance() {
+        if (loadedTileManager == null) {
+            loadedTileManager = new LoadedTileManager();
+        }
+        return loadedTileManager;
+    }
+
+    public synchronized void clear () {
         loadedTiles.clear();
     }
 
