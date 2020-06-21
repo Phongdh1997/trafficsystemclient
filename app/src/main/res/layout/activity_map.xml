@@ -19,6 +19,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:context="com.hcmut.currentplacedetailsonmap.MapsActivityCurrentPlace" />
 
+    <fragment
+        android:id="@+id/mapFeature"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.map.MapFeatureFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="0dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/ic_gps"
         android:layout_width="44dp"

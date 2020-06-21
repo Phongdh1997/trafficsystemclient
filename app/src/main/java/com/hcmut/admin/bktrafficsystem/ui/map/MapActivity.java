@@ -71,6 +71,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -97,6 +98,7 @@ import com.hcmut.admin.bktrafficsystem.model.MapUtils;
 import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
 import com.hcmut.admin.bktrafficsystem.model.RoadFinder;
 import com.hcmut.admin.bktrafficsystem.model.Route;
+import com.hcmut.admin.bktrafficsystem.model.param.FastReport;
 import com.hcmut.admin.bktrafficsystem.model.point.Point;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.Coord;
@@ -111,6 +113,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GlideBitmapHelper;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationServiceAlarmUtil;
 import com.hcmut.admin.bktrafficsystem.ui.InformationActivity;
 import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
@@ -381,11 +384,6 @@ public class MapActivity extends AppCompatActivity implements
     private void initProbeModuleVariableWhenMapLoaded() {
         probeMapUi = new ProbeMapUi(getApplicationContext(), mMap, mapFragment);
         probeMapUi.setupRenderStatus();
-
-        // setup GlideHelper
-        GlideBitmapHelper glideBitmapHelper = GlideBitmapHelper.getInstance(getApplicationContext());
-        glideBitmapHelper.clearMemory();
-        glideBitmapHelper.setMemoryCategory(MemoryCategory.LOW);
     }
 
     /**
@@ -409,8 +407,9 @@ public class MapActivity extends AppCompatActivity implements
         btnCurrentLocationReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MapActivity.this, "Chức năng đang phát triển...", Toast.LENGTH_SHORT).show();
+                postFastReport();
             }
+
         });
         btnGPSColectionSwitch.setOnCheckedChangeListener(swithCheckedChangedListener);
         AppForegroundService.getMovingStateLiveData().observe(this, new Observer<Boolean>() {
@@ -442,6 +441,68 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
+    private void postFastReport() {
+        if (checkGPSTurnOn()) {
+            LocationCollectionManager.getInstance(getApplicationContext())
+                    .getCurrentLocation(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(final Location location) {
+                    if (location != null) {
+                        final String address = LocationUtil.getAddressByLatLng(MapActivity.this,
+                                new LatLng(location.getLatitude(), location.getLongitude()));
+                        if (address.length() < 1) {
+                            androidExt.showErrorDialog(
+                                    MapActivity.this,
+                                    "Không thể lấy được địa chỉ người dùng, Vui lòng kiểm tra lại đường truyền!");
+                            return;
+                        }
+                        androidExt.comfirmPostFastReport(
+                                MapActivity.this,
+                                address,
+                                new ClickDialogListener.Yes() {
+                                    @Override
+                                    public void onCLickYes() {
+                                        FastReport fastReport = new FastReport();
+                                        fastReport.address = address;
+                                        fastReport.distance = 200;
+                                        fastReport.personSharing = new FastReport.PersonSharing();
+                                        fastReport.speed = 15;
+                                        fastReport.latitude = location.getLatitude();
+                                        fastReport.longitude = location.getLongitude();
+                                        CallApi.getBkTrafficService().postFastRecord(fastReport)
+                                                .enqueue(new Callback<BaseResponse<Object>>() {
+                                                    @Override
+                                                    public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                                                        try {
+                                                            if (response.body().getCode() == 201) {
+                                                                androidExt.showSuccess(
+                                                                        MapActivity.this,
+                                                                        "Gửi cảnh báo thành công");
+                                                            }
+                                                        } catch (Exception e) {
+                                                            androidExt.showErrorDialog(
+                                                                    MapActivity.this,
+                                                                    "Gửi cảnh báo Thất bại, Xin kiểm tra lại kết nối mạng");
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                                                        androidExt.showErrorDialog(
+                                                                MapActivity.this,
+                                                                "Gửi cảnh báo Thất bại, Xin kiểm tra lại kết nối mạng");
+                                                    }
+                                                });
+                                    }
+                                });
+                    } else {
+                        androidExt.showErrorDialog(MapActivity.this,"Không thể lấy được vị trí người dùng, Vui lòng thử lại!");
+                    }
+                }
+            });
+        }
+    }
+
     private void toggleMoreFeatureOption() {
         if (layoutMoreFeature.getVisibility() == View.VISIBLE) {
             layoutMoreFeature.setVisibility(View.GONE);
@@ -460,6 +521,9 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        if (probeMapUi != null) {
+            probeMapUi.startStatusRenderTimer();
+        }
     }
 
     public void initLocationService() {
@@ -472,8 +536,10 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-        probeMapUi.onStop();
         super.onStop();
+        if (probeMapUi != null) {
+            probeMapUi.stopStatusRenderTimer();
+        }
     }
 
     @Override
@@ -666,7 +732,7 @@ public class MapActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
-        mMap.setMaxZoomPreference(20);
+        mMap.setMaxZoomPreference(ProbeMapUi.MAX_ZOOM_LEVEL);
         initProbeModuleVariableWhenMapLoaded();
 
         updateLocationUI();
@@ -1351,22 +1417,17 @@ public class MapActivity extends AppCompatActivity implements
                     .addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    if (location == null) return;
-                    LatLng locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15.0f),
-                            new GoogleMap.CancelableCallback() {
-                                @Override
-                                public void onFinish() {
-                                    setupInfoWindow();
-                                    current = Calendar.getInstance().getTimeInMillis();
-                                    renderCurrentPosition(oldCameraPos);
-                                }
+                    if (location != null) {
+                        LatLng locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15));
 
-                                @Override
-                                public void onCancel() {
-
-                                }
-                            });
+                        // render user report
+                        setupInfoWindow();
+                        current = Calendar.getInstance().getTimeInMillis();
+                        renderCurrentPosition(oldCameraPos);
+                    } else {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790063, 106.652666), 13));
+                    }
                 }
             });
         } catch (SecurityException e) {
@@ -1374,13 +1435,22 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
-    public void checkGPSTurnOn () {
-        androidExt.showSuccessDialog(MapActivity.this, "Vui lòng bật định vị vị trí", new ClickDialogListener.OK() {
-            @Override
-            public void onCLickOK() {
-                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        });
+    public boolean checkGPSTurnOn () {
+        LocationCollectionManager locationCollectionManager = LocationCollectionManager.getInstance(getApplicationContext());
+        if (!locationCollectionManager.isGPSEnabled()) {
+            androidExt.showDialog(
+                    MapActivity.this,
+                    "Yêu cầu truy cập vị trí",
+                    "Vui lòng bật định vị vị trí để sử dụng chức năng này!",
+                    new ClickDialogListener.Yes() {
+                        @Override
+                        public void onCLickYes() {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    });
+            return false;
+        }
+        return true;
     }
 
   /*  public void showKeyboard(Activity activity){
@@ -1642,7 +1712,9 @@ public class MapActivity extends AppCompatActivity implements
                     if (listPositionAround.size() > 0) {
                         listPositionAround.clear();
                     }
-                    if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
+                    try {
+                        // TODO: sai TrafficReportResponse => get ra list rỗng
+                        Log.e("report", "size " + response.body().getData().size());
                         for (TrafficReportResponse item : response.body().getData()) {
                             Point point = new Point(item.getId(),
                                     new LatLng(item.getCenterPoint().getCoordinatesList().get(1),
@@ -1650,7 +1722,7 @@ public class MapActivity extends AppCompatActivity implements
                             listPositionAround.add(point);
                         }
                         showReportStatus();
-                    }
+                    } catch (Exception e) {}
                 }
 
                 @Override

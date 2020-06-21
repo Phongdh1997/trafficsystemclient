@@ -2,6 +2,7 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.utils;
 
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Looper;
 import android.util.Log;
 
@@ -10,6 +11,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.hcmut.admin.bktrafficsystem.api.ApiService;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
@@ -59,6 +61,11 @@ public class LocationCollectionManager {
         return lastUserLocation;
     }
 
+    public void getCurrentLocation (OnSuccessListener<Location> onSuccessListener) {
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(onSuccessListener);
+    }
+
     public void beginTraceLocation(Looper looper) {
         LocationRequest request = LocationRequest.create();
         request.setInterval(INTERVAL);
@@ -106,5 +113,10 @@ public class LocationCollectionManager {
                 Log.e("post GPS report", "fail");
             }
         });
+    }
+
+    public boolean isGPSEnabled() {
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 }

@@ -5,50 +5,51 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.GoogleMapMemoryManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.RefreshStatusHandler;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MatrixStatusRenderImpl;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.TilerOverlayRender;
 
 import org.jetbrains.annotations.NotNull;
 
 public class ProbeMapUi {
+    public static float MAX_ZOOM_LEVEL = 18f;
 
     /**
      * external view
      */
     private GoogleMap gmaps;
-    private StatusRender statusRender;
+    private TilerOverlayRender tilerOverlayRender;
+    private GoogleMapMemoryManager mapMemoryManager;
     private RefreshStatusHandler refreshStatusHandler;
+    private StatusRender statusRender;
 
     public ProbeMapUi(Context context,  @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
         this.gmaps = map;
-        statusRender = new MatrixStatusRenderImpl(gmaps, context, mapFragment);
-        refreshStatusHandler = new RefreshStatusHandler(gmaps, statusRender);
-        refreshStatusHandler.startRefreshStatus();
+        tilerOverlayRender = new TilerOverlayRender(gmaps, context);
+        mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
+        refreshStatusHandler = new RefreshStatusHandler();
+        statusRender = new MatrixStatusRenderImpl(gmaps, context);
     }
 
     public void setupRenderStatus () {
-        gmaps.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-            @Override
-            public void onCameraMoveStarted(int i) {
-                statusRender.onCameraMoving(gmaps);
-            }
-        });
-
         gmaps.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
+                mapMemoryManager.onMapMove(gmaps.getCameraPosition().zoom);
                 statusRender.onCameraMoving(gmaps);
             }
         });
+        refreshStatusHandler.startStatusRenderTimer();
+        refreshStatusHandler.setOverlayRender(tilerOverlayRender);
     }
 
-    public void refreshRenderStatus () {
-        statusRender.refreshRenderStatus(TileCoordinates.getCenterTile(gmaps));
+    public void startStatusRenderTimer () {
+        refreshStatusHandler.startStatusRenderTimer();
     }
 
-    public void onStop() {
-        refreshStatusHandler.stopRefreshStatus();
+    public void stopStatusRenderTimer () {
+        refreshStatusHandler.stopStatusRenderTimer();
     }
 }

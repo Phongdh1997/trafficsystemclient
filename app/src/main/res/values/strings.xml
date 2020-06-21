@@ -3,7 +3,7 @@
     <string name="title_activity_speech_to_text">SpeechToText</string>
     <string name="facebook_app_id">891769847915505</string>
 
-<!--
+    <!--
     Config login by fb at link: https://developers.facebook.com/docs/facebook-login/android/?sdk=fbsdk
 -->
     <string name="fb_login_protocol_scheme">fb891769847915505</string>
@@ -61,5 +61,8 @@
     <string name="title_take_photo">Chọn nguồn</string>
     <string name="text_no_report">Thời điểm này không có báo cáo gửi lên hệ thống.\nVui lòng chọn thời điểm khác."</string>
     <string name="loading">Đang tải…</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

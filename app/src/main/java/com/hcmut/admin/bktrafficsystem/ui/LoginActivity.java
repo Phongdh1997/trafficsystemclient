@@ -230,16 +230,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     androidExt.showErrorDialog(LoginActivity.this, "Có lỗi, vui lòng thông báo cho admin");
                                 }
                             } else {
-                                androidExt.showErrorDialog(LoginActivity.this, response.body().getMessage());
+                                androidExt.showErrorDialog(LoginActivity.this, "Tài Khoản hoặc mật khẩu không đúng");
                             }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<BaseResponse<LoginResponse>> call, Throwable t) {
-                        // TODO: check username, passwork wrong
-                        Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
+                        androidExt.showErrorDialog(LoginActivity.this, "Kết nối thất bại, vui lòng kiểm tra lại");
                     }
                 });
     }

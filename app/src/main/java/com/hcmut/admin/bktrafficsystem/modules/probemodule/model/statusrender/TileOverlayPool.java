@@ -13,11 +13,9 @@ import java.util.List;
 
 public class TileOverlayPool {
     private List<TileOverlay> idleOverlays = new ArrayList<>();
-    private HashMap<TileCoordinates, String> loadedTile;
     private final int minSize;
 
-    public TileOverlayPool(HashMap<TileCoordinates, String> loadedTile) {
-        this.loadedTile = loadedTile;
+    public TileOverlayPool() {
         minSize = GroundOverlayMatrix.MATRIX_WIDTH * GroundOverlayMatrix.MATRIX_WIDTH +
                 GroundOverlayMatrix.MATRIX_WIDTH * 2 - 1;
     }
@@ -32,7 +30,6 @@ public class TileOverlayPool {
         if (idleOverlays.size() < minSize) return null;
         TileOverlay tileOverlay = getIdleOverlay(renderTile, centerTile);
         if (tileOverlay != null) {
-            loadedTile.remove(tileOverlay.getTile());
             return tileOverlay.getGroundOverlay();
         }
         return null;

@@ -12,6 +12,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsU
 
 import java.util.List;
 
+@Deprecated
 public class TrafficLoader {
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
 

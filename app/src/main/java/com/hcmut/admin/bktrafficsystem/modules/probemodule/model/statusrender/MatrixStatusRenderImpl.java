@@ -9,8 +9,8 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates
 public class MatrixStatusRenderImpl extends StatusRender {
     private GroundOverlayMatrix groundOverlayMatrix;
 
-    public MatrixStatusRenderImpl(GoogleMap googleMap, Context context, SupportMapFragment mapFragment) {
-        super(mapFragment);
+    public MatrixStatusRenderImpl(GoogleMap googleMap, Context context) {
+        super();
         groundOverlayMatrix = new GroundOverlayMatrix(googleMap, context);
     }
 

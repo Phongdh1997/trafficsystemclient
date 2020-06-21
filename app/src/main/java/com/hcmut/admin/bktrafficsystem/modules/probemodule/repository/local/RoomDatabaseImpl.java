@@ -3,11 +3,14 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local;
 import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.RoomDatabaseService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.TrafficDatabase;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.dao.StatusRenderDataDAO;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.MyLatLngBoundsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +23,15 @@ public class RoomDatabaseImpl implements RoomDatabaseService {
     }
 
     @Override
-    public void insertTrafficStatus(List<StatusRenderData> datas) {
-        List<StatusRenderDataEntity> dataEntities = new ArrayList<>();
-        for (StatusRenderData data : datas) {
-            dataEntities.add(new StatusRenderDataEntity(data));
-        }
-        synchronized (this) {
-            statusRenderDataDAO.insertStatusDatas(dataEntities);
-        }
+    public void insertTrafficStatus(final List<StatusRenderDataEntity> datas) {
+        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    statusRenderDataDAO.insertStatusDatas(datas);
+                }
+            }
+        });
     }
 
     @Override

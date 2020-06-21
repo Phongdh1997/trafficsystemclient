@@ -8,20 +8,21 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class PolylineTileRenderHandlerImpl extends TileRenderHandler {
     private WeakReference<GoogleMap> googleMapWeakReference;
 
-    public PolylineTileRenderHandlerImpl(GoogleMap googleMap, HashMap<TileCoordinates, String> tileStates) {
-        super(tileStates);
+    public PolylineTileRenderHandlerImpl(GoogleMap googleMap) {
+        super();
         googleMapWeakReference = new WeakReference<>(googleMap);
     }
 
     @Override
-    public Bitmap render(final TileCoordinates tile, List<StatusRenderData> datas, HashMap<TileCoordinates, String> tileStates) {
-        final List<PolylineOptions> polylineOptionsList = StatusRenderData.parsePolylineOption(datas);
+    public <T> Bitmap render(final TileCoordinates tile, List<T> datas) {
+        final List<PolylineOptions> polylineOptionsList = new ArrayList<>();
         if (polylineOptionsList != null && polylineOptionsList.size() > 0) {
             runOnUiThread(new Runnable() {
                 @Override
@@ -31,7 +32,7 @@ public class PolylineTileRenderHandlerImpl extends TileRenderHandler {
                         for (PolylineOptions polylineOptions : polylineOptionsList) {
                             googleMap.addPolyline(polylineOptions);
                         }
-                        setTileState(tile, GroundOverlayMatrix.LOADED_OVERLAY);
+                        tileLoaded(tile);
                     }
                 }
             });
@@ -40,7 +41,7 @@ public class PolylineTileRenderHandlerImpl extends TileRenderHandler {
     }
 
     @Override
-    public void render(TileCoordinates tile, Bitmap bitmap, HashMap<TileCoordinates, String> tileStates) {
+    public void render(TileCoordinates tile, Bitmap bitmap) {
 
     }
 

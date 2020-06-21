@@ -9,49 +9,84 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.Priority;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityFutureTask;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.PriorityRunable;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.LoadedTileManager;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.TrafficDataLoader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class GroundOverlayMatrix {
     public static final String LOADED_OVERLAY = "LOADED_OVERLAY";
     public static final String LOADING_OVERLAY = "LOADING_OVERLAY";
     public static final String LOAD_FAIL_OVERLAY = "LOAD_FAIL_OVERLAY";
 
-    public static final int MATRIX_WIDTH = 5;
+    public static final int MATRIX_WIDTH = 3;
 
-    private HashMap<TileCoordinates, String> tileStates = new HashMap<>();
-    private TrafficLoader trafficLoader;
+    private TrafficDataLoader trafficDataLoader;
     private TileRenderHandler tileRenderHandler;
-    private GlideBitmapHelper glideBitmapHelper;
+    private static HashMap<TileCoordinates, GroundOverlayMatrixItem> matrix = new HashMap<>();
+
+    public static GroundOverlayMatrixItem getMatrixItem(TileCoordinates tile) {
+        return matrix.get(tile);
+    }
 
     public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
-        trafficLoader = new TrafficLoader();
-        tileRenderHandler = new BitmapTileRenderHandlerImpl(googleMap, tileStates);
-        glideBitmapHelper = GlideBitmapHelper.getInstance(context.getApplicationContext());
+        trafficDataLoader = new TrafficDataLoader(context);
+        tileRenderHandler = new MatrixRenderHandler(googleMap);
     }
 
     public synchronized void renderMatrix(final TileCoordinates centerTile) {
-        List<TileCoordinates> tileItems = generateMatrixItems(centerTile);
-        Log.e("matrix", "not loaded size: " + tileItems.size());
-        for (TileCoordinates tile : tileItems) {
+        List<TileCoordinates> newTiles = preProccessMatrix(generateMatrixItems(centerTile));
+        Log.e("matrix", "not loaded size: " + newTiles.size());
+        for (TileCoordinates tile : newTiles) {
             renderTile(tile, tile.getTilePriority(centerTile));
         }
     }
 
-    public void refresh(final TileCoordinates centerTile) {
-        glideBitmapHelper.clearMemory();
-        glideBitmapHelper.clearDiskCache(RetrofitClient.THREAD_POOL_EXECUTOR,
-                new GlideBitmapHelper.ClearDiskCacheCallBack() {
-            @Override
-            public void onFinish() {
-                tileStates.clear();
-                renderMatrix(centerTile);
+    /**
+     *
+     * @param tileItems
+     * @return not loaded tile
+     */
+    private List<TileCoordinates> preProccessMatrix(List<TileCoordinates> tileItems) {
+        List<TileCoordinates> newTiles = new ArrayList<>();
+        //HashMap<TileCoordinates, GroundOverlayMatrixItem> removeTiles = new HashMap<>();
+        HashMap<TileCoordinates, GroundOverlayMatrixItem> newMatrix = new HashMap<>();
+        for (TileCoordinates tile : tileItems) {
+            if (matrix.containsKey(tile)) {
+                newMatrix.put(tile, matrix.get(tile));
+                matrix.remove(tile);
+            } else {
+                newTiles.add(tile);
             }
-        });
+        }
+
+        Iterator<GroundOverlayMatrixItem> removeItems = matrix.values().iterator();
+        GroundOverlayMatrixItem matrixItem;
+        for (TileCoordinates tile : newTiles) {
+            if (removeItems.hasNext()) {
+                matrixItem = removeItems.next();
+                matrixItem.overlayInit();
+                newMatrix.put(tile, matrixItem);
+            } else {
+                newMatrix.put(tile, new GroundOverlayMatrixItem());
+            }
+        }
+        matrix = newMatrix;
+        Log.e("matrix size", "" + matrix.size());
+        return newTiles;
+    }
+
+    // TODO:
+    public void refresh(final TileCoordinates centerTile) {
+
     }
 
     /**
@@ -61,46 +96,19 @@ public class GroundOverlayMatrix {
      * else load traffic data from server:
      * @param tile
      */
-    private void renderTile(TileCoordinates tile, Priority priority) {
-        String tileState = tileStates.get(tile);
-        if (tileState == null) {
-            handleRenderTile(tile, priority);
-        } else {
-            switch (tileState) {
-                case LOADING_OVERLAY:
-                    break;
-                case LOADED_OVERLAY:
-                    Log.e("maxtrix", "loaded");
-                    break;
-                case LOAD_FAIL_OVERLAY:
-                    handleRenderTile(tile, priority);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Load data from server
-     * Dispatch loaded data to TileRenderHandler
-     * @param tile
-     */
-    private void handleRenderTile (final TileCoordinates tile, Priority priority) {
-        Bitmap bitmap = glideBitmapHelper.loadBitmapFromGlide(tile);
-        if (bitmap != null) {
-            Log.e("glide", "have image");
-            tileRenderHandler.render(tile, bitmap, tileStates);
-        } else {
+    private void renderTile(final TileCoordinates tile, Priority priority) {
+        final GroundOverlayMatrixItem matrixItem = getMatrixItem(tile);
+        if (matrixItem != null && matrixItem.isNotLoaded()) {
+            matrixItem.ovelayLoading();
             RetrofitClient.THREAD_POOL_EXECUTOR.execute(new PriorityFutureTask(
                     new PriorityRunable(priority) {
                         @Override
                         public void run() {
-                            tileStates.put(tile, LOADING_OVERLAY);
-                            List<StatusRenderData> datas = trafficLoader.loadDataFromServer(tile);
-                            if (datas != null) {
-                                Bitmap returnBitmap = tileRenderHandler.render(tile, datas, tileStates);
-                                glideBitmapHelper.storeBitmapToGlide(tile, returnBitmap);
+                            List<StatusRenderDataEntity> datas = trafficDataLoader.loadTrafficData(tile);
+                            if (datas != null && datas.size() > 0) {
+                                tileRenderHandler.render(tile, datas);
                             } else {
-                                tileStates.put(tile, LOAD_FAIL_OVERLAY);
+                                matrixItem.overlayLoadFail();
                             }
                         }
                     }));
