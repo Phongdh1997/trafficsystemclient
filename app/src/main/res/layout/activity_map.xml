@@ -21,13 +21,14 @@
 
     <fragment
         android:id="@+id/mapFeature"
-        android:name="com.hcmut.admin.bktrafficsystem.ui.map.MapFeatureFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="0dp"
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/ic_gps"
@@ -531,6 +532,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0" >
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

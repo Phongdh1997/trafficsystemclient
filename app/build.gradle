@@ -118,6 +118,8 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:1.2.1'
 
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
