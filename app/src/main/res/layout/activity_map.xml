@@ -14,8 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="0dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/featureLayout"
         app:layout_constraintTop_toTopOf="parent"
         tools:context="com.hcmut.currentplacedetailsonmap.MapsActivityCurrentPlace" />
 
@@ -24,9 +23,7 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="0dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/featureLayout"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/nav_graph"/>
 
