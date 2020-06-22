@@ -1,7 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.ui.map;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -25,7 +26,7 @@ public class ProbeMapUi {
     private RefreshStatusHandler refreshStatusHandler;
     private StatusRender statusRender;
 
-    public ProbeMapUi(Context context,  @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
+    public ProbeMapUi(Context context, @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
         this.gmaps = map;
         tilerOverlayRender = new TilerOverlayRender(gmaps, context);
         mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
@@ -38,7 +39,7 @@ public class ProbeMapUi {
             @Override
             public void onCameraIdle() {
                 mapMemoryManager.onMapMove(gmaps.getCameraPosition().zoom);
-                statusRender.onCameraMoving(gmaps);
+                //statusRender.onCameraMoving(gmaps);
             }
         });
         refreshStatusHandler.startStatusRenderTimer();

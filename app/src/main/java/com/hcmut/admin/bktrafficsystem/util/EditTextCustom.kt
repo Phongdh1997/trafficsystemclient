@@ -33,9 +33,11 @@ class EditTextCustom : RelativeLayout {
                 0, 0
         ).apply {
             try {
-                edtMess.inputType = getInt(R.styleable.EditTextCustom_android_inputType, InputType.TYPE_CLASS_TEXT)
+                //edtMess.inputType = getInt(R.styleable.EditTextCustom_android_inputType, InputType.TYPE_CLASS_TEXT)
 
-                edtMess.hint = getString(R.styleable.EditTextCustom_hintContent)
+                //edtMess.hint = getString(R.styleable.EditTextCustom_hintContent)
+
+                edtMess.setAutofillHints(getString(R.styleable.EditTextCustom_hintContent))
 
                 edtMess.isFocusable = getBoolean(R.styleable.EditTextCustom_forcus, true)
 
@@ -43,13 +45,13 @@ class EditTextCustom : RelativeLayout {
                     tvUnit.visibility = View.GONE
                 } else {
                     tvUnit.visibility = View.VISIBLE
-                    tvUnit.hint = getString(R.styleable.EditTextCustom_textUnit)
+                    //tvUnit.hint = getString(R.styleable.EditTextCustom_textUnit)
                 }
-                ic_start.setImageResource(getResourceId(R.styleable.EditTextCustom_drawableStart, 0))
+                //ic_start.setImageResource(getResourceId(R.styleable.EditTextCustom_drawableStart, 0))
 
                 ic_end.visibility = if (getResourceId(R.styleable.EditTextCustom_drawableEnd, 0) != 0) View.VISIBLE else View.GONE
 
-                ic_end.setImageResource(getResourceId(R.styleable.EditTextCustom_drawableEnd, 0))
+                //ic_end.setImageResource(getResourceId(R.styleable.EditTextCustom_drawableEnd, 0))
 
             } finally {
                 recycle()
@@ -58,14 +60,14 @@ class EditTextCustom : RelativeLayout {
     }
 
     fun getText(): String {
-        return edtMess?.text.toString()
+        return "edtMess?.text.toString()"
     }
 
     fun setText(string: String){
-        edtMess?.setText(string)
+        "edtMess?.setText(string)"
     }
 
     fun setHint(string: String) {
-        edtMess?.hint = string
+        "edtMess?.hint = string"
     }
 }

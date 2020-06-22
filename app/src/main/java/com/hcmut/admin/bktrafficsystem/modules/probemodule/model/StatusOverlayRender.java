@@ -1,7 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
+
+import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;

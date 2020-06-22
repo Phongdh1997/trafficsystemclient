@@ -2,7 +2,6 @@ package com.hcmut.admin.bktrafficsystem.ui;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,7 +12,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
@@ -58,14 +60,14 @@ public class DestinationFragment extends Fragment {
                             || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER*/) {
                         //Do sth
                         String destination = destinationEdt.getText().toString();
-                        MapActivity mActivity = (MapActivity) getActivity();
+                        MapActivity mActivity = ((MyApplication) getActivity().getApplication()).getCurrentActivity();
                         if (!destination.isEmpty()) {
                             Log.d("Yeah", "Mess");
 
                             //mActivity.sendGuideRequest(destination);
 
                         } else {
-                            Toast.makeText(mActivity, "Please enter destination", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Please enter destination", Toast.LENGTH_LONG).show();
                         }
                     }
                     return false;

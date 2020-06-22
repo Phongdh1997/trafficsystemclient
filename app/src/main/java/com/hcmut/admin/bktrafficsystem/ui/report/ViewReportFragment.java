@@ -1,13 +1,10 @@
 package com.hcmut.admin.bktrafficsystem.ui.report;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +12,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.ViewReportHandler;
 import com.hcmut.admin.bktrafficsystem.model.point.Point;
@@ -121,6 +123,23 @@ public class ViewReportFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         viewReportHandler = new ViewReportHandler(context);
+
+        if (context instanceof MapActivity) {
+            MapActivity mapActivity = (MapActivity) context;
+            mapActivity.addMapReadyCallback(new MapActivity.OnMapReadyListener() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    map = googleMap;
+                }
+            });
+            mapActivity.setUserReportMarkerListener(new OnReportMakerClick() {
+                @Override
+                public void onClick(Marker marker) {
+                    String[] datas = marker.getTitle().split("/");
+                    showSelectedUserReport(datas);
+                }
+            });
+        }
     }
 
     @Override
@@ -128,7 +147,7 @@ public class ViewReportFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         addControls(view);
-        addEvents();
+        addEvents(view);
     }
 
 
@@ -146,15 +165,8 @@ public class ViewReportFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void addEvents() {
-        MapActivity mapActivity = ((MapActivity)requireActivity());
-        mapActivity.addMapReadyCallback(new MapActivity.OnMapReadyListener() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                map = googleMap;
-            }
-        });
 
+    private void addEvents(View view) {
         btnViewDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,15 +184,6 @@ public class ViewReportFragment extends Fragment {
                 renderUserReport();
             }
         });
-
-        mapActivity.setUserReportMarkerListener(new OnReportMakerClick() {
-            @Override
-            public void onClick(Marker marker) {
-                String [] datas = marker.getTitle().split("/");
-                showSelectedUserReport(datas);
-            }
-        });
-
     }
 
     private void showSelectedUserReport(String [] datas) {

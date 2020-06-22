@@ -1,11 +1,12 @@
 package com.hcmut.admin.bktrafficsystem.util;
 
 import android.content.Context;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 public class CustomDrawerButton extends AppCompatImageView implements DrawerLayout.DrawerListener {
 

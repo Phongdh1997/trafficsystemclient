@@ -1,8 +1,9 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.load.EncodeStrategy;
 import com.bumptech.glide.load.Options;

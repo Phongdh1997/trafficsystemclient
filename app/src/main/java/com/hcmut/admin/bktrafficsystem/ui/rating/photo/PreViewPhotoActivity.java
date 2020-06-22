@@ -2,10 +2,11 @@ package com.hcmut.admin.bktrafficsystem.ui.rating.photo;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.hcmut.admin.bktrafficsystem.R;
 

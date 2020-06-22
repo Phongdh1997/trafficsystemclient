@@ -1,7 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response;
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;

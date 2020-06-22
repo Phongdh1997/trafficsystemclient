@@ -1,14 +1,14 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.service;
 
 import android.app.Service;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.SleepWakeupLocationService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;

@@ -5,7 +5,7 @@
     android:background="@drawable/bg_rounded_input_field"
     >
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_start"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
@@ -21,7 +21,7 @@
         android:layout_centerInParent="true"
         android:background="@color/dark" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edtMess"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -33,7 +33,7 @@
         android:background="@color/transparent"
         android:textColor="@android:color/black" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvUnit"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
@@ -45,7 +45,7 @@
         android:background="@color/transparent"
         android:textColor="@android:color/black" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_end"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
