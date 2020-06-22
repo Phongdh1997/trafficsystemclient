@@ -12,6 +12,14 @@ public class ReportUser {
     @SerializedName("__v")
     private float reputation;
 
+    public ReportUser() {}
+
+    public ReportUser(String id, String name, float reputation) {
+        this.id = id;
+        this.name = name;
+        this.reputation = reputation;
+    }
+
     public String getId() {
         return id;
     }

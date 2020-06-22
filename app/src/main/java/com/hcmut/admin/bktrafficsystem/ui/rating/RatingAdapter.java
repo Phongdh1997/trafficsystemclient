@@ -38,6 +38,14 @@ public class RatingAdapter extends RecyclerView.Adapter<RatingAdapter.RecyclerVi
         notifyDataSetChanged();
     }
 
+    public ReportResponse getItem(int position) {
+        try {
+            return data.get(position);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public void clearData() {
         if (data != null) {
             this.data.clear();
@@ -124,7 +132,7 @@ public class RatingAdapter extends RecyclerView.Adapter<RatingAdapter.RecyclerVi
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return (data == null) ? 0 : data.size();
     }
 
 

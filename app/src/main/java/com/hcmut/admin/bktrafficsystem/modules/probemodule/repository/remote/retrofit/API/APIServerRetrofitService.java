@@ -46,4 +46,13 @@ public interface APIServerRetrofitService {
      */
     @GET("/api/traffic-status/get-status")
     Call<StatusResponse<List<StatusRenderData>>> getTrafficStatus(@Query("lat") Double lat, @Query("lng") Double lng, @Query("radius_in_meter") int radiusInMeters);
+
+    /**
+     * get traffic status by radius in meters
+     */
+    @GET("/api/traffic-status/get-status?include_user_report=true")
+    Call<StatusResponse<List<StatusRenderData>>> getTrafficStatusIncludeUserReport(
+            @Query("lat") Double lat,
+            @Query("lng") Double lng,
+            @Query("radius_in_meter") int radiusInMeters);
 }

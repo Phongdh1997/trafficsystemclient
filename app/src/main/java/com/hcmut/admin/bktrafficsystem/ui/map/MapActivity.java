@@ -59,7 +59,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.bumptech.glide.MemoryCategory;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -71,7 +70,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -110,7 +108,6 @@ import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.GlideBitmapHelper;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
@@ -121,12 +118,15 @@ import com.hcmut.admin.bktrafficsystem.ui.UserInputFormFragment;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
+import com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationRequire;
 import com.hcmut.admin.bktrafficsystem.util.LocationUtil;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.hcmut.admin.bktrafficsystem.util.Sound;
 import com.hcmut.admin.bktrafficsystem.util.TimeUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
@@ -166,7 +166,7 @@ public class MapActivity extends AppCompatActivity implements
     public static User currentUser;
     //varsm
     private Boolean mLocationPermissionsGranted = false;
-    private GoogleMap mMap;
+    public static GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
     private ProgressDialog progressDialog;
@@ -329,6 +329,18 @@ public class MapActivity extends AppCompatActivity implements
         }
     };
 
+    public void setUserReportMarkerListener(ViewReportFragment.OnReportMakerClick listener) {
+        reportMakerClickListener = listener;
+    }
+
+    public void addMapReadyCallback(@NotNull OnMapReadyListener onMapReadyListener) {
+        if (mMap != null) {
+            onMapReadyListener.onMapReady(mMap);
+        } else {
+            onMapReadyListeners.add(onMapReadyListener);
+        }
+    }
+
     /**
      * ================================================
      *
@@ -336,6 +348,9 @@ public class MapActivity extends AppCompatActivity implements
      *
      * ================================================
      */
+    private ViewReportFragment.OnReportMakerClick reportMakerClickListener;
+    private List<OnMapReadyListener> onMapReadyListeners = new ArrayList<>();
+
     private ProbeForgroundServiceManager appForgroundServiceManager;
     private AppFeaturePopup appFeaturePopup;
     private ProbeMapUi probeMapUi;
@@ -526,6 +541,10 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
+    public GoogleMap getGoogleMap() {
+        return mMap;
+    }
+
     public void initLocationService() {
         appForgroundServiceManager.initLocationService();
     }
@@ -585,6 +604,7 @@ public class MapActivity extends AppCompatActivity implements
         userName = user.getUserName();
         imgUrl = user.getImgUrl();
         currentUser = user;
+        Log.e("userID", user.getUserId());
 
         initView();
         //Init map
@@ -734,6 +754,11 @@ public class MapActivity extends AppCompatActivity implements
         mMap = googleMap;
         mMap.setMaxZoomPreference(ProbeMapUi.MAX_ZOOM_LEVEL);
         initProbeModuleVariableWhenMapLoaded();
+
+        for (OnMapReadyListener listener : onMapReadyListeners) {
+            listener.onMapReady(googleMap);
+        }
+        onMapReadyListeners.clear();
 
         updateLocationUI();
         oldCameraPos = mMap.getCameraPosition().target;
@@ -949,14 +974,15 @@ public class MapActivity extends AppCompatActivity implements
             @Override
             public boolean onMarkerClick(Marker marker) {
                 mSearchEdt.clearFocus();
-                if (infoOldMarker == marker) {
-                    marker.hideInfoWindow();
-                    return false;
-                } else if (markersAround.contains(marker)) {
-                    infoOldMarker = marker;
-                    marker.showInfoWindow();
-                    return false;
-                }
+                try {
+                    switch (marker.getTag().toString()) {
+                        case ViewReportFragment.REPORT_RATING: {
+                            if (reportMakerClickListener != null) {
+                                reportMakerClickListener.onClick(marker);
+                            }
+                        }
+                    }
+                } catch (Exception e) {}
                 return true;
             }
         });
@@ -2081,6 +2107,7 @@ public class MapActivity extends AppCompatActivity implements
         if (pathId != null) {
             toggleNotify(pathId, "false");
         }
+        mMap = null;
         super.onDestroy();
     }
 
@@ -2095,6 +2122,10 @@ public class MapActivity extends AppCompatActivity implements
             ctlToolbar.setVisibility(View.VISIBLE);
             customToolbar.setVisibility(View.VISIBLE);
         }
+    }
+
+    public interface OnMapReadyListener {
+        void onMapReady(GoogleMap googleMap);
     }
 }
 

@@ -1,15 +1,24 @@
 package com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.model.point.Point;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.BitmapLineData;
 
 import java.util.ArrayList;
@@ -25,6 +34,9 @@ public class StatusRenderData {
     @SerializedName("polyline")
     @Expose
     private Polyline polyline;
+    @SerializedName("velocity")
+    @Expose
+    private int velocity;
 
     @NonNull
     @Override
@@ -52,6 +64,18 @@ public class StatusRenderData {
         this.polyline = polyline;
     }
 
+    public void setSegment(long segment) {
+        this.segment = segment;
+    }
+
+    public int getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(int velocity) {
+        this.velocity = velocity;
+    }
+
     public List<LatLng> getLatLngPolyline() {
         if (polyline != null) {
             return polyline.getLatLngPolyline();
@@ -69,6 +93,55 @@ public class StatusRenderData {
     public LatLng getStartPointLatLng() {
         if (polyline != null) {
             return polyline.getStartPointLatLng();
+        }
+        return null;
+    }
+
+    public static List<com.google.android.gms.maps.model.Polyline> renderStatus(final GoogleMap googleMap, List<StatusRenderData> statusRenderDataList) {
+        if (googleMap == null || statusRenderDataList == null) return null;
+        List<LatLng> line;
+        String color;
+        final List<com.google.android.gms.maps.model.Polyline>  polylineList = new ArrayList<>();
+        Log.e("lis", "" + statusRenderDataList.size());
+        Handler handler = new Handler(Looper.getMainLooper());
+        for (StatusRenderData statusRenderData : statusRenderDataList) {
+            try {
+                line = statusRenderData.getLatLngPolyline();
+                color = statusRenderData.getColor();
+                if (line != null && line.size() == 2 && color != null) {
+                    final PolylineOptions polylineOptions = new PolylineOptions()
+                            .add(line.get(0), line.get(1))
+                            .width(5)
+                            .color(Color.parseColor(color));
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            polylineList.add(googleMap.addPolyline(polylineOptions));
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return polylineList;
+    }
+
+    public static List<MarkerOptions> parseMarkerOptionsList(
+            List<StatusRenderData> statusRenderDataList, BitmapDescriptor icon) {
+        if (statusRenderDataList != null && statusRenderDataList.size() > 1) {
+            MarkerOptions markerOptions;
+            List<MarkerOptions> markerOptionsList = new ArrayList<>();
+            for (StatusRenderData data : statusRenderDataList) {
+                try {
+                    markerOptions = new MarkerOptions()
+                            .position(data.getStartPointLatLng())
+                            .title(data.getSegment() + "/" + data.getVelocity() + "/" + data.getColor())
+                            .icon(icon);
+                    markerOptionsList.add(markerOptions);
+                } catch (Exception e) {}
+            }
+            return markerOptionsList;
         }
         return null;
     }

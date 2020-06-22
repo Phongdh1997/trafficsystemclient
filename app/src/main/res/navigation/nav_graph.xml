@@ -3,11 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mapFeatureFragment">
+    app:startDestination="@id/reportView">
 
     <fragment
         android:id="@+id/mapFeatureFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.map.MapFeatureFragment"
         android:label="fragment_map_feature"
         tools:layout="@layout/fragment_map_feature" />
+    <fragment
+        android:id="@+id/reportView"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment"
+        android:label="ReportView" >
+        <action
+            android:id="@+id/action_reportView_to_ratingFragment"
+            app:destination="@id/ratingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ratingFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.rating.RatingFragment"
+        android:label="fragment_rating"
+        tools:layout="@layout/fragment_rating" >
+        <argument
+            android:name="segmentId"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="speed"
+            app:argType="integer"
+            android:defaultValue="1" />
+    </fragment>
 </navigation>

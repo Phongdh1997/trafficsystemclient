@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.model.response;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReportResponse {
     @SerializedName("_id")
@@ -26,6 +27,18 @@ public class ReportResponse {
     @SerializedName("reputation")
     private float reputation;
 
+    public ReportResponse(){}
+
+    public ReportResponse(int id, ReportUser reportUser, int velocity, ArrayList<String> images, ArrayList<String> causes, String name, float reputation) {
+        this.velocity = velocity;
+        this.images = images;
+        this.causes = causes;
+        this.name = name;
+        this.reputation = reputation;
+        user = reportUser;
+        //this.id = id;
+    }
+
     public String getId() {
         return id;
     }
@@ -42,7 +55,7 @@ public class ReportResponse {
         return images;
     }
 
-    public ArrayList<String> getCauseId() {
+    public List<String> getCauseId() {
         return causes;
     }
 
