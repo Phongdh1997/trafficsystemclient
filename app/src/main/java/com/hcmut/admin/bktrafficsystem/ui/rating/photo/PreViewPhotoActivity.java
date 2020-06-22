@@ -30,10 +30,6 @@ public class PreViewPhotoActivity extends AppCompatActivity {
     private void setupViewPager() {
         ViewPager viewPager = findViewById(R.id.vpPhotos);
         preViewPhotoAdapter = new PreViewPhotoAdapter(getSupportFragmentManager());
-//        final ArrayList<String> list = new ArrayList<>();
-//        list.add("http://string-api.vinova.sg/uploads/posts/original/post_15555690720.jpg");
-//        list.add("http://string-api.vinova.sg/uploads/posts/original/post_15555615970.jpg");
-
         tvPosition.setText( "1 / " + images.size());
         preViewPhotoAdapter.setPhotos(images);
         viewPager.setAdapter(preViewPhotoAdapter);

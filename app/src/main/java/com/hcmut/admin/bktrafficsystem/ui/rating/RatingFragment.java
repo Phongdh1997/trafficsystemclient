@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.ui.rating;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.ReportRatingTest;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity;
 import com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment;
 
 import java.util.ArrayList;
@@ -126,9 +128,9 @@ public class RatingFragment extends Fragment {
                         break;
                     }
                     case R.id.img_list: {
-//                        Intent intent = new Intent(RatingActivity.this, PreViewPhotoActivity.class);
-//                        intent.putStringArrayListExtra("IMAGE", images);
-//                        startActivity(intent);
+                        Intent intent = new Intent(getActivity(), PreViewPhotoActivity.class);
+                        intent.putStringArrayListExtra("IMAGE", images);
+                        startActivity(intent);
                         break;
                     }
                 }
