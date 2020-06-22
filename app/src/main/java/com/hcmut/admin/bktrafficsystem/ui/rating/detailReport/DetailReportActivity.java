@@ -39,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@Deprecated
 public class DetailReportActivity extends AppCompatActivity implements View.OnClickListener, RatingDialogListener {
 
     LinearLayout img_list;
