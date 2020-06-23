@@ -7,21 +7,21 @@
     <item
         android:id="@+id/homeTab"
         android:color="@color/colorPrimary"
-        android:icon="@drawable/ic_position_rating"
-        android:title="Cloud Sync" />
+        android:icon="@drawable/ic_map_tab"
+        android:title="Bản đồ" />
     <item
         android:id="@+id/reportTab"
         android:color="@android:color/holo_green_dark"
-        android:icon="@drawable/ic_position_rating"
-        android:title="Chromecast" />
+        android:icon="@drawable/ic_report_tab"
+        android:title="Báo cáo" />
     <item
         android:id="@+id/viewReportTab"
         android:color="@android:color/holo_orange_dark"
-        android:icon="@drawable/ic_position_rating"
-        android:title="Mail" />
+        android:icon="@drawable/ic_view_report_tab"
+        android:title="Xem Báo cáo" />
     <item
-        android:id="@+id/action4"
+        android:id="@+id/setting"
         android:color="#FF5252"
-        android:icon="@drawable/ic_position_rating"
-        android:title="List" />
+        android:icon="@drawable/ic_settings_tab"
+        android:title="Cài đặt" />
 </menu>
