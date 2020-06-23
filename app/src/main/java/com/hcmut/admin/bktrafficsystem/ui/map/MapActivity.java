@@ -38,6 +38,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -459,7 +460,9 @@ public class MapActivity extends AppCompatActivity implements
             initLocationService();
         }
 
-        BottomNavigation bottomNavigation = findViewById(R.id.BottomNavigation);
+        FrameLayout flFragment = findViewById(R.id.flFragment);
+        BottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
+        flFragment.setPadding(0, 0, 0, bottomNavigation.getNavigationHeight());
         bottomNavigation.setMenuItemSelectionListener(new BottomNavigation.OnMenuItemSelectionListener() {
             @Override
             public void onMenuItemSelect(int menuItemId, int i1, boolean b) {

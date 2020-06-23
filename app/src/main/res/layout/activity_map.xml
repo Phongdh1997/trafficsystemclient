@@ -9,28 +9,28 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
+        android:id="@+id/flFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/CoordinatorLayout01"
+        android:layout_height="match_parent"
+        android:background="@null"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:context="com.hcmut.currentplacedetailsonmap.MapsActivityCurrentPlace" />
-
-    <fragment
-        android:id="@+id/mapFeature"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/CoordinatorLayout01"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:navGraph="@navigation/nav_graph"/>
+        app:layout_constraintEnd_toEndOf="parent">
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.hcmut.currentplacedetailsonmap.MapsActivityCurrentPlace" />
+        <fragment
+            android:id="@+id/mapFeature"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:navGraph="@navigation/nav_graph"/>
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ic_gps"
@@ -532,7 +532,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
         <it.sephiroth.android.library.bottomnavigation.BottomNavigation
-            android:id="@+id/BottomNavigation"
+            android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
