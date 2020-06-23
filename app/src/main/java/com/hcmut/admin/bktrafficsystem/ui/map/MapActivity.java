@@ -28,6 +28,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -58,6 +59,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.navigation.Navigation;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -138,6 +140,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -455,6 +458,32 @@ public class MapActivity extends AppCompatActivity implements
         if (gpsDataSetting) {
             initLocationService();
         }
+
+        BottomNavigation bottomNavigation = findViewById(R.id.BottomNavigation);
+        bottomNavigation.setMenuItemSelectionListener(new BottomNavigation.OnMenuItemSelectionListener() {
+            @Override
+            public void onMenuItemSelect(int menuItemId, int i1, boolean b) {
+                switch (menuItemId) {
+                    case R.id.homeTab:
+                        Toast.makeText(getApplicationContext(), "Home", Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(MapActivity.this, R.id.mapFeature).navigate(R.id.mapFeatureFragment);
+                        break;
+                    case R.id.reportTab:
+                        Toast.makeText(getApplicationContext(), "Report", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.viewReportTab:
+                        Navigation.findNavController(MapActivity.this, R.id.mapFeature).navigate(R.id.reportView);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onMenuItemReselect(int i, int i1, boolean b) {
+
+            }
+        });
     }
 
     private void postFastReport() {
