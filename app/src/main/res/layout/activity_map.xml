@@ -15,9 +15,22 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/featureLayout"
+        app:layout_constraintBottom_toTopOf="@+id/CoordinatorLayout01"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:context="com.hcmut.currentplacedetailsonmap.MapsActivityCurrentPlace" />
+
+    <fragment
+        android:id="@+id/mapFeature"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/CoordinatorLayout01"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:navGraph="@navigation/nav_graph"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ic_gps"
@@ -514,22 +527,10 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/CoordinatorLayout01"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-            <fragment
-                android:id="@+id/mapFeature"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toTopOf="@+id/featureLayout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navGraph="@navigation/nav_graph"/>
-
+        app:layout_constraintStart_toStartOf="parent">
         <it.sephiroth.android.library.bottomnavigation.BottomNavigation
             android:id="@+id/BottomNavigation"
             android:layout_width="match_parent"
