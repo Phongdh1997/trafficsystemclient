@@ -13,7 +13,7 @@ public class SearchPlaceHandler {
         this.context = context;
     }
 
-    public LatLng getLatLngFromAddressTextInput(String searchText) {
+    public static LatLng getLatLngFromAddressTextInput(Context context, String searchText) {
         Address address = MapUtil.getLatLngByAddressOrPlaceName(context, searchText);
         if (address != null) {
             return new LatLng(address.getLatitude(), address.getLongitude());
