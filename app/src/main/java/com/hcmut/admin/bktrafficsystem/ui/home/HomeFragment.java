@@ -49,6 +49,13 @@ public class HomeFragment extends Fragment {
 
     private MarkerCreating searchMarkerCreating;
 
+    private View.OnClickListener backButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            refreshSearch();
+        }
+    };
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -141,13 +148,15 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+
+        imgClearText.setOnClickListener(backButtonClickListener);
     }
 
     // TODO:
     private void onSearchResultReady(AutocompletePrediction placeResult) {
         CharSequence addressString = placeResult.getSecondaryText(null);
         txtSearchInput.setText(addressString);
-        toggleBackAndCancelView(View.VISIBLE);
+        handleBackAndClearView(true);
 
         // search place and set marker
         LatLng latLng = SearchPlaceHandler.getLatLngFromAddressTextInput(getContext(), addressString.toString());
@@ -158,9 +167,19 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void toggleBackAndCancelView(int state) {
-        imgBack.setVisibility(state);
-        imgClearText.setVisibility(state);
+    /**
+     * Handle Back and Clear button when have or haven't search result
+     */
+    public void handleBackAndClearView(boolean isHaveSearchResult) {
+        if (isHaveSearchResult) {
+            imgBack.setImageResource(R.drawable.ic_arrow_back);
+            imgClearText.setVisibility(View.VISIBLE);
+            imgBack.setOnClickListener(backButtonClickListener);
+        } else {
+            imgBack.setImageResource(R.drawable.ic_search);
+            imgClearText.setVisibility(View.GONE);
+            imgBack.setOnClickListener(null);
+        }
     }
 
     public void createMarker(LatLng latLng) {
@@ -169,5 +188,16 @@ public class HomeFragment extends Fragment {
         }
         searchMarkerCreating = new MarkerCreating(latLng);
         searchMarkerCreating.createMarker(getContext(), map, null, true);
+    }
+
+    /**
+     * refresh Search Place
+     */
+    public void refreshSearch() {
+        txtSearchInput.setText("");
+        if (searchMarkerCreating != null) {
+            searchMarkerCreating.removeMarker();
+        }
+        handleBackAndClearView(false);
     }
 }
