@@ -18,9 +18,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.MarkerCreating;
 import com.hcmut.admin.bktrafficsystem.model.SearchPlaceHandler;
+import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
 
@@ -43,18 +45,10 @@ public class HomeFragment extends Fragment {
 
     private GoogleMap map;
     private AutoCompleteTextView txtSearchInput;
-    private CardView customToolbar;
-    private ImageView imgClearText;
-    private ImageView imgBack;
+    private FloatingActionButton btnDirect;
+    private SearchInputView searchInputView;
 
     private MarkerCreating searchMarkerCreating;
-
-    private View.OnClickListener backButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            refreshSearch();
-        }
-    };
 
     public HomeFragment() {
         // Required empty public constructor
@@ -84,6 +78,8 @@ public class HomeFragment extends Fragment {
         if (searchPlaceResult != null) {
             onSearchResultReady(searchPlaceResult);
             searchPlaceResult = null;
+        } else {
+            searchInputView.updateView();
         }
     }
 
@@ -93,14 +89,6 @@ public class HomeFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (searchMarkerCreating != null) {
-            searchMarkerCreating.removeMarker();
         }
     }
 
@@ -129,15 +117,13 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        txtSearchInput = view.findViewById(R.id.search_edt);
-        customToolbar = view.findViewById(R.id.custom_toolbar);
-        imgBack = view.findViewById(R.id.imgBack);
-        imgClearText = view.findViewById(R.id.imgClearText);
+        btnDirect = view.findViewById(R.id.btnDirect);
+        searchInputView = view.findViewById(R.id.searchInputView);
         addEvents();
     }
 
     private void addEvents() {
-        txtSearchInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        searchInputView.setTxtSearchInputEvent(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
@@ -148,37 +134,34 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+        View.OnClickListener clearClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshSearch();
+            }
+        };
+        searchInputView.setImgClearTextEvent(clearClickListener);
+        searchInputView.setImgBackEvent(clearClickListener);
+        btnDirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        imgClearText.setOnClickListener(backButtonClickListener);
+            }
+        });
     }
 
     // TODO:
     private void onSearchResultReady(AutocompletePrediction placeResult) {
-        CharSequence addressString = placeResult.getSecondaryText(null);
-        txtSearchInput.setText(addressString);
-        handleBackAndClearView(true);
+        String addressString = placeResult.getSecondaryText(null).toString();
+        searchInputView.setTxtSearchInputText(addressString);
+        searchInputView.handleBackAndClearView(true);
 
         // search place and set marker
-        LatLng latLng = SearchPlaceHandler.getLatLngFromAddressTextInput(getContext(), addressString.toString());
+        LatLng latLng = SearchPlaceHandler.getLatLngFromAddressTextInput(getContext(), addressString);
         if (latLng != null) {
             createMarker(latLng);
         } else {
             Toast.makeText(getContext(), "Kết nối thất bại, vui lòng thử lại", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Handle Back and Clear button when have or haven't search result
-     */
-    public void handleBackAndClearView(boolean isHaveSearchResult) {
-        if (isHaveSearchResult) {
-            imgBack.setImageResource(R.drawable.ic_arrow_back);
-            imgClearText.setVisibility(View.VISIBLE);
-            imgBack.setOnClickListener(backButtonClickListener);
-        } else {
-            imgBack.setImageResource(R.drawable.ic_search);
-            imgClearText.setVisibility(View.GONE);
-            imgBack.setOnClickListener(null);
         }
     }
 
@@ -194,10 +177,9 @@ public class HomeFragment extends Fragment {
      * refresh Search Place
      */
     public void refreshSearch() {
-        txtSearchInput.setText("");
         if (searchMarkerCreating != null) {
             searchMarkerCreating.removeMarker();
         }
-        handleBackAndClearView(false);
+        searchInputView.handleBackAndClearView(false);
     }
 }
