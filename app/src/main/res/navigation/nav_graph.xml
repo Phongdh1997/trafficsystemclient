@@ -7,12 +7,15 @@
 
     <fragment
         android:id="@+id/mapFeatureFragment"
-        android:name="com.hcmut.admin.bktrafficsystem.ui.map.MapFeatureFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment"
         android:label="fragment_map_feature"
-        tools:layout="@layout/fragment_map_feature" >
+        tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_mapFeatureFragment_to_reportView"
             app:destination="@id/reportView" />
+        <action
+            android:id="@+id/action_mapFeatureFragment_to_searchPlaceFragment"
+            app:destination="@id/searchPlaceFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportView"
@@ -28,4 +31,8 @@
         android:label="fragment_rating"
         tools:layout="@layout/fragment_rating" >
     </fragment>
+    <fragment
+        android:id="@+id/searchPlaceFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment"
+        android:label="SearchPlaceFragment" />
 </navigation>

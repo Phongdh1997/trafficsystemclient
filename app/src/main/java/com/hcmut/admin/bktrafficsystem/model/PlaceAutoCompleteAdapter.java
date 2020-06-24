@@ -27,6 +27,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -38,6 +39,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.result.SearchPlaceAdapter;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -47,15 +49,17 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<AutocompletePredictio
 
     private ArrayList<AutocompletePrediction> mResultList;
     private PlacesClient placesClient;
+    private SearchPlaceAdapter searchPlaceAdapter;
 
-    public PlaceAutoCompleteAdapter(Context context, PlacesClient placesClient) {
+    public PlaceAutoCompleteAdapter(Context context, PlacesClient placesClient, @Nullable SearchPlaceAdapter searchPlaceAdapter) {
         super(context, R.layout.item_place_autocomplete, R.id.tvPlace);
         this.placesClient = placesClient;
+        this.searchPlaceAdapter = searchPlaceAdapter;
     }
 
     @Override
     public int getCount() {
-        return mResultList.size();
+        return 0;
     }
 
     @Override
@@ -116,10 +120,16 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<AutocompletePredictio
                 if (results != null && results.count > 0) {
                     // The API returned at least one result, update the data.
                     mResultList = (ArrayList<AutocompletePrediction>) results.values;
-                    notifyDataSetChanged();
+                    if (searchPlaceAdapter != null) {
+                        searchPlaceAdapter.setDataSet(mResultList);
+                    } else {
+                        notifyDataSetChanged();
+                    }
                 } else {
                     // The API did not return any results, invalidate the data set.
-                    notifyDataSetInvalidated();
+                    if (searchPlaceAdapter == null) {
+                        notifyDataSetInvalidated();
+                    }
                 }
             }
 

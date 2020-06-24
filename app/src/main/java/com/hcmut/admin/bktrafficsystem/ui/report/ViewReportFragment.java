@@ -160,12 +160,6 @@ public class ViewReportFragment extends Fragment {
         txtStatusColor = view.findViewById(R.id.txtStatusColor);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-
     private void addEvents(View view) {
         btnViewDetail.setOnClickListener(new View.OnClickListener() {
             @Override

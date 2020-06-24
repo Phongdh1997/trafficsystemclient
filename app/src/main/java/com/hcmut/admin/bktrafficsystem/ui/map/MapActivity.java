@@ -123,6 +123,7 @@ import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
 import com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationRequire;
 import com.hcmut.admin.bktrafficsystem.util.LocationUtil;
@@ -727,7 +728,7 @@ public class MapActivity extends AppCompatActivity implements
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.gg_api_key));
         }
-        mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, Places.createClient(this));
+        mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, Places.createClient(this), null);
 
         mSearchEdt.setAdapter(mPlaceAutoCompleteAdapter);
         mSearchEdt.setOnItemClickListener(mAutocompleteClickListener);
@@ -1974,6 +1975,14 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         //Toast.makeText(MapActivity.this,"On Back Press!!!",Toast.LENGTH_LONG).show();
+        //Navigation.findNavController(MapActivity.this, R.id.mapFeature)
+        androidx.fragment.app.Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mapFeature);
+        try {
+            OnBackPressCallback callback = (OnBackPressCallback) fragment.getChildFragmentManager().getFragments().get(0);
+            callback.onBackPress();
+            return;
+        } catch (Exception e) {}
+
         if (isInputFormOpen) {
             removeInputForm(inputFormFragment);
             btnOption.setVisibility(View.VISIBLE);
@@ -2159,6 +2168,10 @@ public class MapActivity extends AppCompatActivity implements
 
     public interface OnMapReadyListener {
         void onMapReady(GoogleMap googleMap);
+    }
+
+    public interface OnBackPressCallback {
+        void onBackPress();
     }
 }
 
