@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.ui.searchplace;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
+import com.hcmut.admin.bktrafficsystem.ui.direction.DirectionFragment;
 import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.result.SearchPlaceAdapter;
@@ -40,6 +42,8 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
     public static final String SEARCH_PLACE_RESULT = "search_place_result";
     public static final String CALLER = "caller";
     public static final String HOME_FRAGMENT_CALLER = "HOME_FRAGMENT";
+    public static final String BEGIN_DIRECTION_FRAGMENT_CALLER = "BEGIN_DIRECTION_FRAGMENT_CALLER";
+    public static final String END_DIRECTION_FRAGMENT_CALLER = "END_DIRECTION_FRAGMENT_CALLER";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -122,6 +126,13 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
                     switch (caller) {
                         case HOME_FRAGMENT_CALLER:
                             HomeFragment.searchPlaceResult = itemData;
+                            break;
+                        case BEGIN_DIRECTION_FRAGMENT_CALLER:
+                            DirectionFragment.beginSearchPlaceResult = itemData;
+                            break;
+                        case END_DIRECTION_FRAGMENT_CALLER:
+                            DirectionFragment.endSearchPlaceResult = itemData;
+                            break;
                     }
                 } catch (Exception e) {}
                 NavHostFragment.findNavController(SearchPlaceFragment.this).popBackStack();

@@ -145,7 +145,8 @@ public class HomeFragment extends Fragment {
         btnDirect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                NavHostFragment.findNavController(HomeFragment.this)
+                        .navigate(R.id.directionFragment);
             }
         });
     }

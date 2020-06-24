@@ -694,7 +694,7 @@ public class MapActivity extends AppCompatActivity implements
         tvDateTime = findViewById(R.id.tv_date_time);
         tv_speed = clReview.findViewById(R.id.tv_speed);
         tv_travel_types = findViewById(R.id.tv_travel_types);
-        btnBackToSearch = findViewById(R.id.ic_back);
+        btnBackToSearch = findViewById(R.id.btnBack);
         ctlToolbar = findViewById(R.id.ctlToolbar);
         interactBox.setOnClickListener(this);
         ctlToolbar.setOnClickListener(this);
@@ -1807,7 +1807,7 @@ public class MapActivity extends AppCompatActivity implements
                 datePickerDialog.show();
                 break;
             }
-            case R.id.ic_back:
+            case R.id.btnBack:
                 mSearchEdt.setText("");
                 clearDirectionMarkers();
                 mStartLocationEditext.setText("");

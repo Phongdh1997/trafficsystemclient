@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_mapFeatureFragment_to_searchPlaceFragment"
             app:destination="@id/searchPlaceFragment" />
+        <action
+            android:id="@+id/action_mapFeatureFragment_to_directionFragment"
+            app:destination="@id/directionFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportView"
@@ -35,4 +38,12 @@
         android:id="@+id/searchPlaceFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment"
         android:label="SearchPlaceFragment" />
+    <fragment
+        android:id="@+id/directionFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.direction.DirectionFragment"
+        android:label="DirectionFragment" >
+        <action
+            android:id="@+id/action_directionFragment_to_searchPlaceFragment"
+            app:destination="@id/searchPlaceFragment" />
+    </fragment>
 </navigation>
