@@ -23,8 +23,8 @@
                 android:id="@+id/icon_start"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:padding="3dp"
                 android:layout_marginTop="16dp"
+                android:padding="3dp"
                 app:layout_constraintStart_toStartOf="@+id/texttimduong"
                 app:layout_constraintTop_toBottomOf="@id/btnBack"
                 app:srcCompat="@drawable/ic_full_moon" />
@@ -48,41 +48,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/icon_more"
                 app:srcCompat="@drawable/ic_end_destination" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_travel_types"
-                android:layout_width="200dp"
-                android:layout_height="36dp"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="16dp"
-                android:layout_toStartOf="@id/tvUnit"
-                android:layout_toEndOf="@id/view"
-                android:background="@drawable/bg_rounded_input_field"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:text="Khoảng cách ngắn nhất"
-                android:textColor="@android:color/black"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ctlEnd"
-                tools:ignore="NotSibling" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/travel_types_spinner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:entries="@array/travel_types_array"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                app:layout_constraintEnd_toEndOf="@id/tv_travel_types"
-                app:layout_constraintStart_toStartOf="@id/tv_travel_types"
-                app:layout_constraintTop_toBottomOf="@id/tv_travel_types" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/ctlStart"
                 android:layout_width="0dp"
@@ -100,6 +65,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@null"
+                    android:focusable="true"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:maxLines="1"
@@ -109,7 +75,6 @@
                     android:paddingBottom="8dp"
                     android:textColor="#000000"
                     android:textSize="14sp"
-                    android:focusable="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -133,6 +98,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:maxLines="1"
@@ -142,8 +109,6 @@
                     android:paddingBottom="8dp"
                     android:textColor="#000000"
                     android:textSize="14sp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -172,7 +137,35 @@
                 app:layout_constraintStart_toEndOf="@id/btnBack"
                 app:layout_constraintTop_toTopOf="@id/btnBack" />
 
+            <Button
+                android:id="@+id/btnDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_default_button"
+                android:text="Khoảng cách"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btnTime"
+                app:layout_constraintTop_toBottomOf="@+id/ctlEnd" />
+
+            <Button
+                android:id="@+id/btnTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button_selected"
+                android:text="Thời gian"
+                android:textColor="@color/blue"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnDistance"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ctlEnd" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

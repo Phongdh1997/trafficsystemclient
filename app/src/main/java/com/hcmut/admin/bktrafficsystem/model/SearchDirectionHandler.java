@@ -2,12 +2,14 @@ package com.hcmut.admin.bktrafficsystem.model;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.location.Address;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.Coord;
 import com.hcmut.admin.bktrafficsystem.model.response.DirectRespose;
+import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,14 +23,19 @@ public class SearchDirectionHandler {
     public static final String TYPE_TIME = "time";
     public static final String TYPE_DISTANCE = "distance";
 
-    private Context context;
-
-    public SearchDirectionHandler(Context context) {
-        this.context = context;
+    public static void direct(Context context, String beginAddressString, String endAddressString, boolean isTimeType, DirectResultCallback listener) {
+        Address beginAddress = MapUtil.getLatLngByAddressOrPlaceName(context, beginAddressString);
+        Address endAddress = MapUtil.getLatLngByAddressOrPlaceName(context, endAddressString);
+        if (beginAddress != null && endAddress != null) {
+            LatLng beginLatLng = new LatLng(beginAddress.getLatitude(), beginAddress.getLongitude());
+            LatLng endLatLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
+            direct(context, beginLatLng, endLatLng, (isTimeType) ? TYPE_TIME : TYPE_DISTANCE, listener);
+        }
     }
 
-    public void direct(LatLng startPoint, LatLng endPoint, String type, @NotNull final DirectResultCallback listener) {
+    private static void direct(Context context, LatLng startPoint, LatLng endPoint, String type, final DirectResultCallback listener) {
         final ProgressDialog progressDialog = ProgressDialog.show(context, "", "Đang tìm đường..!", true);
+
         CallApi.createService()
                 .getFindDirect(startPoint.latitude, startPoint.longitude, endPoint.latitude, endPoint.longitude, type)
                 .enqueue(new Callback<BaseResponse<List<DirectRespose>>>() {

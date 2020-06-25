@@ -25,6 +25,7 @@ public class MarkerCreating {
     }
 
     public void createMarker(Context context, GoogleMap googleMap, Integer iconSrc, boolean isMoveToCurrentLocation) {
+        if (googleMap == null) return;
         if (marker != null) {
             marker.remove();
         }
