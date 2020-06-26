@@ -37,7 +37,11 @@
     <fragment
         android:id="@+id/searchPlaceFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment"
-        android:label="SearchPlaceFragment" />
+        android:label="SearchPlaceFragment" >
+        <action
+            android:id="@+id/action_searchPlaceFragment_to_pickPointOnMapFragment"
+            app:destination="@id/pickPointOnMapFragment" />
+    </fragment>
     <fragment
         android:id="@+id/directionFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.direction.DirectionFragment"
@@ -46,4 +50,8 @@
             android:id="@+id/action_directionFragment_to_searchPlaceFragment"
             app:destination="@id/searchPlaceFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/pickPointOnMapFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.searchplace.PickPointOnMapFragment"
+        android:label="PickPointOnMapFragment" />
 </navigation>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
     private RecyclerView rcSearchPlaceResult;
     private SearchPlaceAdapter searchPlaceAdapter;
     private ImageView imgBack;
+    private Button btnChooseMapPoint;
 
     public SearchPlaceFragment() {
         // Required empty public constructor
@@ -98,6 +100,7 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
         super.onViewCreated(view, savedInstanceState);
 
         imgBack = view.findViewById(R.id.imgBack);
+        btnChooseMapPoint = view.findViewById(R.id.btnChooseMapPoint);
 
         rcSearchPlaceResult = view.findViewById(R.id.rcSearchPlaceResult);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
@@ -135,6 +138,7 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
                             break;
                     }
                 } catch (Exception e) {}
+                MapActivity.hideKeyboard(getActivity());
                 NavHostFragment.findNavController(SearchPlaceFragment.this).popBackStack();
             }
         });
@@ -142,7 +146,16 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MapActivity.hideKeyboard(getActivity());
                 NavHostFragment.findNavController(SearchPlaceFragment.this).popBackStack();
+            }
+        });
+
+        btnChooseMapPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapActivity.hideKeyboard(getActivity());
+                NavHostFragment.findNavController(SearchPlaceFragment.this).navigate(R.id.pickPointOnMapFragment);
             }
         });
     }

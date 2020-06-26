@@ -10,6 +10,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn một điểm trên bản đồ"
+        android:id="@+id/btnChooseMapPoint"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cv_toolbar"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcSearchPlaceResult"
         android:layout_width="match_parent"
@@ -21,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/btnChooseMapPoint" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_toolbar"
