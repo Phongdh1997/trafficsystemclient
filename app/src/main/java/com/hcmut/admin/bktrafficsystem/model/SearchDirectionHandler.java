@@ -23,14 +23,18 @@ public class SearchDirectionHandler {
     public static final String TYPE_TIME = "time";
     public static final String TYPE_DISTANCE = "distance";
 
-    public static void direct(Context context, String beginAddressString, String endAddressString, boolean isTimeType, DirectResultCallback listener) {
-        Address beginAddress = MapUtil.getLatLngByAddressOrPlaceName(context, beginAddressString);
-        Address endAddress = MapUtil.getLatLngByAddressOrPlaceName(context, endAddressString);
-        if (beginAddress != null && endAddress != null) {
-            LatLng beginLatLng = new LatLng(beginAddress.getLatitude(), beginAddress.getLongitude());
-            LatLng endLatLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
-            direct(context, beginLatLng, endLatLng, (isTimeType) ? TYPE_TIME : TYPE_DISTANCE, listener);
+    public static void direct(Context context, LatLng startPoint, LatLng endPoint, boolean isTimeType, DirectResultCallback listener) {
+        if (startPoint != null && endPoint != null) {
+            direct(context, startPoint, endPoint, (isTimeType) ? TYPE_TIME : TYPE_DISTANCE, listener);
         }
+    }
+
+    public static LatLng addressStringToLatLng(Context context, String beginAddressString) {
+        Address address = MapUtil.getLatLngByAddressOrPlaceName(context, beginAddressString);
+        if (address != null) {
+            return new LatLng(address.getLatitude(), address.getLongitude());
+        }
+        return null;
     }
 
     private static void direct(Context context, LatLng startPoint, LatLng endPoint, String type, final DirectResultCallback listener) {

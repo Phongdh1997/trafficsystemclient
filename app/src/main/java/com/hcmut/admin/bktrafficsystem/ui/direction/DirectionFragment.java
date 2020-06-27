@@ -32,6 +32,8 @@ import com.hcmut.admin.bktrafficsystem.model.response.Coord;
 import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ import java.util.List;
  * Use the {@link DirectionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DirectionFragment extends Fragment {
+public class DirectionFragment extends Fragment implements SearchResultCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -58,8 +60,13 @@ public class DirectionFragment extends Fragment {
     private Button btnTime;
     private boolean isTimeDirectionSelected = true;
 
-    public static AutocompletePrediction beginSearchPlaceResult;
-    public static AutocompletePrediction endSearchPlaceResult;
+    private AutocompletePrediction beginSearchPlaceResult;
+    private AutocompletePrediction endSearchPlaceResult;
+    private LatLng beginSelectedPoint;
+    private LatLng endSelectedPoint;
+    private boolean isHaveSearchResult = false;
+    private LatLng startPoint = null;
+    private LatLng endPoint = null;
 
     private MarkerCreating beginMarkerCreating;
     private MarkerCreating endMarkerCreating;
@@ -101,25 +108,40 @@ public class DirectionFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateTimeAndDistanceView();
-        handleSearchResult();
+        if (isHaveSearchResult) {
+            handleSearchResult();
+        }
     }
 
     private void handleSearchResult() {
+        String temp;
         if (beginSearchPlaceResult != null) {
-            txtBeginAddress.setText(beginSearchPlaceResult.getSecondaryText(null));
+            temp = beginSearchPlaceResult.getSecondaryText(null).toString();
+            txtBeginAddress.setText(temp);
+            startPoint = SearchDirectionHandler.addressStringToLatLng(getContext(), temp);
         }
         if (endSearchPlaceResult != null) {
-            txtEndAddress.setText(endSearchPlaceResult.getSecondaryText(null));
+            temp = endSearchPlaceResult.getSecondaryText(null).toString();
+            txtEndAddress.setText(temp);
+            endPoint = SearchDirectionHandler.addressStringToLatLng(getContext(), temp);
         }
-        performDirection();
+        if (beginSelectedPoint != null) {
+            txtBeginAddress.setText("Ghim vị trí");
+            startPoint = beginSelectedPoint;
+        }
+        if (endSelectedPoint != null) {
+            txtEndAddress.setText("Ghim vị trí");
+            endPoint = endSelectedPoint;
+        }
+        performDirection(startPoint, endPoint);
     }
 
-    private void performDirection() {
-        if (isCouldDirect()) {
+    private void performDirection(LatLng startPoint, LatLng endPoint) {
+        if (startPoint != null && endPoint != null) {
             SearchDirectionHandler.direct(
                     getContext(),
-                    beginSearchPlaceResult.getSecondaryText(null).toString(),
-                    endSearchPlaceResult.getSecondaryText(null).toString(),
+                    startPoint,
+                    endPoint,
                     isTimeDirectionSelected,
                     new SearchDirectionHandler.DirectResultCallback() {
                         @Override
@@ -135,6 +157,11 @@ public class DirectionFragment extends Fragment {
                         }
                     });
         }
+        isHaveSearchResult = false;
+        beginSearchPlaceResult = null;
+        endSearchPlaceResult = null;
+        beginSelectedPoint = null;
+        endSelectedPoint = null;
     }
 
     private boolean isCouldDirect() {
@@ -181,7 +208,7 @@ public class DirectionFragment extends Fragment {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    navigateToSearchFragment(SearchPlaceFragment.BEGIN_DIRECTION_FRAGMENT_CALLER);
+                    navigateToSearchFragment(SearchPlaceResultHandler.BEGIN_SEARCH);
                 }
             }
         });
@@ -189,7 +216,7 @@ public class DirectionFragment extends Fragment {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    navigateToSearchFragment(SearchPlaceFragment.END_DIRECTION_FRAGMENT_CALLER);
+                    navigateToSearchFragment(SearchPlaceResultHandler.END_SEARCH);
                 }
             }
         });
@@ -219,7 +246,7 @@ public class DirectionFragment extends Fragment {
         if(!isTimeDirectionSelected) {
             isTimeDirectionSelected = true;
             updateTimeAndDistanceView();
-            performDirection();
+            performDirection(startPoint, endPoint);
         }
     }
 
@@ -227,7 +254,7 @@ public class DirectionFragment extends Fragment {
         if (isTimeDirectionSelected) {
             isTimeDirectionSelected = false;
             updateTimeAndDistanceView();
-            performDirection();
+            performDirection(startPoint, endPoint);
         }
     }
 
@@ -248,9 +275,11 @@ public class DirectionFragment extends Fragment {
         }
     }
 
-    private void navigateToSearchFragment(String caller) {
+    private void navigateToSearchFragment(int type) {
+        SearchPlaceResultHandler.getInstance()
+                .addSearchPlaceResultListener(DirectionFragment.this);
         Bundle bundle = new Bundle();
-        bundle.putString(SearchPlaceFragment.CALLER, caller);
+        bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, type);
         NavHostFragment.findNavController(DirectionFragment.this)
                 .navigate(R.id.searchPlaceFragment, bundle);
     }
@@ -306,5 +335,34 @@ public class DirectionFragment extends Fragment {
         if (endMarkerCreating != null) {
             endMarkerCreating.removeMarker();
         }
+    }
+
+    @Override
+    public void onSearchResultReady(AutocompletePrediction result) {
+
+    }
+
+    @Override
+    public void onBeginSearchPlaceResultReady(AutocompletePrediction result) {
+        beginSearchPlaceResult = result;
+        isHaveSearchResult = true;
+    }
+
+    @Override
+    public void onEndSearchPlaceResultReady(AutocompletePrediction result) {
+        endSearchPlaceResult = result;
+        isHaveSearchResult = true;
+    }
+
+    @Override
+    public void onSelectedBeginSearchPlaceResultReady(LatLng result) {
+        beginSelectedPoint = result;
+        isHaveSearchResult = true;
+    }
+
+    @Override
+    public void onSelectedEndSearchPlaceResultReady(LatLng result) {
+        endSelectedPoint = result;
+        isHaveSearchResult = true;
     }
 }

@@ -25,19 +25,22 @@ import com.hcmut.admin.bktrafficsystem.model.SearchPlaceHandler;
 import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SearchResultCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    public static AutocompletePrediction searchPlaceResult;
+    public AutocompletePrediction searchPlaceResult;
+    public boolean isHaveSearchResult = false;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -75,12 +78,27 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (searchPlaceResult != null) {
-            onSearchResultReady(searchPlaceResult);
-            searchPlaceResult = null;
+        if (isHaveSearchResult && searchPlaceResult != null) {
+            handleSearchResult();
         } else {
             searchInputView.updateView();
         }
+    }
+
+    private void handleSearchResult() {
+        String addressString = searchPlaceResult.getSecondaryText(null).toString();
+        searchInputView.setTxtSearchInputText(addressString);
+        searchInputView.handleBackAndClearView(true);
+
+        // search place and set marker
+        LatLng latLng = SearchPlaceHandler.getLatLngFromAddressTextInput(getContext(), addressString);
+        if (latLng != null) {
+            createMarker(latLng);
+        } else {
+            Toast.makeText(getContext(), "Kết nối thất bại, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+        }
+        searchPlaceResult = null;
+        isHaveSearchResult = false;
     }
 
     @Override
@@ -127,8 +145,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
+                    SearchPlaceResultHandler.getInstance()
+                            .addSearchPlaceResultListener(HomeFragment.this);
                     Bundle bundle = new Bundle();
-                    bundle.putString(SearchPlaceFragment.CALLER, SearchPlaceFragment.HOME_FRAGMENT_CALLER);
+                    bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.NORMAL_SEARCH);
                     NavHostFragment.findNavController(HomeFragment.this)
                             .navigate(R.id.searchPlaceFragment, bundle);
                 }
@@ -151,21 +171,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // TODO:
-    private void onSearchResultReady(AutocompletePrediction placeResult) {
-        String addressString = placeResult.getSecondaryText(null).toString();
-        searchInputView.setTxtSearchInputText(addressString);
-        searchInputView.handleBackAndClearView(true);
-
-        // search place and set marker
-        LatLng latLng = SearchPlaceHandler.getLatLngFromAddressTextInput(getContext(), addressString);
-        if (latLng != null) {
-            createMarker(latLng);
-        } else {
-            Toast.makeText(getContext(), "Kết nối thất bại, vui lòng thử lại", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void createMarker(LatLng latLng) {
         if (searchMarkerCreating != null) {
             searchMarkerCreating.removeMarker();
@@ -182,5 +187,31 @@ public class HomeFragment extends Fragment {
             searchMarkerCreating.removeMarker();
         }
         searchInputView.handleBackAndClearView(false);
+    }
+
+    @Override
+    public void onSearchResultReady(AutocompletePrediction placeResult) {
+        searchPlaceResult = placeResult;
+        isHaveSearchResult = true;
+    }
+
+    @Override
+    public void onBeginSearchPlaceResultReady(AutocompletePrediction result) {
+
+    }
+
+    @Override
+    public void onEndSearchPlaceResultReady(AutocompletePrediction result) {
+
+    }
+
+    @Override
+    public void onSelectedBeginSearchPlaceResultReady(LatLng result) {
+
+    }
+
+    @Override
+    public void onSelectedEndSearchPlaceResultReady(LatLng result) {
+
     }
 }

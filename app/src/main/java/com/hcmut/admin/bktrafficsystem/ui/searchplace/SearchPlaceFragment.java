@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
@@ -25,6 +26,8 @@ import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
 import com.hcmut.admin.bktrafficsystem.ui.direction.DirectionFragment;
 import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
+import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.result.SearchPlaceAdapter;
 
 import java.io.Serializable;
@@ -34,7 +37,9 @@ import java.io.Serializable;
  * Use the {@link SearchPlaceFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackPressCallback {
+public class SearchPlaceFragment extends Fragment implements
+        MapActivity.OnBackPressCallback,
+        SearchResultCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,6 +50,7 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
     public static final String HOME_FRAGMENT_CALLER = "HOME_FRAGMENT";
     public static final String BEGIN_DIRECTION_FRAGMENT_CALLER = "BEGIN_DIRECTION_FRAGMENT_CALLER";
     public static final String END_DIRECTION_FRAGMENT_CALLER = "END_DIRECTION_FRAGMENT_CALLER";
+    public static final String SEARCH_PLACE_FRAGMENT_CALLER = "SEARCH_PLACE_FRAGMENT_CALLER";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -56,6 +62,9 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
     private SearchPlaceAdapter searchPlaceAdapter;
     private ImageView imgBack;
     private Button btnChooseMapPoint;
+
+    private LatLng selectedLatLngOnScreen;
+    private boolean isHaveResult = false;
 
     public SearchPlaceFragment() {
         // Required empty public constructor
@@ -86,6 +95,25 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isHaveResult) {
+            try {
+                int type = getArguments().getInt(SearchPlaceResultHandler.SEARCH_TYPE, -1);
+                SearchPlaceResultHandler
+                        .getInstance()
+                        .dispatchSearchPlaceResult(
+                                SearchPlaceResultHandler.convertToSelectedPointSearchType(type),
+                                null,
+                                selectedLatLngOnScreen);
+            } catch (Exception e) {}
+            NavHostFragment.findNavController(SearchPlaceFragment.this).popBackStack();
+        }
+        isHaveResult = false;
+        selectedLatLngOnScreen = null;
     }
 
     @Override
@@ -125,19 +153,11 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
             public void onItemClicked(AutocompletePrediction itemData) {
                 // Toast.makeText(view.getContext(), itemData.getPrimaryText(null), Toast.LENGTH_SHORT).show();
                 try {
-                    String caller = getArguments().getString(SearchPlaceFragment.CALLER);
-                    switch (caller) {
-                        case HOME_FRAGMENT_CALLER:
-                            HomeFragment.searchPlaceResult = itemData;
-                            break;
-                        case BEGIN_DIRECTION_FRAGMENT_CALLER:
-                            DirectionFragment.beginSearchPlaceResult = itemData;
-                            break;
-                        case END_DIRECTION_FRAGMENT_CALLER:
-                            DirectionFragment.endSearchPlaceResult = itemData;
-                            break;
-                    }
+                    int type = getArguments().getInt(SearchPlaceResultHandler.SEARCH_TYPE, -1);
+                    SearchPlaceResultHandler.getInstance()
+                            .dispatchSearchPlaceResult(type, itemData, null);
                 } catch (Exception e) {}
+
                 MapActivity.hideKeyboard(getActivity());
                 NavHostFragment.findNavController(SearchPlaceFragment.this).popBackStack();
             }
@@ -155,7 +175,10 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
             @Override
             public void onClick(View view) {
                 MapActivity.hideKeyboard(getActivity());
-                NavHostFragment.findNavController(SearchPlaceFragment.this).navigate(R.id.pickPointOnMapFragment);
+                SearchPlaceResultHandler.getInstance().addSearchPlaceResultListener(SearchPlaceFragment.this);
+                Bundle bundle = new Bundle();
+                bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.SELECTED_BEGIN_SEARCH);
+                NavHostFragment.findNavController(SearchPlaceFragment.this).navigate(R.id.pickPointOnMapFragment, bundle);
             }
         });
     }
@@ -163,5 +186,31 @@ public class SearchPlaceFragment extends Fragment implements MapActivity.OnBackP
     @Override
     public void onBackPress() {
         NavHostFragment.findNavController(SearchPlaceFragment.this).popBackStack();
+    }
+
+    @Override
+    public void onSearchResultReady(AutocompletePrediction result) {
+
+    }
+
+    @Override
+    public void onBeginSearchPlaceResultReady(AutocompletePrediction result) {
+
+    }
+
+    @Override
+    public void onEndSearchPlaceResultReady(AutocompletePrediction result) {
+
+    }
+
+    @Override
+    public void onSelectedBeginSearchPlaceResultReady(LatLng result) {
+        selectedLatLngOnScreen = result;
+        isHaveResult = true;
+    }
+
+    @Override
+    public void onSelectedEndSearchPlaceResultReady(LatLng result) {
+
     }
 }
