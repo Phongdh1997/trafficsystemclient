@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/report_tab_graph"
+    app:startDestination="@id/reportSendingFragment">
+
+    <fragment
+        android:id="@+id/reportSendingFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment"
+        android:label="fragment_report_sending"
+        tools:layout="@layout/fragment_report_sending" />
+</navigation>

@@ -24,12 +24,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context="com.hcmut.currentplacedetailsonmap.MapsActivityCurrentPlace" />
-        <fragment
-            android:id="@+id/mapFeature"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:navGraph="@navigation/nav_graph"/>
+            android:visibility="gone"
+            android:id="@+id/homeTabWrapper">
+            <fragment
+                android:id="@+id/homeFragmentTab"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navGraph="@navigation/home_tab_graph"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/reportTabWrapper">
+            <fragment
+                android:id="@+id/reportFragmentTab"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navGraph="@navigation/report_tab_graph"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/viewReportTabWrapper">
+            <fragment
+                android:id="@+id/viewReportFragmentTab"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navGraph="@navigation/view_report_tab_graph"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/settingTabWrapper">
+
+        </FrameLayout>
     </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

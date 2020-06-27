@@ -57,6 +57,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.Navigation;
@@ -366,6 +367,11 @@ public class MapActivity extends AppCompatActivity implements
     private ImageButton btnMore;
     private LinearLayout layoutMoreFeature;
 
+    private View homeTabWrapper;
+    private View reportTabWrapper;
+    private View viewReportTabWrapper;
+    private BottomTab bottomTab;
+
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -384,6 +390,15 @@ public class MapActivity extends AppCompatActivity implements
      * Init probe module variable to use
      */
     private void initProbeModuleVariable() {
+        homeTabWrapper = findViewById(R.id.homeTabWrapper);
+        reportTabWrapper = findViewById(R.id.reportTabWrapper);
+        viewReportTabWrapper = findViewById(R.id.viewReportTabWrapper);
+        bottomTab = new BottomTab.Builder(R.id.homeTabId)
+                .addTab(R.id.reportTabId, reportTabWrapper)
+                .addTab(R.id.homeTabId, homeTabWrapper)
+                .addTab(R.id.viewReportTabId, viewReportTabWrapper)
+                .build();
+
         appForgroundServiceManager = new ProbeForgroundServiceManager(this);
 
         appFeaturePopup = new AppFeaturePopup(this);
@@ -466,15 +481,17 @@ public class MapActivity extends AppCompatActivity implements
             @Override
             public void onMenuItemSelect(int menuItemId, int i1, boolean b) {
                 switch (menuItemId) {
-                    case R.id.homeTab:
-                        Toast.makeText(getApplicationContext(), "Home", Toast.LENGTH_SHORT).show();
-                        Navigation.findNavController(MapActivity.this, R.id.mapFeature).navigate(R.id.mapFeatureFragment);
+                    case R.id.homeTabId:
+                        bottomTab.showTab(R.id.homeTabId);
                         break;
-                    case R.id.reportTab:
-                        Toast.makeText(getApplicationContext(), "Report", Toast.LENGTH_SHORT).show();
+                    case R.id.reportTabId:
+                        bottomTab.showTab(R.id.reportTabId);
                         break;
-                    case R.id.viewReportTab:
-                        Navigation.findNavController(MapActivity.this, R.id.mapFeature).navigate(R.id.reportView);
+                    case R.id.viewReportTabId:
+                        bottomTab.showTab(R.id.viewReportTabId);
+                        break;
+                    case R.id.settingTabId:
+                        Toast.makeText(getApplicationContext(), "Setting", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
@@ -1973,9 +1990,7 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        //Toast.makeText(MapActivity.this,"On Back Press!!!",Toast.LENGTH_LONG).show();
-        //Navigation.findNavController(MapActivity.this, R.id.mapFeature)
-        androidx.fragment.app.Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mapFeature);
+        androidx.fragment.app.Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.homeFragmentTab);
         try {
             OnBackPressCallback callback = (OnBackPressCallback) fragment.getChildFragmentManager().getFragments().get(0);
             callback.onBackPress();
