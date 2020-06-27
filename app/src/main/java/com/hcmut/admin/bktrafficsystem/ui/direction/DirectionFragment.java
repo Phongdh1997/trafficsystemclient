@@ -280,6 +280,7 @@ public class DirectionFragment extends Fragment implements SearchResultCallback 
                 .addSearchPlaceResultListener(DirectionFragment.this);
         Bundle bundle = new Bundle();
         bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, type);
+        bundle.putBoolean(SearchPlaceFragment.CHOOSE_MAP_POINT, true);
         NavHostFragment.findNavController(DirectionFragment.this)
                 .navigate(R.id.searchPlaceFragment, bundle);
     }

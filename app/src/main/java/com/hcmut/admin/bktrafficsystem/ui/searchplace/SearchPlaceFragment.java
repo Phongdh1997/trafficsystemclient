@@ -45,12 +45,7 @@ public class SearchPlaceFragment extends Fragment implements
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    public static final String SEARCH_PLACE_RESULT = "search_place_result";
-    public static final String CALLER = "caller";
-    public static final String HOME_FRAGMENT_CALLER = "HOME_FRAGMENT";
-    public static final String BEGIN_DIRECTION_FRAGMENT_CALLER = "BEGIN_DIRECTION_FRAGMENT_CALLER";
-    public static final String END_DIRECTION_FRAGMENT_CALLER = "END_DIRECTION_FRAGMENT_CALLER";
-    public static final String SEARCH_PLACE_FRAGMENT_CALLER = "SEARCH_PLACE_FRAGMENT_CALLER";
+    public static final String CHOOSE_MAP_POINT = "CHOOSE_MAP_POINT";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -129,6 +124,11 @@ public class SearchPlaceFragment extends Fragment implements
 
         imgBack = view.findViewById(R.id.imgBack);
         btnChooseMapPoint = view.findViewById(R.id.btnChooseMapPoint);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            boolean isShowChooseMapPoint = bundle.getBoolean(CHOOSE_MAP_POINT, false);
+            btnChooseMapPoint.setVisibility(isShowChooseMapPoint ? View.VISIBLE : View.GONE);
+        }
 
         rcSearchPlaceResult = view.findViewById(R.id.rcSearchPlaceResult);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());

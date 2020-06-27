@@ -21,8 +21,6 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
 
-import static com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment.SEARCH_PLACE_FRAGMENT_CALLER;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PickPointOnMapFragment#newInstance} factory method to
