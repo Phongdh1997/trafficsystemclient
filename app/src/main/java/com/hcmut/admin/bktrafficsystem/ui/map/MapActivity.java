@@ -1990,12 +1990,18 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        androidx.fragment.app.Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.homeFragmentTab);
-        try {
-            OnBackPressCallback callback = (OnBackPressCallback) fragment.getChildFragmentManager().getFragments().get(0);
-            callback.onBackPress();
+        androidx.fragment.app.Fragment homeFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.homeFragmentTab);
+        androidx.fragment.app.Fragment reportFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.reportFragmentTab);
+        androidx.fragment.app.Fragment viewReportFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.viewReportFragmentTab);
+
+        if (onNavigationBackPress(homeFragment) ||
+                onNavigationBackPress(reportFragment) ||
+                onNavigationBackPress(viewReportFragment)) {
             return;
-        } catch (Exception e) {}
+        }
 
         if (isInputFormOpen) {
             removeInputForm(inputFormFragment);
@@ -2021,6 +2027,17 @@ public class MapActivity extends AppCompatActivity implements
                 Toast.makeText(this, "Nhấn lần nữa để thoát!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private boolean onNavigationBackPress(androidx.fragment.app.Fragment fragment) {
+        try {
+            OnBackPressCallback callback = (OnBackPressCallback) fragment
+                    .getChildFragmentManager()
+                    .getFragments().get(0);
+            callback.onBackPress();
+            return true;
+        } catch (Exception e) {}
+        return false;
     }
 
     private void finDirect(LatLng start, LatLng end) {
