@@ -33,7 +33,8 @@ import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallb
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment implements SearchResultCallback {
+public class HomeFragment extends Fragment
+        implements SearchResultCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

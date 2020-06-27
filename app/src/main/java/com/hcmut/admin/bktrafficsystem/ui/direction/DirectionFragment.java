@@ -43,7 +43,9 @@ import java.util.List;
  * Use the {@link DirectionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DirectionFragment extends Fragment implements SearchResultCallback {
+public class DirectionFragment extends Fragment
+        implements SearchResultCallback,
+        MapActivity.OnBackPressCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -365,5 +367,10 @@ public class DirectionFragment extends Fragment implements SearchResultCallback 
     public void onSelectedEndSearchPlaceResultReady(LatLng result) {
         endSelectedPoint = result;
         isHaveSearchResult = true;
+    }
+
+    @Override
+    public void onBackPress() {
+        NavHostFragment.findNavController(DirectionFragment.this).popBackStack();
     }
 }
