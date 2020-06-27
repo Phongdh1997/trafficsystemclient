@@ -126,6 +126,7 @@ import com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationRequire;
 import com.hcmut.admin.bktrafficsystem.util.LocationUtil;
+import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.hcmut.admin.bktrafficsystem.util.Sound;
 import com.hcmut.admin.bktrafficsystem.util.TimeUtil;
@@ -203,7 +204,7 @@ public class MapActivity extends AppCompatActivity implements
     private String fullOriginAddress = "";
     private String fullNameAddress = "";
     private Date pressTime;
-    AndroidExt androidExt = new AndroidExt();
+    public static AndroidExt androidExt = new AndroidExt();
 
 
     //widgets
@@ -506,65 +507,7 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     private void postFastReport() {
-        if (checkGPSTurnOn()) {
-            LocationCollectionManager.getInstance(getApplicationContext())
-                    .getCurrentLocation(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(final Location location) {
-                    if (location != null) {
-                        final String address = LocationUtil.getAddressByLatLng(MapActivity.this,
-                                new LatLng(location.getLatitude(), location.getLongitude()));
-                        if (address.length() < 1) {
-                            androidExt.showErrorDialog(
-                                    MapActivity.this,
-                                    "Không thể lấy được địa chỉ người dùng, Vui lòng kiểm tra lại đường truyền!");
-                            return;
-                        }
-                        androidExt.comfirmPostFastReport(
-                                MapActivity.this,
-                                address,
-                                new ClickDialogListener.Yes() {
-                                    @Override
-                                    public void onCLickYes() {
-                                        FastReport fastReport = new FastReport();
-                                        fastReport.address = address;
-                                        fastReport.distance = 200;
-                                        fastReport.personSharing = new FastReport.PersonSharing();
-                                        fastReport.speed = 15;
-                                        fastReport.latitude = location.getLatitude();
-                                        fastReport.longitude = location.getLongitude();
-                                        CallApi.getBkTrafficService().postFastRecord(fastReport)
-                                                .enqueue(new Callback<BaseResponse<Object>>() {
-                                                    @Override
-                                                    public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
-                                                        try {
-                                                            if (response.body().getCode() == 201) {
-                                                                androidExt.showSuccess(
-                                                                        MapActivity.this,
-                                                                        "Gửi cảnh báo thành công");
-                                                            }
-                                                        } catch (Exception e) {
-                                                            androidExt.showErrorDialog(
-                                                                    MapActivity.this,
-                                                                    "Gửi cảnh báo Thất bại, Xin kiểm tra lại kết nối mạng");
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
-                                                        androidExt.showErrorDialog(
-                                                                MapActivity.this,
-                                                                "Gửi cảnh báo Thất bại, Xin kiểm tra lại kết nối mạng");
-                                                    }
-                                                });
-                                    }
-                                });
-                    } else {
-                        androidExt.showErrorDialog(MapActivity.this,"Không thể lấy được vị trí người dùng, Vui lòng thử lại!");
-                    }
-                }
-            });
-        }
+        FastReport.postFastReport(MapActivity.this, androidExt);
     }
 
     private void toggleMoreFeatureOption() {
@@ -1510,24 +1453,6 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
-    public boolean checkGPSTurnOn () {
-        LocationCollectionManager locationCollectionManager = LocationCollectionManager.getInstance(getApplicationContext());
-        if (!locationCollectionManager.isGPSEnabled()) {
-            androidExt.showDialog(
-                    MapActivity.this,
-                    "Yêu cầu truy cập vị trí",
-                    "Vui lòng bật định vị vị trí để sử dụng chức năng này!",
-                    new ClickDialogListener.Yes() {
-                        @Override
-                        public void onCLickYes() {
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    });
-            return false;
-        }
-        return true;
-    }
-
   /*  public void showKeyboard(Activity activity){
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
@@ -2181,6 +2106,7 @@ public class MapActivity extends AppCompatActivity implements
             toggleNotify(pathId, "false");
         }
         mMap = null;
+        androidExt = null;
         super.onDestroy();
     }
 

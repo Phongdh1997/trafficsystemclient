@@ -40,15 +40,14 @@ public class HomeFragment extends Fragment
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    public AutocompletePrediction searchPlaceResult;
-    public boolean isHaveSearchResult = false;
+    private AutocompletePrediction searchPlaceResult;
+    private boolean isHaveSearchResult = false;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private GoogleMap map;
-    private AutoCompleteTextView txtSearchInput;
     private FloatingActionButton btnDirect;
     private SearchInputView searchInputView;
 
@@ -155,14 +154,18 @@ public class HomeFragment extends Fragment
                 }
             }
         });
-        View.OnClickListener clearClickListener = new View.OnClickListener() {
+        searchInputView.setImgClearTextEvent(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 refreshSearch();
             }
-        };
-        searchInputView.setImgClearTextEvent(clearClickListener);
-        searchInputView.setImgBackEvent(clearClickListener);
+        });
+        searchInputView.setImgBackEvent(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshSearch();
+            }
+        });
         btnDirect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

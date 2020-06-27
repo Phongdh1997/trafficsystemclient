@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -10,12 +12,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
+import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Cell;
 import com.hcmut.admin.bktrafficsystem.model.PlaceInfo;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MapUtil {
     //BEARING
@@ -222,5 +229,25 @@ public class MapUtil {
             return address;
         }
         return null;
+    }
+
+    public static boolean checkGPSTurnOn (final Activity activity, AndroidExt androidExt) {
+        if (activity == null || androidExt == null) return false;
+        LocationCollectionManager locationCollectionManager = LocationCollectionManager
+                .getInstance(activity.getApplicationContext());
+        if (!locationCollectionManager.isGPSEnabled()) {
+            androidExt.showDialog(
+                    activity,
+                    "Yêu cầu truy cập vị trí",
+                    "Vui lòng bật định vị vị trí để sử dụng chức năng này!",
+                    new ClickDialogListener.Yes() {
+                        @Override
+                        public void onCLickYes() {
+                            activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    });
+            return false;
+        }
+        return true;
     }
 }
