@@ -28,7 +28,7 @@ public class ProbeMapUi {
 
     public ProbeMapUi(Context context, @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
         this.gmaps = map;
-        tilerOverlayRender = new TilerOverlayRender(gmaps, context);
+        //tilerOverlayRender = new TilerOverlayRender(gmaps, context);
         mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
         refreshStatusHandler = new RefreshStatusHandler();
         statusRender = new MatrixStatusRenderImpl(gmaps, context);
@@ -43,7 +43,7 @@ public class ProbeMapUi {
             }
         });
         refreshStatusHandler.startStatusRenderTimer();
-        refreshStatusHandler.setOverlayRender(tilerOverlayRender);
+        //refreshStatusHandler.setOverlayRender(tilerOverlayRender);
     }
 
     public void startStatusRenderTimer () {

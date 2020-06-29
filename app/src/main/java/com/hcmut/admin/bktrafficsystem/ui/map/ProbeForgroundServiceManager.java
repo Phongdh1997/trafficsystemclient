@@ -55,7 +55,7 @@ public class ProbeForgroundServiceManager {
 
     public boolean handleAppForgroundPermission(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MUTILE_PERMISSION_REQUEST) {
-            if ((grantResults.length > 0) && (grantResults[0] + grantResults[1] + grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+            if ((grantResults.length > 2) && (grantResults[0] + grantResults[1] + grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
                 startLocationService(activity.getApplicationContext());
             }
             return true;

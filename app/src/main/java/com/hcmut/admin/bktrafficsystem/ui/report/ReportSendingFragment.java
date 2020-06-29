@@ -2,13 +2,22 @@ package com.hcmut.admin.bktrafficsystem.ui.report;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +35,7 @@ import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.SearchDirectionHandler;
 import com.hcmut.admin.bktrafficsystem.model.SearchPlaceHandler;
 import com.hcmut.admin.bktrafficsystem.model.param.FastReport;
+import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
@@ -33,6 +43,9 @@ import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +62,8 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     private String mParam1;
     private String mParam2;
 
+    public static final int MAX_PHOTO_TOTAL = 4;
+
     private AutocompletePrediction searchPlaceResult;
     private LatLng selectedMapPoint;
     private LatLng reportLatLng;
@@ -58,6 +73,17 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     private TextView btnChooseOnMap;
     private TextView btnFastReport;
     private SearchInputView searchInputView;
+
+    private EditText txtNote;
+    private SeekBar sbSpeed;
+    private TextView txtSpeed;
+    private TextView txtAddImage;
+    private LinearLayout llImageContainer;
+    private TextView txtReview;
+    private Spinner snReason;
+
+    private ReportRequest reportRequest;
+    private int photoCount = 0;
 
     private GoogleMap map;
 
@@ -144,6 +170,12 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        CameraPhoto.unRegisterPhotoUploadCallback();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -154,15 +186,30 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        reportRequest = new ReportRequest();
         btnYourLocation = view.findViewById(R.id.btnYourLocation);
         btnChooseOnMap = view.findViewById(R.id.btnChooseOnMap);
         btnFastReport = view.findViewById(R.id.btnFastReport);
         searchInputView = view.findViewById(R.id.searchInputView);
 
-        addEvents();
+        sbSpeed = view.findViewById(R.id.sbSpeed);
+        txtNote = view.findViewById(R.id.txtNote);
+        txtSpeed = view.findViewById(R.id.txtSpeed);
+        txtAddImage = view.findViewById(R.id.txtAddImage);
+        llImageContainer = view.findViewById(R.id.llImageContainer);
+        txtReview = view.findViewById(R.id.txtReview);
+        snReason = view.findViewById(R.id.snReason);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                view.getContext(),
+                R.layout.reason_spinner_item,
+                ReportRequest.reasons);
+        snReason.setAdapter(adapter);
+        snReason.setSelection(0);
+
+        addEvents(view);
     }
 
-    private void addEvents() {
+    private void addEvents(final View view) {
         searchInputView.setTxtSearchInputEvent(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -223,6 +270,75 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
                 FastReport.postFastReport(getActivity(), MapActivity.androidExt);
             }
         });
+
+        sbSpeed.setMax(100);
+        sbSpeed.setProgress(20);
+        txtSpeed.setText(String.valueOf(20));
+        sbSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean b) {
+                txtSpeed.setText(String.valueOf(progressValue));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        txtAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (photoCount < MAX_PHOTO_TOTAL) {
+                    CameraPhoto.checkPermission(getActivity());
+                } else {
+                    Toast.makeText(getContext(),
+                            "Bạn chỉ có thể thêm tối đa " + MAX_PHOTO_TOTAL + " hình ảnh",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        CameraPhoto.registerPhotoUploadCallback(new CameraPhoto.PhotoUploadCallback() {
+            @Override
+            public void onUpLoaded(Bitmap bitmap) {
+                if (bitmap != null) {
+                    ImageView imageView = new ImageView(getContext());
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
+                    imageView.setImageBitmap(bitmap);
+                    imageView.setLayoutParams(params);
+                    llImageContainer.addView(imageView);
+                    photoCount++;
+                }
+            }
+
+            @Override
+            public void onUpLoadFail() {
+                Toast.makeText(getContext(),
+                        "Không thể tải ảnh lên, vui lòng thử lại",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        txtReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collectReportData();
+            }
+        });
+    }
+
+    private void collectReportData() {
+        reportRequest.setDescription(txtNote.getText().toString());
+        reportRequest.setVelocity(sbSpeed.getProgress());
+        reportRequest.setCauses(Arrays.asList(ReportRequest.reasons[snReason.getSelectedItemPosition()]));
+        //reportRequest.setNextLat(reportLatLng.latitude);
+        //reportRequest.setNextLng(reportLatLng.longitude);
+        //reportRequest.setCurrentLat();
+        //reportRequest.setCurrentLng();
+        //reportRequest.setImages();
     }
 
     @Override

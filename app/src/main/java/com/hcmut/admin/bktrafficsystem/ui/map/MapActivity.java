@@ -122,6 +122,8 @@ import com.hcmut.admin.bktrafficsystem.ui.UserInputFormFragment;
 import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
+import com.hcmut.admin.bktrafficsystem.ui.report.CameraPhoto;
+import com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment;
 import com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationRequire;
@@ -555,17 +557,28 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == ProbeForgroundServiceManager.MUTILE_PERMISSION_REQUEST) {
-            if (!appForgroundServiceManager.handleAppForgroundPermission(requestCode, permissions, grantResults)) {
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            }
-        } else if (requestCode == CallPhone.CALL_PHONE_CODE) {
-            boolean isHavePermission = CallPhone.handleCallPhonePermission(grantResults);
-            if (isHavePermission) {
-                CallPhone.makeAPhoneCall(MapActivity.this);
-            }
+        switch (requestCode) {
+            case ProbeForgroundServiceManager.MUTILE_PERMISSION_REQUEST:
+                appForgroundServiceManager.handleAppForgroundPermission(requestCode, permissions, grantResults);
+                return;
+            case CallPhone.CALL_PHONE_CODE:
+                boolean isHavePermission = CallPhone.handleCallPhonePermission(grantResults);
+                if (isHavePermission) {
+                    CallPhone.makeAPhoneCall(MapActivity.this);
+                }
+                return;
+            case CameraPhoto.IMAGE_PERMISSION_CODE:
+                CameraPhoto.onRequestPermissionsResult(
+                        requestCode,
+                        permissions,
+                        grantResults,
+                        MapActivity.this);
+                return;
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+
 
     ///Options menu
     @Override
@@ -2080,22 +2093,23 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_UPDATE_INFO) {
-
-            // resultCode được set bởi DetailActivity
-            // RESULT_OK chỉ ra rằng kết quả này đã thành công
-            if (resultCode == Activity.RESULT_OK) {
-                String img = SharedPrefUtils.getUser(this).getImgUrl();
-                String name = SharedPrefUtils.getUser(this).getUserName();
-                if (img != null) {
-                    new ImageDownloader(avtImgView).execute(img);
+        switch (requestCode) {
+            case REQUEST_CODE_UPDATE_INFO: {
+                if (resultCode == Activity.RESULT_OK) {
+                    String img = SharedPrefUtils.getUser(this).getImgUrl();
+                    String name = SharedPrefUtils.getUser(this).getUserName();
+                    if (img != null) {
+                        new ImageDownloader(avtImgView).execute(img);
+                    }
+                    if (name != null) usnTxtView.setText(name);
                 }
-                if (name != null) usnTxtView.setText(name);
-            } else {
-                // DetailActivity không thành công, không có data trả về.
+                return;
             }
+            case CameraPhoto.IMAGE_REQUEST:
+                CameraPhoto.onActivityResult(getApplicationContext(), resultCode, data);
+                return;
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
