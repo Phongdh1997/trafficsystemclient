@@ -1,18 +1,13 @@
 package com.hcmut.admin.bktrafficsystem.ui.report;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,22 +18,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
+import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
+import com.hcmut.admin.bktrafficsystem.model.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.model.SearchDirectionHandler;
-import com.hcmut.admin.bktrafficsystem.model.SearchPlaceHandler;
 import com.hcmut.admin.bktrafficsystem.model.param.FastReport;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
-import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
@@ -46,6 +42,7 @@ import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,6 +65,7 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     private LatLng selectedMapPoint;
     private LatLng reportLatLng;
     private boolean isHaveSearchResult = false;
+    private ReportSendingHandler reportSendingHandler;
 
     private TextView btnYourLocation;
     private TextView btnChooseOnMap;
@@ -82,8 +80,8 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     private TextView txtReview;
     private Spinner snReason;
 
-    private ReportRequest reportRequest;
-    private int photoCount = 0;
+    private List<String> images;
+    private List<Bitmap> imageBitmaps = new ArrayList<>();
 
     private GoogleMap map;
 
@@ -131,32 +129,28 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     private void handleSearchResult() {
         if (searchPlaceResult != null) {
             String addressString = searchPlaceResult.getSecondaryText(null).toString();
-            searchInputView.setTxtSearchInputText(addressString);
-            reportLatLng = SearchDirectionHandler.addressStringToLatLng(getContext(), addressString);
+            LatLng latLng = SearchDirectionHandler.addressStringToLatLng(getContext(), addressString);
+            if (latLng != null) {
+                searchInputView.setTxtSearchInputText(addressString);
+                setReportLocation(latLng);
+            } else {
+                Toast.makeText(getContext(),
+                        "Không thể lấy vị trí, vui lòng thử lại",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
         if (selectedMapPoint != null) {
             searchInputView.setTxtSearchInputText("Ghim vị trí");
-            reportLatLng = selectedMapPoint;
+            setReportLocation(selectedMapPoint);
         }
-        searchInputView.handleBackAndClearView(true);
-        postReport(reportLatLng);
+
         selectedMapPoint = null;
         searchPlaceResult = null;
         isHaveSearchResult = false;
     }
 
-    private void postReport(LatLng latLng) {
-        // search place and set marker
-        if (latLng != null) {
-            // createMarker(latLng);
-            Toast.makeText(getContext(), "Ok, " + latLng.latitude + ", " + latLng.longitude, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), "Kết nối thất bại, vui lòng thử lại", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(final Context context) {
         super.onAttach(context);
         if (context instanceof MapActivity) {
             MapActivity mapActivity = (MapActivity) context;
@@ -164,6 +158,12 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     map = googleMap;
+                }
+            });
+            mapActivity.setMarkerListener(new MarkerListener() {
+                @Override
+                public void onClick(Marker marker) {
+                    reportSendingHandler.onArrowMarkerClicked(context, map, marker);
                 }
             });
         }
@@ -186,11 +186,14 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        reportRequest = new ReportRequest();
         btnYourLocation = view.findViewById(R.id.btnYourLocation);
         btnChooseOnMap = view.findViewById(R.id.btnChooseOnMap);
         btnFastReport = view.findViewById(R.id.btnFastReport);
         searchInputView = view.findViewById(R.id.searchInputView);
+        reportSendingHandler = new ReportSendingHandler(
+                view.getContext().getApplicationContext(),
+                (ConstraintLayout) view.findViewById(R.id.clCollectLocation),
+                (ConstraintLayout) view.findViewById(R.id.clCollectReportData));
 
         sbSpeed = view.findViewById(R.id.sbSpeed);
         txtNote = view.findViewById(R.id.txtNote);
@@ -204,7 +207,7 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
                 R.layout.reason_spinner_item,
                 ReportRequest.reasons);
         snReason.setAdapter(adapter);
-        snReason.setSelection(0);
+        initOptionDataView();
 
         addEvents(view);
     }
@@ -227,12 +230,16 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
             @Override
             public void onClick(View view) {
                 searchInputView.handleBackAndClearView(false);
+                reportSendingHandler.clear();
+                initOptionDataView();
             }
         });
         searchInputView.setImgBackEvent(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 searchInputView.handleBackAndClearView(false);
+                reportSendingHandler.clear();
+                initOptionDataView();
             }
         });
         btnYourLocation.setOnClickListener(new View.OnClickListener() {
@@ -244,10 +251,12 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
                                 @Override
                                 public void onSuccess(Location location) {
                                     if (location != null) {
-                                        selectedMapPoint = new LatLng(location.getLatitude(), location.getLongitude());
-                                        postReport(selectedMapPoint);
+                                        setReportLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+                                        searchInputView.setTxtSearchInputText("Vị trí của bạn");
                                     } else {
-                                        postReport(null);
+                                        Toast.makeText(getContext(),
+                                                "Không thể lấy vị trí, vui lòng thử lại",
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -271,9 +280,7 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
             }
         });
 
-        sbSpeed.setMax(100);
-        sbSpeed.setProgress(20);
-        txtSpeed.setText(String.valueOf(20));
+        sbSpeed.setMax(ReportRequest.MAX_VELOCITY);
         sbSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean b) {
@@ -293,7 +300,7 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
         txtAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (photoCount < MAX_PHOTO_TOTAL) {
+                if (images == null || images.size() < MAX_PHOTO_TOTAL) {
                     CameraPhoto.checkPermission(getActivity());
                 } else {
                     Toast.makeText(getContext(),
@@ -304,14 +311,18 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
         });
         CameraPhoto.registerPhotoUploadCallback(new CameraPhoto.PhotoUploadCallback() {
             @Override
-            public void onUpLoaded(Bitmap bitmap) {
+            public void onUpLoaded(Bitmap bitmap, String url) {
                 if (bitmap != null) {
                     ImageView imageView = new ImageView(getContext());
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
                     imageView.setImageBitmap(bitmap);
                     imageView.setLayoutParams(params);
                     llImageContainer.addView(imageView);
-                    photoCount++;
+                    if (images == null) {
+                        images = new ArrayList<>();
+                    }
+                    images.add(url);
+                    imageBitmaps.add(bitmap);
                 }
             }
 
@@ -325,20 +336,44 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
         txtReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                collectReportData();
+//                reportSendingHandler.sendReport(
+//                        sbSpeed.getProgress(),
+//                        Arrays.asList(snReason.getSelectedItem().toString()),
+//                        txtNote.getText().toString(),
+//                        images
+//                );
+                reportSendingHandler.reviewReport(getActivity());
             }
         });
     }
 
-    private void collectReportData() {
-        reportRequest.setDescription(txtNote.getText().toString());
-        reportRequest.setVelocity(sbSpeed.getProgress());
-        reportRequest.setCauses(Arrays.asList(ReportRequest.reasons[snReason.getSelectedItemPosition()]));
-        //reportRequest.setNextLat(reportLatLng.latitude);
-        //reportRequest.setNextLng(reportLatLng.longitude);
-        //reportRequest.setCurrentLat();
-        //reportRequest.setCurrentLng();
-        //reportRequest.setImages();
+    private void initOptionDataView() {
+        sbSpeed.setProgress(20);
+        txtSpeed.setText(String.valueOf(20));
+        snReason.setSelection(0);
+        llImageContainer.removeAllViews();
+        images = null;
+        txtNote.setText(null);
+
+        for (Bitmap bitmap : imageBitmaps) {
+            try {
+                bitmap.recycle();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Have location to report
+     * hide location collection view
+     * show option data collection view
+     * @param latLng
+     */
+    private void setReportLocation(LatLng latLng) {
+        reportLatLng = latLng;
+        searchInputView.handleBackAndClearView(true);
+        reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);
     }
 
     @Override

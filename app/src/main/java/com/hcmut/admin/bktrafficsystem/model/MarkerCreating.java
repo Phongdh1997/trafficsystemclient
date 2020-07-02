@@ -2,6 +2,7 @@ package com.hcmut.admin.bktrafficsystem.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
@@ -24,7 +25,11 @@ public class MarkerCreating {
         this.latLng = latLng;
     }
 
-    public void createMarker(Context context, GoogleMap googleMap, Integer iconSrc, boolean isMoveToCurrentLocation) {
+    public LatLng getLocation() {
+        return latLng;
+    }
+
+    public void createMarker(Context context, GoogleMap googleMap, Integer iconSrc, boolean isMoveToCurrentLocation, boolean animated) {
         if (googleMap == null) return;
         if (marker != null) {
             marker.remove();
@@ -36,7 +41,11 @@ public class MarkerCreating {
 
         if (isMoveToCurrentLocation) {
             // move camera to current location
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+            if (animated) {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            } else {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            }
         }
     }
 
@@ -47,11 +56,16 @@ public class MarkerCreating {
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int bgDrawableId) {
-        Drawable background = ContextCompat.getDrawable(context, bgDrawableId);
-        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        background.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
+        try {
+            Drawable background = ContextCompat.getDrawable(context, bgDrawableId);
+            background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+            Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            background.draw(canvas);
+            return BitmapDescriptorFactory.fromBitmap(bitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return BitmapDescriptorFactory.defaultMarker();
     }
 }

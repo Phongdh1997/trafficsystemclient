@@ -73,6 +73,17 @@ public class UserLocation {
         return realDistance[0];
     }
 
+    public static float distance(LatLng latLng1, LatLng latLng2) {
+        float [] realDistance = new float[3];
+        Location.distanceBetween(
+                latLng1.latitude,
+                latLng1.longitude,
+                latLng2.latitude,
+                latLng2.longitude,
+                realDistance);
+        return realDistance[0];
+    }
+
     public float distanceToWithAccuracy (UserLocation destLocation) {
         return distanceTo(destLocation) - getAccuracy() - destLocation.getAccuracy();
     }

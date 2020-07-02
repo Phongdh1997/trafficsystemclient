@@ -97,7 +97,9 @@ import com.hcmut.admin.bktrafficsystem.model.DirectionFinder;
 import com.hcmut.admin.bktrafficsystem.model.DirectionFinderListener;
 import com.hcmut.admin.bktrafficsystem.model.GoogleSignInData;
 import com.hcmut.admin.bktrafficsystem.model.MapUtils;
+import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
+import com.hcmut.admin.bktrafficsystem.model.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.model.RoadFinder;
 import com.hcmut.admin.bktrafficsystem.model.Route;
 import com.hcmut.admin.bktrafficsystem.model.param.FastReport;
@@ -341,6 +343,10 @@ public class MapActivity extends AppCompatActivity implements
         reportMakerClickListener = listener;
     }
 
+    public void setMarkerListener(MarkerListener markerListener) {
+        this.markerListener = markerListener;
+    }
+
     public void addMapReadyCallback(@NotNull OnMapReadyListener onMapReadyListener) {
         if (mMap != null) {
             onMapReadyListener.onMapReady(mMap);
@@ -357,6 +363,7 @@ public class MapActivity extends AppCompatActivity implements
      * ================================================
      */
     private ViewReportFragment.OnReportMakerClick reportMakerClickListener;
+    private MarkerListener markerListener;
     private List<OnMapReadyListener> onMapReadyListeners = new ArrayList<>();
 
     private ProbeForgroundServiceManager appForgroundServiceManager;
@@ -985,7 +992,13 @@ public class MapActivity extends AppCompatActivity implements
                             if (reportMakerClickListener != null) {
                                 reportMakerClickListener.onClick(marker);
                             }
+                            break;
                         }
+                        case MarkerListener.REPORT_ARROW:
+                            if (markerListener != null) {
+                                markerListener.onClick(marker);
+                            }
+
                     }
                 } catch (Exception e) {}
                 return true;

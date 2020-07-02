@@ -26,6 +26,7 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader
 import com.hcmut.admin.bktrafficsystem.util.Async_ReSizeImageFromBitmap;
 import com.hcmut.admin.bktrafficsystem.util.Async_ResizeImageFromUri;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -100,31 +101,39 @@ public class CameraPhoto {
                 bitmap = BitmapFactory.decodeStream(inputStream);
             }
         } catch (Exception e) {}
-        if (photoUploadCallback != null) {
-            photoUploadCallback.onUpLoaded(bitmap);
-        }
+        uploadFile(bitmap);
     }
 
-    private static void uploadFile(File file) {
+    private static void uploadFile(final Bitmap bitmap) {
+        if (photoUploadCallback != null) {
+            if (bitmap == null) {
+                photoUploadCallback.onUpLoadFail();
+                return;
+            }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            RequestBody requestBody = RequestBody.create(byteArray, MediaType.parse("image/*"));
+            CallApi.createService().uploadFile(requestBody)
+                    .enqueue(new Callback<BaseResponse<String>>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {
+                            // TODO: neu thanh cong thi set image vao imageview
+                            if (response.body() != null &&
+                                    response.body().getData() != null &&
+                                    response.code() == 200) {
+                                photoUploadCallback.onUpLoaded(bitmap, response.body().getData());
+                            } else {
+                                photoUploadCallback.onUpLoadFail();
+                            }
+                        }
 
-
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part parts = MultipartBody.Part.createFormData("file", file.getName(), fileReqBody);
-
-        CallApi.createService().uploadFile(parts)
-                .enqueue(new Callback<BaseResponse<String>>() {
-                    @Override
-                    public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {
-                        // new ImageDownloader(imageView).execute(response.body().getData());
-                        // TODO: neu thanh cong thi set image vao imageview
-                    }
-
-                    @Override
-                    public void onFailure(Call<BaseResponse<String>> call, Throwable t) {
-
-                    }
-                });
-
+                        @Override
+                        public void onFailure(Call<BaseResponse<String>> call, Throwable t) {
+                            photoUploadCallback.onUpLoadFail();
+                        }
+                    });
+        }
     }
 
     private static void getPhotoIntent(Activity activity) {
@@ -163,7 +172,7 @@ public class CameraPhoto {
     }
 
     public interface PhotoUploadCallback {
-        void onUpLoaded(Bitmap bitmap);
+        void onUpLoaded(Bitmap bitmap, String url);
         void onUpLoadFail();
     }
 }

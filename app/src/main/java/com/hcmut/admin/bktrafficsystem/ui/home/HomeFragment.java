@@ -180,7 +180,7 @@ public class HomeFragment extends Fragment
             searchMarkerCreating.removeMarker();
         }
         searchMarkerCreating = new MarkerCreating(latLng);
-        searchMarkerCreating.createMarker(getContext(), map, null, true);
+        searchMarkerCreating.createMarker(getContext(), map, null, true, true);
     }
 
     /**

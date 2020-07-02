@@ -11,7 +11,9 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
+import com.google.maps.RoadsApi;
 import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.SnappedPoint;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Cell;
 import com.hcmut.admin.bktrafficsystem.model.PlaceInfo;
@@ -26,7 +28,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MapUtil {
     //BEARING
-    public double GetBearing(LatLng from, LatLng to){
+    public static double GetBearing(LatLng from, LatLng to){
         double lat1 = from.latitude * Math.PI / 180.0;
         double lon1 = from.longitude * Math.PI / 180.0;
         double lat2 = to.latitude * Math.PI / 180.0;
@@ -249,5 +251,18 @@ public class MapUtil {
             return false;
         }
         return true;
+    }
+
+    public static LatLng snapToRoad(GeoApiContext context, LatLng point) {
+        List<com.google.maps.model.LatLng> mCapturedLocations = new ArrayList<>();
+        mCapturedLocations.add(new com.google.maps.model.LatLng(point.latitude, point.longitude));
+        com.google.maps.model.LatLng[] page = mCapturedLocations.subList(0, 1).toArray(new com.google.maps.model.LatLng[1]);
+        try {
+            SnappedPoint [] snappedPoints = RoadsApi.snapToRoads(context, true, page).await();
+            return new LatLng(snappedPoints[0].location.lat, snappedPoints[0].location.lng);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

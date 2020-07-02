@@ -291,8 +291,8 @@ public class DirectionFragment extends Fragment
         removeMarker();
         beginMarkerCreating = new MarkerCreating(beginLatLng);
         endMarkerCreating = new MarkerCreating(endLatLng);
-        beginMarkerCreating.createMarker(getContext(), map, null, false);
-        endMarkerCreating.createMarker(getContext(), map, null, false);
+        beginMarkerCreating.createMarker(getContext(), map, null, false, false);
+        endMarkerCreating.createMarker(getContext(), map, null, false, false);
     }
 
     private void renderDirection(List<Coord> directs) {

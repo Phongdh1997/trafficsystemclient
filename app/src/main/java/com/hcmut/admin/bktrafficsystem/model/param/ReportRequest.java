@@ -1,5 +1,9 @@
 package com.hcmut.admin.bktrafficsystem.model.param;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
 
 import org.jetbrains.annotations.NotNull;
@@ -8,18 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReportRequest {
+    public static final int MAX_VELOCITY = 80;
     public static final String [] reasons = {
             "Tắc đường", "Ngập lụt", "Có vật cản", "Tai nạn", "Công an", "Đường cấm"
     };
 
     private int velocity;
-    private double currentLat;
-    private double currentLng;
-    private double nextLat;
-    private double nextLng;
+    private Double currentLat = null;
+    private Double currentLng = null;
+    private Double nextLat = null;
+    private Double nextLng = null;
     private List<String> causes;
     private String description;
-    private ArrayList<String> images;
+    private List<String> images;
     private String type;
 
     public ReportRequest() {
@@ -51,12 +56,46 @@ public class ReportRequest {
         this.images = images;
     }
 
+    public boolean checkValidData(Context context) {
+        if (currentLat == null || currentLng == null || nextLat == null || nextLng == null) {
+            Toast.makeText(context,
+                    "Vị trí cảnh báo chưa được chọn, vui lòng thử lại",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (velocity < 0 || velocity > MAX_VELOCITY) {
+            Toast.makeText(context,
+                    "Vận tốc phải lớn hơn 0 và nhỏ hơn " + MAX_VELOCITY,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     public int getVelocity() {
         return velocity;
     }
 
     public void setVelocity(int velocity) {
-        this.velocity = velocity;
+        if (velocity > 0) {
+            this.velocity = velocity;
+        } else {
+            this.velocity = 1;
+        }
+    }
+
+    public void setCurrentLatLng(LatLng latLng) {
+        if (latLng != null) {
+            currentLat = latLng.latitude;
+            currentLng = latLng.longitude;
+        }
+    }
+
+    public void setNextLatLng(LatLng latLng) {
+        if (latLng != null) {
+            nextLat = latLng.latitude;
+            nextLng = latLng.longitude;
+        }
     }
 
     public double getCurrentLat() {
@@ -107,11 +146,11 @@ public class ReportRequest {
         this.description = description;
     }
 
-    public ArrayList<String> getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(ArrayList<String> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 

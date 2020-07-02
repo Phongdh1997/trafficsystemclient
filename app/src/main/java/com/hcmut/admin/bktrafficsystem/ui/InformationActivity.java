@@ -244,7 +244,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part imageBody = MultipartBody.Part.createFormData("file", file.getName(), reqFile);
 
-            CallApi.createService().uploadFile(imageBody)
+            CallApi.createService().uploadFile(reqFile)
                     .enqueue(new Callback<BaseResponse<String>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<String>> call, Response<BaseResponse<String>> response) {

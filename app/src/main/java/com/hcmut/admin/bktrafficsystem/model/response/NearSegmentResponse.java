@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.model.response;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 import com.hcmut.admin.bktrafficsystem.model.PolylineResponse;
 
@@ -43,5 +44,13 @@ public class NearSegmentResponse {
 
     public void setPolylineResponse(PolylineResponse polylineResponse) {
         this.polylineResponse = polylineResponse;
+    }
+
+    public LatLng getStartLatLng() {
+        return polylineResponse.getStart();
+    }
+
+    public LatLng getEndLatLng() {
+        return polylineResponse.getEnd();
     }
 }
