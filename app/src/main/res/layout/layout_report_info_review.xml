@@ -124,7 +124,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtNote" />
 
     <TextView
-        android:id="@+id/txtReview"
+        android:id="@+id/txtSendReport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="3dp"

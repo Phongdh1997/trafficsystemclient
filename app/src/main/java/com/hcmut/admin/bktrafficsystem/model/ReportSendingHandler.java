@@ -31,6 +31,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.NearSegmentResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 import java.util.List;
@@ -120,7 +121,7 @@ public class ReportSendingHandler {
      * @param note
      * @param images
      */
-    public void sendReport(int velocity, List<String> causes, String note, List<String> images) {
+    public void reviewReport(ReportSendingFragment fragment, String address, int velocity, List<String> causes, String note, List<String> images) {
         ReportRequest reportRequest = new ReportRequest();
         reportRequest.setCurrentLatLng(currLatLng);
         reportRequest.setNextLatLng(nextLatLng);
@@ -128,17 +129,11 @@ public class ReportSendingHandler {
         reportRequest.setCauses(causes);
         reportRequest.setDescription(note);
         reportRequest.setImages(images);
+        reportRequest.setAddress(address);
 
         if (reportRequest.checkValidData(context)) {
-            Toast.makeText(context,
-                    "sending",
-                    Toast.LENGTH_SHORT).show();
-
+            showReportInfoDialog(fragment, reportRequest);
         }
-    }
-
-    public void reviewReport(Activity activity) {
-        showReportInfoDialog(activity);
     }
 
     private void showOrientation(final GoogleMap map, final LatLng latLng) {
@@ -217,17 +212,40 @@ public class ReportSendingHandler {
         return MapUtil.snapToRoad(geoApiContext, latLng);
     }
 
-    private void showReportInfoDialog(Activity activity) {
+    private void showReportInfoDialog(final ReportSendingFragment fragment, final ReportRequest reportRequest) {
+        Activity activity = fragment.getActivity();
+        if (activity == null) return;
+
         ViewGroup viewGroup = activity.findViewById(android.R.id.content);
         View reportInfoDialogView = LayoutInflater
                 .from(activity.getApplicationContext())
                 .inflate(R.layout.layout_report_info_review, viewGroup, false);
-        //TextView textView = reportInfoDialogView.findViewById(R.id.txtHeader);
-        //textView.setText("Nội dung");
-
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(reportInfoDialogView);
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
+
+        TextView txtLocation = reportInfoDialogView.findViewById(R.id.txtLocation);
+        TextView txtSpeed = reportInfoDialogView.findViewById(R.id.txtSpeed);
+        TextView txtReason = reportInfoDialogView.findViewById(R.id.txtReason);
+        TextView txtNote = reportInfoDialogView.findViewById(R.id.txtNote);
+        TextView txtSendReport = reportInfoDialogView.findViewById(R.id.txtSendReport);
+
+        txtLocation.setText("Vị trí: " + reportRequest.getAddress());
+        txtSpeed.setText("Vận tốc: " + reportRequest.getVelocity() + " km/h");
+        try {
+            txtReason.setText("Nguyên nhân: " + reportRequest.getCauses().get(0));
+        } catch (Exception e) {
+            txtReason.setText("Nguyên nhân: /");
+        }
+        txtNote.setText(reportRequest.getDescription() == null ? "/" : reportRequest.getDescription());
+        txtSendReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reportRequest.sendReport(fragment);
+                dialog.dismiss();
+            }
+        });
+
         dialog.show();
     }
 }

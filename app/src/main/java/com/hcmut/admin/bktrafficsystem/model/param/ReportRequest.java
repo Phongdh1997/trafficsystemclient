@@ -1,15 +1,29 @@
 package com.hcmut.admin.bktrafficsystem.model.param;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.hcmut.admin.bktrafficsystem.api.CallApi;
+import com.hcmut.admin.bktrafficsystem.model.ReportSendingHandler;
+import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
+import com.hcmut.admin.bktrafficsystem.ui.UserInputFormFragment;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment;
+import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReportRequest {
     public static final int MAX_VELOCITY = 80;
@@ -25,7 +39,8 @@ public class ReportRequest {
     private List<String> causes;
     private String description;
     private List<String> images;
-    private String type;
+    private String type = "user";
+    private String address;
 
     public ReportRequest() {
 
@@ -45,7 +60,7 @@ public class ReportRequest {
         this.type = "system";
     }
 
-    public ReportRequest(int velocity, double currentLat, double currentLng, double nextLat, double nextLng, ArrayList<String> causes, String description, ArrayList<String> images) {
+    public ReportRequest(int velocity, double currentLat, double currentLng, double nextLat, double nextLng, List<String> causes, String description, List<String> images) {
         this.velocity = velocity;
         this.currentLat = currentLat;
         this.currentLng = currentLng;
@@ -72,6 +87,31 @@ public class ReportRequest {
         return true;
     }
 
+    public void sendReport(final ReportSendingFragment fragment) {
+        final Activity activity = fragment.getActivity();
+        if (activity == null) return;
+
+        CallApi.createService().postTrafficReport(MapActivity.currentUser.getAccessToken(), this)
+                .enqueue(new Callback<BaseResponse<ReportResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
+                        Log.d("tessss: ", response.toString());
+                        if (response.code() == 200 && response.body() != null && response.body().getCode() == 200) {
+                            Log.e("ggg", response.body().getMessage());
+                            MapActivity.androidExt.showSuccess(activity, "Gửi cảnh báo thành công");
+                            fragment.clearReport();
+                        } else {
+                            MapActivity.androidExt.showErrorDialog(activity, "Gửi cảnh báo thất bại, vui lòng thử lại");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<ReportResponse>> call, Throwable t) {
+                        MapActivity.androidExt.showErrorDialog(activity, "Gửi cảnh báo thất bại, vui lòng thử lại");
+                    }
+                });
+    }
+
     public int getVelocity() {
         return velocity;
     }
@@ -96,6 +136,14 @@ public class ReportRequest {
             nextLat = latLng.latitude;
             nextLng = latLng.longitude;
         }
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public double getCurrentLat() {
@@ -135,7 +183,9 @@ public class ReportRequest {
     }
 
     public void setCauses(List<String> causes) {
-        this.causes = causes;
+        if (causes != null && causes.size() > 0) {
+            this.causes = causes;
+        }
     }
 
     public String getDescription() {
@@ -143,7 +193,9 @@ public class ReportRequest {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null && description.length() > 0) {
+            this.description = description;
+        }
     }
 
     public List<String> getImages() {
@@ -151,7 +203,9 @@ public class ReportRequest {
     }
 
     public void setImages(List<String> images) {
-        this.images = images;
+        if (images != null && images.size() > 0) {
+            this.images = images;
+        }
     }
 
     public String getType() {

@@ -119,6 +119,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="16dp"
+        android:visibility="gone"
         android:background="@color/white"
         android:elevation="10dp"
         app:layout_constraintStart_toStartOf="parent"

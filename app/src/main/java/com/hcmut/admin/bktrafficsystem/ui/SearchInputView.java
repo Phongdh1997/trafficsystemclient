@@ -70,6 +70,10 @@ public class SearchInputView extends CardView {
         }
     }
 
+    public String getSearchInputText() {
+        return txtSearchInput.getText().toString();
+    }
+
     public void setImgBackEvent(OnClickListener onClickListener) {
         this.backClickListener = onClickListener;
     }

@@ -229,17 +229,13 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
         searchInputView.setImgClearTextEvent(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchInputView.handleBackAndClearView(false);
-                reportSendingHandler.clear();
-                initOptionDataView();
+                clearReport();
             }
         });
         searchInputView.setImgBackEvent(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchInputView.handleBackAndClearView(false);
-                reportSendingHandler.clear();
-                initOptionDataView();
+                clearReport();
             }
         });
         btnYourLocation.setOnClickListener(new View.OnClickListener() {
@@ -336,15 +332,21 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
         txtReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                reportSendingHandler.sendReport(
-//                        sbSpeed.getProgress(),
-//                        Arrays.asList(snReason.getSelectedItem().toString()),
-//                        txtNote.getText().toString(),
-//                        images
-//                );
-                reportSendingHandler.reviewReport(getActivity());
+                reportSendingHandler.reviewReport(
+                        ReportSendingFragment.this,
+                        searchInputView.getSearchInputText(),
+                        sbSpeed.getProgress(),
+                        Arrays.asList(snReason.getSelectedItem().toString()),
+                        txtNote.getText().toString(),
+                        images);
             }
         });
+    }
+
+    public void clearReport() {
+        searchInputView.handleBackAndClearView(false);
+        reportSendingHandler.clear();
+        initOptionDataView();
     }
 
     private void initOptionDataView() {

@@ -105,7 +105,7 @@ public class LocationCollectionManager {
         apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                Log.e("post GPS report", "code " + response.code());
+                Log.e("post GPS report", response.toString());
             }
 
             @Override
