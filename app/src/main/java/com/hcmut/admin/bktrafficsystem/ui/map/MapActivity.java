@@ -382,6 +382,8 @@ public class MapActivity extends AppCompatActivity implements
     private View reportTabWrapper;
     private View viewReportTabWrapper;
     private BottomTab bottomTab;
+    private BottomNavigation bottomNavigation;
+    private FrameLayout flFragment;
 
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
@@ -485,8 +487,8 @@ public class MapActivity extends AppCompatActivity implements
             initLocationService();
         }
 
-        FrameLayout flFragment = findViewById(R.id.flFragment);
-        BottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
+        flFragment = findViewById(R.id.flFragment);
+        bottomNavigation = findViewById(R.id.bottomNavigation);
         flFragment.setPadding(0, 0, 0, bottomNavigation.getNavigationHeight());
         bottomNavigation.setMenuItemSelectionListener(new BottomNavigation.OnMenuItemSelectionListener() {
             @Override
@@ -514,6 +516,20 @@ public class MapActivity extends AppCompatActivity implements
 
             }
         });
+    }
+
+    public void showBottomNav() {
+        flFragment.setPadding(0, 0, 0, bottomNavigation.getNavigationHeight());
+        bottomNavigation.setVisibility(View.VISIBLE);
+    }
+
+    public void hideBottomNav() {
+        bottomNavigation.setVisibility(View.GONE);
+        flFragment.setPadding(0, 0, 0, 0);
+    }
+
+    public int getBottomNavHeight() {
+        return bottomNavigation.getNavigationHeight();
     }
 
     private void postFastReport() {

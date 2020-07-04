@@ -9,22 +9,36 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="30dp"
-        android:paddingBottom="20dp"
         android:background="@color/white"
         android:elevation="3dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <ImageView
+            android:id="@+id/imgBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="6dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintEnd_toEndOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/txtReportViewTitle"
+            app:layout_constraintTop_toTopOf="@id/txtReportViewTitle" />
+
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:id="@+id/txtReportViewTitle"
-            app:layout_constraintTop_toTopOf="@+id/btnRefresh"
-            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guideline4"
             app:layout_constraintEnd_toStartOf="@+id/btnRefresh"
-            app:layout_constraintBottom_toBottomOf="@+id/btnRefresh"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:text="Các báo cáo gần đây"
             android:textSize="16dp"/>
 
@@ -41,9 +55,17 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="@id/txtReportViewTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/txtReportViewTitle"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="58dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,8 +74,6 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:elevation="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.viewrReport;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +61,7 @@ public class ViewReportFragment extends Fragment {
     private TextView txtStatusColor;
     private Button btnRefresh;
     private ConstraintLayout clReview;
+    private ImageView imgBack;
 
     private ViewReportHandler viewReportHandler;
     private ArrayList<Marker> userReportMarker = new ArrayList<>();
@@ -168,6 +171,7 @@ public class ViewReportFragment extends Fragment {
         clReview = view.findViewById(R.id.clReview);
         txtStatusColor = view.findViewById(R.id.txtStatusColor);
         btnRefresh = view.findViewById(R.id.btnRefresh);
+        imgBack = view.findViewById(R.id.imgBack);
 
         clearSelectedSegment();
     }
@@ -188,6 +192,15 @@ public class ViewReportFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 refreshUserReport();
+            }
+        });
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearSelectedSegment();
+                removeReportStatus();
+                imgBack.setVisibility(View.GONE);
+                showBottomNav();
             }
         });
     }
@@ -222,6 +235,8 @@ public class ViewReportFragment extends Fragment {
     private void refreshUserReport() {
         clearSelectedSegment();
         removeReportStatus();
+        imgBack.setVisibility(View.VISIBLE);
+        hideBottomNav();
         if (MapUtil.checkGPSTurnOn(getActivity(), MapActivity.androidExt)) {
             final ProgressDialog progressDialog = ProgressDialog.show(
                     getContext(),
@@ -245,6 +260,24 @@ public class ViewReportFragment extends Fragment {
                             }
                         }
                     });
+        }
+    }
+
+    private void hideBottomNav() {
+        Activity activity = getActivity();
+        if (activity instanceof MapActivity) {
+            MapActivity mapActivity = (MapActivity) activity;
+            mapActivity.hideBottomNav();
+            clReview.setPadding(0, 10, 0, 10 + mapActivity.getBottomNavHeight());
+        }
+    }
+
+    private void showBottomNav() {
+        Activity activity = getActivity();
+        if (activity instanceof MapActivity) {
+            MapActivity mapActivity = (MapActivity) activity;
+            mapActivity.showBottomNav();
+            clReview.setPadding(0, 10, 0, 10);
         }
     }
 
