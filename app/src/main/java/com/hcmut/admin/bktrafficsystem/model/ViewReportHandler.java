@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
@@ -43,20 +44,19 @@ public class ViewReportHandler {
         statusRepository = new StatusRemoteRepository();
     }
 
-    public void getUserReport(double lat, double lng, @NotNull final SegmentResultCallback callback) {
+    public void getUserReportStatus(double lat, double lng, @NotNull final SegmentResultCallback callback) {
         RetrofitClient.getApiServerRetrofitService()
-                .getTrafficStatus(lat, lng, 500)
+                .getTrafficStatusIncludeUserReport(lat, lng, 500)
                 .enqueue(new Callback<StatusResponse<List<StatusRenderData>>>() {
                     @Override
                     public void onResponse(Call<StatusResponse<List<StatusRenderData>>> call, Response<StatusResponse<List<StatusRenderData>>> response) {
-                        if (response.body() != null) {
+                        Log.e("fasa", response.toString());
+                        if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
                             if (icon == null) {
                                 icon = bitmapDescriptorFromVector(context, R.drawable.ic_position_rating);
                             }
-//                            final List<MarkerOptions> markerOptionsList = StatusRenderData
-//                                    .parseMarkerOptionsList(response.body().getData(), icon);
                             final List<MarkerOptions> markerOptionsList = StatusRenderData
-                                    .parseMarkerOptionsList(ReportRatingTest.getSegmentReport(), icon);
+                                    .parseMarkerOptionsList(response.body().getData(), icon);
                             mainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -65,6 +65,13 @@ public class ViewReportHandler {
                                     } else {
                                         callback.onHaveNotResult();
                                     }
+                                }
+                            });
+                        } else {
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onHaveNotResult();
                                 }
                             });
                         }

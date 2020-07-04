@@ -88,7 +88,7 @@ public class ReportResponse {
         return images;
     }
 
-    public List<String> getCauseId() {
+    public List<String> getCauses() {
         return causes;
     }
 

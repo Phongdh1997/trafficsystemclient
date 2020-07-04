@@ -130,7 +130,7 @@ public class StatusRenderData {
 
     public static List<MarkerOptions> parseMarkerOptionsList(
             List<StatusRenderData> statusRenderDataList, BitmapDescriptor icon) {
-        if (statusRenderDataList != null && statusRenderDataList.size() > 1) {
+        if (statusRenderDataList != null && statusRenderDataList.size() > 0) {
             MarkerOptions markerOptions;
             List<MarkerOptions> markerOptionsList = new ArrayList<>();
             for (StatusRenderData data : statusRenderDataList) {

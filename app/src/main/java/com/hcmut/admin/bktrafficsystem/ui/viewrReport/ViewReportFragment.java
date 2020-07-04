@@ -33,6 +33,7 @@ import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -62,6 +63,7 @@ public class ViewReportFragment extends Fragment {
     private ViewReportHandler viewReportHandler;
     private ArrayList<Marker> userReportMarker = new ArrayList<>();
     private SegmentData selectedSegment;
+    private long requestTime = 0;
 
     private GoogleMap.InfoWindowAdapter infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
         @Override
@@ -146,6 +148,12 @@ public class ViewReportFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -187,7 +195,7 @@ public class ViewReportFragment extends Fragment {
 
     private void showSelectedUserReport(String [] datas) {
         try {
-            setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2]));
+            setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2], requestTime));
             txtSpeed.setText("Vận tốc trung bình: " + datas[1] + "km/h");
             txtStatusColor.setBackgroundColor(Color.parseColor(datas[2]));
         } catch (Exception e) {}
@@ -205,6 +213,7 @@ public class ViewReportFragment extends Fragment {
         if (btnViewDetail.isEnabled()) {
             btnViewDetail.setEnabled(false);
         }
+        txtStatusColor.setBackgroundColor(Color.parseColor("#e9e9ef"));
     }
 
     private void toggleReview(int state) {
@@ -212,6 +221,8 @@ public class ViewReportFragment extends Fragment {
     }
 
     private void refreshUserReport() {
+        clearSelectedSegment();
+        removeReportStatus();
         if (MapUtil.checkGPSTurnOn(getActivity(), MapActivity.androidExt)) {
             final ProgressDialog progressDialog = ProgressDialog.show(
                     getContext(),
@@ -223,8 +234,9 @@ public class ViewReportFragment extends Fragment {
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-                                location.setLatitude(10.778013);
-                                location.setLongitude(106.656323);
+                                location.setLatitude(10.7789167);
+                                location.setLongitude(106.657139);
+                                requestTime = Calendar.getInstance().getTimeInMillis();
                                 loadUserReport(new LatLng(location.getLatitude(), location.getLongitude()),
                                         progressDialog);
                             } else {
@@ -239,7 +251,7 @@ public class ViewReportFragment extends Fragment {
     }
 
     private void loadUserReport(final LatLng location, final ProgressDialog progressDialog) {
-        viewReportHandler.getUserReport(location.latitude, location.longitude, new ViewReportHandler.SegmentResultCallback() {
+        viewReportHandler.getUserReportStatus(location.latitude, location.longitude, new ViewReportHandler.SegmentResultCallback() {
             @Override
             public void onSuccess(List<MarkerOptions> markerOptionsList) {
                 Marker marker;
@@ -260,7 +272,7 @@ public class ViewReportFragment extends Fragment {
         });
     }
 
-    private void hideReportStatus() {
+    private void removeReportStatus() {
         if (userReportMarker != null) {
             for (Marker marker : userReportMarker) {
                 marker.remove();
@@ -277,11 +289,13 @@ public class ViewReportFragment extends Fragment {
         public final int speed;
         public final String color;
         public final long segmentId;
+        public final long time;
 
-        public SegmentData(long segmentId, int speed, String color) {
+        public SegmentData(long segmentId, int speed, String color, long time) {
             this.speed = speed;
             this.color = color;
             this.segmentId = segmentId;
+            this.time = time;
         }
     }
 }

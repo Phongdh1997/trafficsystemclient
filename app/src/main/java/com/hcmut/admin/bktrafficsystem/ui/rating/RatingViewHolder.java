@@ -22,7 +22,7 @@ public class RatingViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout img_list;
     private Button btnRating;
     private ImageView imgAvatar;
-    private TextView tvSpeed, tvDescription, tvReason, tvName, tvScore;
+    private TextView tvSpeed, tvReason, tvName, tvScore;
 
     public RatingViewHolder(View itemView, RatingAdapter.OnItemClickedListener onItemClickedListener) {
         super(itemView);
@@ -32,7 +32,6 @@ public class RatingViewHolder extends RecyclerView.ViewHolder {
         img_list = itemView.findViewById(R.id.img_list);
         imgAvatar = itemView.findViewById(R.id.img_avatar);
         tvSpeed = itemView.findViewById(R.id.tv_speed);
-        tvDescription = itemView.findViewById(R.id.tv_more_description);
         tvReason = itemView.findViewById(R.id.tv_reason);
         tvName = itemView.findViewById(R.id.tv_name);
         tvScore = itemView.findViewById(R.id.tv_score);
@@ -44,33 +43,39 @@ public class RatingViewHolder extends RecyclerView.ViewHolder {
         }
 
         currReportData = reportData;
-        if (reportData.getUser().getId().equals(MapActivity.currentUser.getUserId())) {
-            btnRating.setEnabled(false);
+        try {
+            if (reportData.getUser().getId().equals(MapActivity.currentUser.getUserId())) {
+                btnRating.setEnabled(false);
+            }
+            tvName.setText(reportData.getUser().getName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (reportData.getImages() != null || reportData.getImages().size() == 0) {
+        try {
             ImageListSmartDownloader.Builder builder = new ImageListSmartDownloader.Builder(img_list);
             for (String imageUrl : reportData.getImages()) {
                 builder.addImageUrl(imageUrl);
             }
             builder.build().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        tvName.setText(reportData.getUser().getName());
-        tvSpeed.setText(reportData.getVelocity() + " km/h");
-        if (reportData.getCauseId() != null) {
-
-        if (reportData.getCauseId().size() > 0) {
-            // tvReason.setText(reportData.getCauseId().get(0));
+        try {
+            tvSpeed.setText(reportData.getVelocity() + " km/h");
+            tvReason.setText(reportData.getCauses().get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        if (reportData.getUser().getAvatar() != null) {
+        try {
             new ImageDownloader(imgAvatar).execute(reportData.getUser().getAvatar());
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        if (reportData.getDescription() == null) {
-            tvDescription.setText(reportData.getDescription());
+        try {
+            tvScore.setText(String.valueOf(reportData.getUser().getReputation()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        tvScore.setText(String.valueOf(reportData.getUser().getReputation()));
-
         btnRating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,5 +91,4 @@ public class RatingViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
-}
 }

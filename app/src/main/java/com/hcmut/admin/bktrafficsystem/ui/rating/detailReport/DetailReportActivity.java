@@ -134,9 +134,9 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
                     }
                     tvName.setText(report.getUser().getName());
                     tvSpeed.setText(report.getVelocity() + " km/h");
-                    if (report.getCauseId().size() > 0) {
+                    if (report.getCauses().size() > 0) {
                         groupReason.setVisibility(View.VISIBLE);
-                        tvReason.setText(reason.get(Integer.parseInt(report.getCauseId().get(0)) - 1));
+                        tvReason.setText(reason.get(Integer.parseInt(report.getCauses().get(0)) - 1));
                     } else groupReason.setVisibility(View.GONE);
                     imgAvatar.setImageDrawable(getDrawable(R.drawable.icon_avatar_empty));
                     new ImageDownloader(imgAvatar).execute(report.getUser().getAvatar());

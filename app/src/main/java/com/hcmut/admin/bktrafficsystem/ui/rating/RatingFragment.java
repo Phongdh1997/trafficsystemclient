@@ -114,7 +114,7 @@ public class RatingFragment extends Fragment
         try {
             currentSegmentData = (ViewReportFragment.SegmentData) getArguments().getSerializable(SEGMENT_DATA);
         } catch (Exception e) {
-            currentSegmentData = new ViewReportFragment.SegmentData(-1, 0, "");
+            currentSegmentData = new ViewReportFragment.SegmentData(-1, 0, "", 0);
         }
 
         addControls(view);
@@ -167,15 +167,14 @@ public class RatingFragment extends Fragment
                 getString(R.string.loading),
                 true);
         CallApi.createService()
-                .getOldTrafficReport(Calendar.getInstance().getTimeInMillis(), (int) currentSegmentData.segmentId)
+                .getReportOfTrafficStatus(currentSegmentData.time, (int) currentSegmentData.segmentId)
                 .enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<ReportResponse>>> call, final Response<BaseResponse<List<ReportResponse>>> response) {
                         progressDialog.dismiss();
-//                        if (response.body() != null) {
-//                            updateData(response.body().getData());
-//                        }
-                        updateData(ReportRatingTest.getReportFromSegment(currentSegmentData.segmentId));
+                        if (response.body() != null) {
+                            updateData(response.body().getData());
+                        }
                     }
 
                     @Override

@@ -173,7 +173,7 @@ public class RatingActivity extends AppCompatActivity implements RatingDialogLis
     }
 
     private void getReport(final String velocity) {
-        CallApi.createService().getOldTrafficReport(date, segmentId).enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
+        CallApi.createService().getReportOfTrafficStatus(date, segmentId).enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
             @Override
             public void onResponse(Call<BaseResponse<List<ReportResponse>>> call, final Response<BaseResponse<List<ReportResponse>>> response) {
                 if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {

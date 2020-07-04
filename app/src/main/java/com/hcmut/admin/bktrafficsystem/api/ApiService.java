@@ -94,14 +94,14 @@ public interface ApiService {
                                                                  @Query("lng") double lng);
 
     @GET("api/report/segment/current-reports")
-    Call<BaseResponse<List<TrafficReportResponse>>> getTrafficReport(@Query("lat") double lat,
+    Call<BaseResponse<List<TrafficReportResponse>>> getCurrentTrafficReport(@Query("lat") double lat,
                                                                      @Query("lng") double lng);
 
     @GET("api/report/segment/report-detail")
     Call<BaseResponse<ReportResponse>> getDetailTrafficReport(@Query("id") String id);
 
     @GET("api/report/segment/reports")
-    Call<BaseResponse<List<ReportResponse>>> getOldTrafficReport(@Query("time") long date,
+    Call<BaseResponse<List<ReportResponse>>> getReportOfTrafficStatus(@Query("time") long date,
                                                                  @Query("segmentId") int segmentId);
 
     @FormUrlEncoded

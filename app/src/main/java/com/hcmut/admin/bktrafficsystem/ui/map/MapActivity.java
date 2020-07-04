@@ -1733,7 +1733,7 @@ public class MapActivity extends AppCompatActivity implements
         int zoom = (int) mMap.getCameraPosition().zoom;
         if (zoom > 13 && zoom < 22) {
             setDate();
-            callApi.getTrafficReport(position.latitude, position.longitude).enqueue(new Callback<BaseResponse<List<TrafficReportResponse>>>() {
+            callApi.getCurrentTrafficReport(position.latitude, position.longitude).enqueue(new Callback<BaseResponse<List<TrafficReportResponse>>>() {
                 @Override
                 public void onResponse(Call<BaseResponse<List<TrafficReportResponse>>> call, Response<BaseResponse<List<TrafficReportResponse>>> response) {
                     hideReportStatus();
