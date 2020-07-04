@@ -1,16 +1,24 @@
 package com.hcmut.admin.bktrafficsystem.ui.rating;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,8 +27,13 @@ import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.ReportRatingTest;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity;
-import com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
+import com.stepstone.apprating.AppRatingDialog;
+import com.stepstone.apprating.listener.RatingDialogListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,7 +48,8 @@ import retrofit2.Response;
  * Use the {@link RatingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RatingFragment extends Fragment {
+public class RatingFragment extends Fragment
+        implements MapActivity.OnBackPressCallback{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -51,6 +65,7 @@ public class RatingFragment extends Fragment {
     private boolean isOnlyOne = true;
     private RatingAdapter ratingAdapter;
     private TextView tvVelocity;
+    private ImageView imgBack;
 
     private ViewReportFragment.SegmentData currentSegmentData;
 
@@ -110,6 +125,7 @@ public class RatingFragment extends Fragment {
     private void addControls(View view) {
         tvVelocity = view.findViewById(R.id.tv_speed);
         recyclerView = view.findViewById(R.id.rvRating);
+        imgBack = view.findViewById(R.id.imgBack);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -119,23 +135,27 @@ public class RatingFragment extends Fragment {
     }
 
     private void addEvents() {
-        ratingAdapter.setOnItemClickListener(new RatingAdapter.OnItemClickListener() {
+        ratingAdapter.setOnItemClickedListener(new RatingAdapter.OnItemClickedListener() {
             @Override
-            public void onItemClick(int id, View view, int position, ArrayList<String> images) {
+            public void onItemClicked(int id, View view, ReportResponse reportData) {
                 switch (view.getId()) {
                     case R.id.btn_rating: {
-                        ReportResponse reportResponse = ratingAdapter.getItem(position);
-                        showRatingDialog(reportResponse);
+                        showRatingDialog(reportData);
                         break;
                     }
                     case R.id.img_list: {
                         Intent intent = new Intent(getActivity(), PreViewPhotoActivity.class);
-                        intent.putStringArrayListExtra("IMAGE", images);
+                        intent.putStringArrayListExtra("IMAGE", reportData.getImages());
                         startActivity(intent);
                         break;
                     }
                 }
-
+            }
+        });
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(RatingFragment.this).popBackStack();
             }
         });
     }
@@ -172,7 +192,55 @@ public class RatingFragment extends Fragment {
         }
     }
 
-    private void showRatingDialog(ReportResponse reportResponse) {
+    private void showRatingDialog(final ReportResponse reportResponse) {
+        Activity activity = getActivity();
+        if (activity instanceof MapActivity) {
+            MapActivity mapActivity = (MapActivity) activity;
+            mapActivity.setRatingDialogListener(new RatingDialogListener() {
+                @Override
+                public void onPositiveButtonClicked(int rate, @NotNull String comment) {
+                    reportResponse.performRating(getContext(), rate);
+                }
 
+                @Override
+                public void onNegativeButtonClicked() {
+
+                }
+
+                @Override
+                public void onNeutralButtonClicked() {
+
+                }
+            });
+            new AppRatingDialog.Builder()
+                    .setPositiveButtonText("Gửi")
+                    .setNegativeButtonText("Để sau")
+//                .setNeutralButtonText("Later")
+                    .setNumberOfStars(5)
+//                .setNoteDescriptions(Arrays.asList("Very Bad", "Not good", "Quite ok", "Very Good", "Excellent !!!"))
+                    .setDefaultRating(3)
+                    .setTitle("Đánh giá")
+                    .setDescription("Chọn và gửi phản hồi của bạn")
+                    .setCommentInputEnabled(true)
+//                .setDefaultComment("This app is pretty cool !")
+                    .setStarColor(R.color.yellow)
+//                .setNoteDescriptionTextColor(R.color.black)
+                    .setTitleTextColor(R.color.black)
+                    .setDescriptionTextColor(R.color.text_hint)
+                    .setHint("Để lại bình luận của bạn tại đây...")
+                    .setHintTextColor(R.color.text_hint)
+                    .setCommentTextColor(R.color.black)
+                    .setCommentBackgroundColor(R.color.bg_comment_rating)
+                    .setWindowAnimation(R.style.MyDialogFadeAnimation)
+                    .setCancelable(false)
+                    .setCanceledOnTouchOutside(true)
+                    .create(mapActivity)
+                    .show();
+        }
+    }
+
+    @Override
+    public void onBackPress() {
+        NavHostFragment.findNavController(RatingFragment.this).popBackStack();
     }
 }

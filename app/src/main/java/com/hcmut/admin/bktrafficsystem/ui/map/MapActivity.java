@@ -57,10 +57,8 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.navigation.Navigation;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -99,7 +97,6 @@ import com.hcmut.admin.bktrafficsystem.model.GoogleSignInData;
 import com.hcmut.admin.bktrafficsystem.model.MapUtils;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.PlaceAutoCompleteAdapter;
-import com.hcmut.admin.bktrafficsystem.model.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.model.RoadFinder;
 import com.hcmut.admin.bktrafficsystem.model.Route;
 import com.hcmut.admin.bktrafficsystem.model.param.FastReport;
@@ -116,7 +113,6 @@ import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.GpsDataSettingSharedRefUtil;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationServiceAlarmUtil;
 import com.hcmut.admin.bktrafficsystem.ui.InformationActivity;
 import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
@@ -125,15 +121,14 @@ import com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
 import com.hcmut.admin.bktrafficsystem.ui.report.CameraPhoto;
-import com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment;
-import com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationRequire;
 import com.hcmut.admin.bktrafficsystem.util.LocationUtil;
-import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.hcmut.admin.bktrafficsystem.util.Sound;
 import com.hcmut.admin.bktrafficsystem.util.TimeUtil;
+import com.stepstone.apprating.listener.RatingDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -161,7 +156,8 @@ public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         DirectionFinderListener,
         DatePickerDialog.OnDateSetListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        RatingDialogListener {
 
     private static final String TAG = "MapActivity";
 
@@ -355,6 +351,10 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
+    public void setRatingDialogListener(RatingDialogListener ratingDialogListener) {
+        this.ratingDialogListener = ratingDialogListener;
+    }
+
     /**
      * ================================================
      *
@@ -364,6 +364,7 @@ public class MapActivity extends AppCompatActivity implements
      */
     private ViewReportFragment.OnReportMakerClick reportMakerClickListener;
     private MarkerListener markerListener;
+    private RatingDialogListener ratingDialogListener;
     private List<OnMapReadyListener> onMapReadyListeners = new ArrayList<>();
 
     private ProbeForgroundServiceManager appForgroundServiceManager;
@@ -2147,6 +2148,27 @@ public class MapActivity extends AppCompatActivity implements
         } else {
             ctlToolbar.setVisibility(View.VISIBLE);
             customToolbar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onNegativeButtonClicked() {
+        if (ratingDialogListener != null) {
+            ratingDialogListener.onNegativeButtonClicked();
+        }
+    }
+
+    @Override
+    public void onNeutralButtonClicked() {
+        if (ratingDialogListener != null) {
+            ratingDialogListener.onNeutralButtonClicked();
+        }
+    }
+
+    @Override
+    public void onPositiveButtonClicked(int i, @NotNull String s) {
+        if (ratingDialogListener != null) {
+            ratingDialogListener.onPositiveButtonClicked(i, s);
         }
     }
 

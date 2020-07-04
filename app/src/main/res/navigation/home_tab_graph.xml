@@ -11,28 +11,11 @@
         android:label="fragment_map_feature"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_mapFeatureFragment_to_reportView"
-            app:destination="@id/reportView" />
-        <action
             android:id="@+id/action_mapFeatureFragment_to_searchPlaceFragment"
             app:destination="@id/searchPlaceFragment" />
         <action
             android:id="@+id/action_mapFeatureFragment_to_directionFragment"
             app:destination="@id/directionFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/reportView"
-        android:name="com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment"
-        android:label="ReportView" >
-        <action
-            android:id="@+id/action_reportView_to_ratingFragment"
-            app:destination="@id/ratingFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/ratingFragment"
-        android:name="com.hcmut.admin.bktrafficsystem.ui.rating.RatingFragment"
-        android:label="fragment_rating"
-        tools:layout="@layout/fragment_rating" >
     </fragment>
     <fragment
         android:id="@+id/searchPlaceFragment"

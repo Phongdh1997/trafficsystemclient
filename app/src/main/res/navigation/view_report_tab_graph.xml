@@ -5,6 +5,14 @@
 
     <fragment
         android:id="@+id/viewReportFragment"
-        android:name="com.hcmut.admin.bktrafficsystem.ui.report.ViewReportFragment"
-        android:label="ViewReportFragment" />
+        android:name="com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment"
+        android:label="ViewReportFragment" >
+        <action
+            android:id="@+id/action_viewReportFragment_to_ratingFragment2"
+            app:destination="@id/ratingFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/ratingFragment2"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.rating.RatingFragment"
+        android:label="RatingFragment" />
 </navigation>

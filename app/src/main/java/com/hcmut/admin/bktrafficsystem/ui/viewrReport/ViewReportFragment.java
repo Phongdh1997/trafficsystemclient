@@ -1,9 +1,9 @@
-package com.hcmut.admin.bktrafficsystem.ui.report;
+package com.hcmut.admin.bktrafficsystem.ui.viewrReport;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +18,18 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.hcmut.admin.bktrafficsystem.MyApplication;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.ViewReportHandler;
-import com.hcmut.admin.bktrafficsystem.model.point.Point;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingFragment;
+import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,8 +55,8 @@ public class ViewReportFragment extends Fragment {
     public GoogleMap map;
     private Button btnViewDetail;
     private TextView txtSpeed;
-    private Button btnGetStatus;
     private TextView txtStatusColor;
+    private Button btnRefresh;
     private ConstraintLayout clReview;
 
     private ViewReportHandler viewReportHandler;
@@ -155,9 +158,11 @@ public class ViewReportFragment extends Fragment {
     private void addControls(View view) {
         btnViewDetail = view.findViewById(R.id.btnViewDetail);
         txtSpeed = view.findViewById(R.id.tv_speed);
-        btnGetStatus = view.findViewById(R.id.btnGetStatus);
         clReview = view.findViewById(R.id.clReview);
         txtStatusColor = view.findViewById(R.id.txtStatusColor);
+        btnRefresh = view.findViewById(R.id.btnRefresh);
+
+        clearSelectedSegment();
     }
 
     private void addEvents(View view) {
@@ -168,37 +173,73 @@ public class ViewReportFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(RatingFragment.SEGMENT_DATA, selectedSegment);
                     NavHostFragment.findNavController(ViewReportFragment.this)
-                            .navigate(R.id.ratingFragment, bundle);
+                            .navigate(R.id.action_viewReportFragment_to_ratingFragment2, bundle);
                 }
             }
         });
-        btnGetStatus.setOnClickListener(new View.OnClickListener() {
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                renderUserReport();
+                refreshUserReport();
             }
         });
     }
 
     private void showSelectedUserReport(String [] datas) {
         try {
-            selectedSegment = new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2]);
+            setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2]));
             txtSpeed.setText("Vận tốc trung bình: " + datas[1] + "km/h");
             txtStatusColor.setBackgroundColor(Color.parseColor(datas[2]));
         } catch (Exception e) {}
+    }
+
+    private void setSelectedSegment(SegmentData selectedSegment) {
+        this.selectedSegment = selectedSegment;
+        if (!btnViewDetail.isEnabled()) {
+            btnViewDetail.setEnabled(true);
+        }
+    }
+
+    private void clearSelectedSegment() {
+        selectedSegment = null;
+        if (btnViewDetail.isEnabled()) {
+            btnViewDetail.setEnabled(false);
+        }
     }
 
     private void toggleReview(int state) {
         clReview.setVisibility(state);
     }
 
-    private void renderUserReport() {
-        final ProgressDialog progressDialog = ProgressDialog.show(
-                getContext(),
-                "",
-                getString(R.string.loading),
-                true);
-        viewReportHandler.getUserReport(10.778013, 106.656323, new ViewReportHandler.SegmentResultCallback() {
+    private void refreshUserReport() {
+        if (MapUtil.checkGPSTurnOn(getActivity(), MapActivity.androidExt)) {
+            final ProgressDialog progressDialog = ProgressDialog.show(
+                    getContext(),
+                    "",
+                    getString(R.string.loading),
+                    true);
+            LocationCollectionManager.getInstance(getContext())
+                    .getCurrentLocation(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                location.setLatitude(10.778013);
+                                location.setLongitude(106.656323);
+                                loadUserReport(new LatLng(location.getLatitude(), location.getLongitude()),
+                                        progressDialog);
+                            } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(getContext(),
+                                        "Không thể lấy vị trí, vui lòng thử lại",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void loadUserReport(final LatLng location, final ProgressDialog progressDialog) {
+        viewReportHandler.getUserReport(location.latitude, location.longitude, new ViewReportHandler.SegmentResultCallback() {
             @Override
             public void onSuccess(List<MarkerOptions> markerOptionsList) {
                 Marker marker;
@@ -208,12 +249,13 @@ public class ViewReportFragment extends Fragment {
                     marker.setTag(REPORT_RATING);
                 }
                 progressDialog.dismiss();
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
             }
 
             @Override
             public void onHaveNotResult() {
                 progressDialog.dismiss();
-                Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Không có dữ liệu báo cáo tại thời điểm này", Toast.LENGTH_SHORT).show();
             }
         });
     }
