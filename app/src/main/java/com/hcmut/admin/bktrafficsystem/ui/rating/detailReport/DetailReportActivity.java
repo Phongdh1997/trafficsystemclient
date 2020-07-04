@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
+import com.hcmut.admin.bktrafficsystem.model.param.RatingBody;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.PostRatingResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
@@ -209,7 +210,7 @@ public class DetailReportActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onPositiveButtonClicked(int rate, @NotNull String comment) {
         CallApi.createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
-                , reportId, (float) rate / 5).enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
+                , new RatingBody(reportId, (float) rate / 5)).enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<PostRatingResponse>> call, Response<BaseResponse<PostRatingResponse>> response) {
                 //TODO:

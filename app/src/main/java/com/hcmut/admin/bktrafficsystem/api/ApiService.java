@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.api;
 
+import com.hcmut.admin.bktrafficsystem.model.param.RatingBody;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.DirectRespose;
@@ -49,11 +50,10 @@ public interface ApiService {
     Call<Object> postGPSTrafficReport(@Header("Authorization") String Authorization,
                                                          @Body ReportRequest reportRequest);
 
+    @Headers("Content-Type: application/json")
     @POST("api/evaluation/add")
-    @FormUrlEncoded
     Call<BaseResponse<PostRatingResponse>> postRating(@Header("Authorization") String Authorization,
-                                                      @Field("report") String reportId,
-                                                      @Field("score") float score);
+                                                      @Body RatingBody ratingBody);
 
     @GET("api/user/get-user-info")
     Call<BaseResponse<UserResponse>> getUserInfo(@Header("Authorization") String Authorization);
@@ -101,8 +101,7 @@ public interface ApiService {
     Call<BaseResponse<ReportResponse>> getDetailTrafficReport(@Query("id") String id);
 
     @GET("api/report/segment/reports")
-    Call<BaseResponse<List<ReportResponse>>> getReportOfTrafficStatus(@Query("time") long date,
-                                                                 @Query("segmentId") int segmentId);
+    Call<BaseResponse<List<ReportResponse>>> getReportOfTrafficStatus(@Query("segmentId") int segmentId);
 
     @FormUrlEncoded
     @POST("api/notification/update-current-location")

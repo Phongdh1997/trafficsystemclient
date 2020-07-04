@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
+import com.hcmut.admin.bktrafficsystem.model.param.RatingBody;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.PostRatingResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
@@ -173,7 +174,7 @@ public class RatingActivity extends AppCompatActivity implements RatingDialogLis
     }
 
     private void getReport(final String velocity) {
-        CallApi.createService().getReportOfTrafficStatus(date, segmentId).enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
+        CallApi.createService().getReportOfTrafficStatus(segmentId).enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
             @Override
             public void onResponse(Call<BaseResponse<List<ReportResponse>>> call, final Response<BaseResponse<List<ReportResponse>>> response) {
                 if (response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
@@ -257,7 +258,7 @@ public class RatingActivity extends AppCompatActivity implements RatingDialogLis
     @Override
     public void onPositiveButtonClicked(int rate, @NotNull String comment) {
         CallApi.createService().postRating(SharedPrefUtils.getUser(this).getAccessToken()
-                , curReport.getId(), (float) rate / 5).enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
+                , new RatingBody(curReport.getId(), (float) rate / 5)).enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<PostRatingResponse>> call, Response<BaseResponse<PostRatingResponse>> response) {
                 //TODO

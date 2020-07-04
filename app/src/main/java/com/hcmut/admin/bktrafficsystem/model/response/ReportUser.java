@@ -9,7 +9,7 @@ public class ReportUser {
     private String name;
     @SerializedName("avatar")
     private String avatar;
-    @SerializedName("__v")
+    @SerializedName("evaluation_score")
     private float reputation;
 
     public ReportUser() {}

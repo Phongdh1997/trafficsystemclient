@@ -1,10 +1,14 @@
 package com.hcmut.admin.bktrafficsystem.model.response;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.annotations.SerializedName;
+import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
+import com.hcmut.admin.bktrafficsystem.model.param.RatingBody;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
@@ -52,20 +56,26 @@ public class ReportResponse {
 
     public void performRating(final Context context, int rate) {
         if (context != null) {
-            CallApi.createService().postRating(MapActivity.currentUser.getAccessToken(), id, (float) rate / 5)
+            final ProgressDialog progressDialog = ProgressDialog.show(
+                    context,
+                    "",
+                    context.getString(R.string.loading),
+                    true);
+            CallApi.createService().postRating(MapActivity.currentUser.getAccessToken(), new RatingBody(this.id, (float) rate / 5))
                     .enqueue(new Callback<BaseResponse<PostRatingResponse>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<PostRatingResponse>> call, Response<BaseResponse<PostRatingResponse>> response) {
-                            //TODO
-                            if (response.code() == 500) {
-                                Toast.makeText(context, "Bạn đã đánh giá báo cáo này rồi", Toast.LENGTH_SHORT).show();
-                            } else {
+                            progressDialog.dismiss();
+                            if (response.body() != null && response.body().getCode() == 200) {
                                 Toast.makeText(context, "Gửi thành công", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Gửi đánh giá thất bại, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<BaseResponse<PostRatingResponse>> call, Throwable t) {
+                            progressDialog.dismiss();
                             Toast.makeText(context, "Gửi đánh giá thất bại, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
                         }
                     });

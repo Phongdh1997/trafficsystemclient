@@ -79,6 +79,7 @@ public class ViewReportHandler {
 
                     @Override
                     public void onFailure(Call<StatusResponse<List<StatusRenderData>>> call, Throwable t) {
+                        t.printStackTrace();
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {

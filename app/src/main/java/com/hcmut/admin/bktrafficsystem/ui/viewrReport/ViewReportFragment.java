@@ -63,7 +63,6 @@ public class ViewReportFragment extends Fragment {
     private ViewReportHandler viewReportHandler;
     private ArrayList<Marker> userReportMarker = new ArrayList<>();
     private SegmentData selectedSegment;
-    private long requestTime = 0;
 
     private GoogleMap.InfoWindowAdapter infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
         @Override
@@ -195,7 +194,7 @@ public class ViewReportFragment extends Fragment {
 
     private void showSelectedUserReport(String [] datas) {
         try {
-            setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2], requestTime));
+            setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2]));
             txtSpeed.setText("Vận tốc trung bình: " + datas[1] + "km/h");
             txtStatusColor.setBackgroundColor(Color.parseColor(datas[2]));
         } catch (Exception e) {}
@@ -236,7 +235,6 @@ public class ViewReportFragment extends Fragment {
                             if (location != null) {
                                 location.setLatitude(10.7789167);
                                 location.setLongitude(106.657139);
-                                requestTime = Calendar.getInstance().getTimeInMillis();
                                 loadUserReport(new LatLng(location.getLatitude(), location.getLongitude()),
                                         progressDialog);
                             } else {
@@ -289,13 +287,11 @@ public class ViewReportFragment extends Fragment {
         public final int speed;
         public final String color;
         public final long segmentId;
-        public final long time;
 
-        public SegmentData(long segmentId, int speed, String color, long time) {
+        public SegmentData(long segmentId, int speed, String color) {
             this.speed = speed;
             this.color = color;
             this.segmentId = segmentId;
-            this.time = time;
         }
     }
 }
