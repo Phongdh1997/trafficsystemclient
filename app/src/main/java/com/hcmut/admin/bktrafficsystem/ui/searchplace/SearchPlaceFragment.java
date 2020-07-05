@@ -95,6 +95,12 @@ public class SearchPlaceFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (isHaveResult) {
             try {
                 int type = getArguments().getInt(SearchPlaceResultHandler.SEARCH_TYPE, -1);

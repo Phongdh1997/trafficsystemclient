@@ -74,6 +74,16 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof MapActivity) {

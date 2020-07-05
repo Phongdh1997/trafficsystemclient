@@ -78,6 +78,12 @@ public class HomeFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        try {
+            ((MapActivity) getContext()).showBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (isHaveSearchResult && searchPlaceResult != null) {
             handleSearchResult();
         } else {

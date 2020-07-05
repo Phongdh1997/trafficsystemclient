@@ -122,6 +122,11 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
         if (isHaveSearchResult) {
             handleSearchResult();
         } else {
+            try {
+                ((MapActivity) getContext()).showBottomNav();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             searchInputView.updateView();
         }
     }
@@ -344,6 +349,12 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     }
 
     public void clearReport() {
+        try {
+            ((MapActivity) getContext()).showBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         searchInputView.handleBackAndClearView(false);
         reportSendingHandler.clear();
         initOptionDataView();
@@ -373,6 +384,12 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
      * @param latLng
      */
     private void setReportLocation(LatLng latLng) {
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         reportLatLng = latLng;
         searchInputView.handleBackAndClearView(true);
         reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);

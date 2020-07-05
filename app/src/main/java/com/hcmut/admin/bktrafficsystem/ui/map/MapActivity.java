@@ -381,6 +381,7 @@ public class MapActivity extends AppCompatActivity implements
     private View homeTabWrapper;
     private View reportTabWrapper;
     private View viewReportTabWrapper;
+    private View settingTabWrapper;
     private BottomTab bottomTab;
     private BottomNavigation bottomNavigation;
     private FrameLayout flFragment;
@@ -406,10 +407,12 @@ public class MapActivity extends AppCompatActivity implements
         homeTabWrapper = findViewById(R.id.homeTabWrapper);
         reportTabWrapper = findViewById(R.id.reportTabWrapper);
         viewReportTabWrapper = findViewById(R.id.viewReportTabWrapper);
+        settingTabWrapper = findViewById(R.id.settingTabWrapper);
         bottomTab = new BottomTab.Builder(R.id.homeTabId)
                 .addTab(R.id.reportTabId, reportTabWrapper)
                 .addTab(R.id.homeTabId, homeTabWrapper)
                 .addTab(R.id.viewReportTabId, viewReportTabWrapper)
+                .addTab(R.id.settingTabId, settingTabWrapper)
                 .build();
 
         appForgroundServiceManager = new ProbeForgroundServiceManager(this);
@@ -493,22 +496,7 @@ public class MapActivity extends AppCompatActivity implements
         bottomNavigation.setMenuItemSelectionListener(new BottomNavigation.OnMenuItemSelectionListener() {
             @Override
             public void onMenuItemSelect(int menuItemId, int i1, boolean b) {
-                switch (menuItemId) {
-                    case R.id.homeTabId:
-                        bottomTab.showTab(R.id.homeTabId);
-                        break;
-                    case R.id.reportTabId:
-                        bottomTab.showTab(R.id.reportTabId);
-                        break;
-                    case R.id.viewReportTabId:
-                        bottomTab.showTab(R.id.viewReportTabId);
-                        break;
-                    case R.id.settingTabId:
-                        Toast.makeText(getApplicationContext(), "Setting", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
+                bottomTab.showTab(menuItemId);
             }
 
             @Override
@@ -519,13 +507,17 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     public void showBottomNav() {
-        flFragment.setPadding(0, 0, 0, bottomNavigation.getNavigationHeight());
-        bottomNavigation.setVisibility(View.VISIBLE);
+        if (bottomNavigation.getVisibility() != View.VISIBLE) {
+            bottomNavigation.setVisibility(View.VISIBLE);
+            flFragment.setPadding(0, 0, 0, bottomNavigation.getNavigationHeight());
+        }
     }
 
     public void hideBottomNav() {
-        bottomNavigation.setVisibility(View.GONE);
-        flFragment.setPadding(0, 0, 0, 0);
+        if (bottomNavigation.getVisibility() == View.VISIBLE) {
+            bottomNavigation.setVisibility(View.GONE);
+            flFragment.setPadding(0, 0, 0, 0);
+        }
     }
 
     public int getBottomNavHeight() {

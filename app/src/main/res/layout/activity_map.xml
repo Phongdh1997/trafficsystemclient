@@ -69,7 +69,12 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             android:id="@+id/settingTabWrapper">
-
+            <fragment
+                android:id="@+id/SettingFragmentTab"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navGraph="@navigation/setting_tab_graph"/>
         </FrameLayout>
     </FrameLayout>
 

@@ -109,6 +109,12 @@ public class DirectionFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         updateTimeAndDistanceView();
         if (isHaveSearchResult) {
             handleSearchResult();

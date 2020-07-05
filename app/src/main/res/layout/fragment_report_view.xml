@@ -24,6 +24,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="6dp"
             android:padding="10dp"
+            android:visibility="gone"
             android:src="@drawable/ic_arrow_back"
             app:layout_constraintEnd_toEndOf="@+id/guideline4"
             app:layout_constraintStart_toStartOf="parent"
