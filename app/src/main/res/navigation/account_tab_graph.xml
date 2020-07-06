@@ -9,5 +9,13 @@
         android:id="@+id/accountFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.account.AccountFragment"
         android:label="fragment_setting"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.profile.ProfileFragment"
+        android:label="ProfileFragment" />
 </navigation>

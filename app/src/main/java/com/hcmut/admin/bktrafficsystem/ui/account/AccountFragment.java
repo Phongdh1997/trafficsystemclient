@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
@@ -26,6 +28,7 @@ public class AccountFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private RoundedImageView imgAvatar;
+    private TextView txtManageAccount;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -77,12 +80,20 @@ public class AccountFragment extends Fragment {
         addEvents();
     }
 
-    private void addEvents() {
-
-    }
-
     private void addControls(View view) {
         imgAvatar = view.findViewById(R.id.imgAvatar);
         new ImageDownloader(imgAvatar).execute(MapActivity.currentUser.getImgUrl());
+        txtManageAccount = view.findViewById(R.id.txtManageAccount);
+    }
+
+
+    private void addEvents() {
+        txtManageAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(AccountFragment.this)
+                        .navigate(R.id.action_accountFragment_to_profileFragment);
+            }
+        });
     }
 }

@@ -229,16 +229,6 @@
             android:layout_marginTop="6dp"
             />
 
-<!--        <TextView-->
-<!--            android:id="@+id/border5"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="1dp"-->
-<!--            android:background="@color/gray"-->
-<!--            android:layout_marginTop="12dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/txtNote" />-->
-
         <TextView
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
