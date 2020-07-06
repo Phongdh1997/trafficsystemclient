@@ -17,7 +17,7 @@
         android:icon="@drawable/ic_view_report_tab"
         android:title="Xem Báo cáo" />
     <item
-        android:id="@+id/settingTabId"
+        android:id="@+id/accountTabId"
         android:icon="@drawable/ic_settings_tab"
         android:title="Cài đặt" />
 </menu>

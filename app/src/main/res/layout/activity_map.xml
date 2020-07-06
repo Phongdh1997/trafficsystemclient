@@ -68,13 +68,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:id="@+id/settingTabWrapper">
+            android:id="@+id/accountTabWrapper">
             <fragment
-                android:id="@+id/SettingFragmentTab"
+                android:id="@+id/accountFragmentTab"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:navGraph="@navigation/setting_tab_graph"/>
+                app:navGraph="@navigation/account_tab_graph"/>
         </FrameLayout>
     </FrameLayout>
 

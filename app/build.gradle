@@ -123,6 +123,8 @@ dependencies {
     implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
 
     implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:3.0.0'
+
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'

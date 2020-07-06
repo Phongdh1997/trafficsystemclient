@@ -381,7 +381,7 @@ public class MapActivity extends AppCompatActivity implements
     private View homeTabWrapper;
     private View reportTabWrapper;
     private View viewReportTabWrapper;
-    private View settingTabWrapper;
+    private View accountTabWrapper;
     private BottomTab bottomTab;
     private BottomNavigation bottomNavigation;
     private FrameLayout flFragment;
@@ -407,12 +407,12 @@ public class MapActivity extends AppCompatActivity implements
         homeTabWrapper = findViewById(R.id.homeTabWrapper);
         reportTabWrapper = findViewById(R.id.reportTabWrapper);
         viewReportTabWrapper = findViewById(R.id.viewReportTabWrapper);
-        settingTabWrapper = findViewById(R.id.settingTabWrapper);
+        accountTabWrapper = findViewById(R.id.accountTabWrapper);
         bottomTab = new BottomTab.Builder(R.id.homeTabId)
                 .addTab(R.id.reportTabId, reportTabWrapper)
                 .addTab(R.id.homeTabId, homeTabWrapper)
                 .addTab(R.id.viewReportTabId, viewReportTabWrapper)
-                .addTab(R.id.settingTabId, settingTabWrapper)
+                .addTab(R.id.accountTabId, accountTabWrapper)
                 .build();
 
         appForgroundServiceManager = new ProbeForgroundServiceManager(this);
