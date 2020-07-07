@@ -12,17 +12,8 @@ public class GoogleMapMemoryManager {
     private int moveCount = 0;
     private int lastZoom = 5;
 
-    private static GoogleMapMemoryManager mapMemoryManager;
-
-    private GoogleMapMemoryManager(SupportMapFragment mapFragment) {
+    public GoogleMapMemoryManager(SupportMapFragment mapFragment) {
         this.mapFragmentWeakReference = new WeakReference<>(mapFragment);
-    }
-
-    public static GoogleMapMemoryManager getInstance (SupportMapFragment mapFragment) {
-        if (mapMemoryManager == null) {
-            mapMemoryManager = new GoogleMapMemoryManager(mapFragment);
-        }
-        return mapMemoryManager;
     }
 
     public void onMapMove (float zoom) {

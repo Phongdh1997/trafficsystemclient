@@ -1,11 +1,18 @@
 package com.hcmut.admin.bktrafficsystem.model.user;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
+import com.hcmut.admin.bktrafficsystem.model.GoogleSignInData;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.UserResponse;
+import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
@@ -119,5 +126,36 @@ public class User {
                 MapActivity.androidExt.showErrorDialog(activity, "Có lỗi, cập nhật thất bại");
             }
         });
+    }
+
+    public void logout(final MapActivity activity) {
+        new AlertDialog.Builder(activity)
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn chắc chắn muốn đăng xuất?")
+                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (accountType) {
+                            case "facebook": {
+                                LoginManager.getInstance().logOut();
+                                break;
+                            }
+                            case "google": {
+                                GoogleSignInClient mGoogleSignInClient = GoogleSignInData.getValue();
+                                if (mGoogleSignInClient != null) {
+                                    mGoogleSignInClient.signOut();
+                                }
+                                break;
+                            }
+                        }
+                        SharedPrefUtils.saveUser(activity, null);
+                        Intent intent = new Intent(activity, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        activity.startActivity(intent);
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton("Hủy bỏ", null)
+                .show();
     }
 }

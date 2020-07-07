@@ -29,7 +29,7 @@ public class ProbeMapUi {
     public ProbeMapUi(Context context, @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
         this.gmaps = map;
         //tilerOverlayRender = new TilerOverlayRender(gmaps, context);
-        mapMemoryManager = GoogleMapMemoryManager.getInstance(mapFragment);
+        mapMemoryManager = new GoogleMapMemoryManager(mapFragment);
         refreshStatusHandler = new RefreshStatusHandler();
         statusRender = new MatrixStatusRenderImpl(gmaps, context);
     }

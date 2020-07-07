@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.account;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
@@ -33,6 +35,8 @@ public class AccountFragment extends Fragment {
     private TextView txtName;
     private TextView txtEmail;
     private TextView txtManageAccount;
+    private TextView txtCallVOH;
+    private TextView txtLogout;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -88,7 +92,7 @@ public class AccountFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         addControls(view);
-        addEvents();
+        addEvents(view);
     }
 
     private void addControls(View view) {
@@ -96,9 +100,11 @@ public class AccountFragment extends Fragment {
         txtManageAccount = view.findViewById(R.id.txtManageAccount);
         txtName = view.findViewById(R.id.txtName);
         txtEmail = view.findViewById(R.id.txtEmail);
+        txtCallVOH = view.findViewById(R.id.txtCallVOH);
+        txtLogout = view.findViewById(R.id.txtLogout);
     }
 
-    private void addEvents() {
+    private void addEvents(View view) {
         txtManageAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +112,25 @@ public class AccountFragment extends Fragment {
                         .navigate(R.id.action_accountFragment_to_profileFragment);
             }
         });
+        try {
+            final MapActivity mapActivity = (MapActivity) view.getContext();
+            txtCallVOH.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    CallPhone callPhone = new CallPhone(mapActivity);
+                    callPhone.checkCallPhonePermisstion();
+                }
+            });
+            txtLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MapActivity.currentUser.logout(mapActivity);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void updateView() {
