@@ -386,6 +386,11 @@ public class MapActivity extends AppCompatActivity implements
     private BottomNavigation bottomNavigation;
     private FrameLayout flFragment;
 
+    private androidx.fragment.app.Fragment homeFragment;
+    private androidx.fragment.app.Fragment reportFragment;
+    private androidx.fragment.app.Fragment viewReportFragment;
+    private androidx.fragment.app.Fragment accountReportFragment;
+
 
     private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -404,6 +409,11 @@ public class MapActivity extends AppCompatActivity implements
      * Init probe module variable to use
      */
     private void initProbeModuleVariable() {
+        homeFragment = getSupportFragmentManager().findFragmentById(R.id.homeFragmentTab);
+        reportFragment = getSupportFragmentManager().findFragmentById(R.id.reportFragmentTab);
+        viewReportFragment = getSupportFragmentManager().findFragmentById(R.id.viewReportFragmentTab);
+        accountReportFragment = getSupportFragmentManager().findFragmentById(R.id.accountFragmentTab);
+
         homeTabWrapper = findViewById(R.id.homeTabWrapper);
         reportTabWrapper = findViewById(R.id.reportTabWrapper);
         viewReportTabWrapper = findViewById(R.id.viewReportTabWrapper);
@@ -1950,16 +1960,10 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        androidx.fragment.app.Fragment homeFragment = getSupportFragmentManager()
-                .findFragmentById(R.id.homeFragmentTab);
-        androidx.fragment.app.Fragment reportFragment = getSupportFragmentManager()
-                .findFragmentById(R.id.reportFragmentTab);
-        androidx.fragment.app.Fragment viewReportFragment = getSupportFragmentManager()
-                .findFragmentById(R.id.viewReportFragmentTab);
-
         if (onNavigationBackPress(homeFragment) ||
                 onNavigationBackPress(reportFragment) ||
-                onNavigationBackPress(viewReportFragment)) {
+                onNavigationBackPress(viewReportFragment) ||
+                onNavigationBackPress(accountReportFragment)) {
             return;
         }
 

@@ -17,5 +17,14 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.profile.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.profile.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
 </navigation>

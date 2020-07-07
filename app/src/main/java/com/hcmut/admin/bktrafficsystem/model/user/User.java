@@ -1,5 +1,18 @@
 package com.hcmut.admin.bktrafficsystem.model.user;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+
+import com.hcmut.admin.bktrafficsystem.api.CallApi;
+import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.model.response.UserResponse;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class User {
     private String accountType;
     private Boolean mLocationPermissionsGranted;
@@ -81,5 +94,30 @@ public class User {
 
     public void setEvaluation_score(int evaluation_score) {
         this.evaluation_score = evaluation_score;
+    }
+
+    public void updateUser(final Activity activity, String name, String phone) {
+        if (activity == null) return;
+
+        final ProgressDialog progressDialog = ProgressDialog.show(activity, "", "Đang lưu thông tin...", true);
+        CallApi.createService().updateUserInfo(accessToken, name, null, null, phone).enqueue(new Callback<BaseResponse<UserResponse>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<UserResponse>> call, Response<BaseResponse<UserResponse>> response) {
+                progressDialog.dismiss();
+                if (response.body() != null && response.body().getCode() == 200) {
+                    UserResponse userResponse = response.body().getData();
+                    phoneNumber = userResponse.getPhoneNumber();
+                    userName = userResponse.getName();
+                    SharedPrefUtils.saveUser(activity.getApplicationContext(), User.this);
+                    MapActivity.androidExt.showSuccess(activity, "Lưu thành công");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<UserResponse>> call, Throwable t) {
+                progressDialog.dismiss();
+                MapActivity.androidExt.showErrorDialog(activity, "Có lỗi, cập nhật thất bại");
+            }
+        });
     }
 }

@@ -11,8 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -28,6 +30,8 @@ public class AccountFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private RoundedImageView imgAvatar;
+    private TextView txtName;
+    private TextView txtEmail;
     private TextView txtManageAccount;
 
     // TODO: Rename and change types of parameters
@@ -73,6 +77,13 @@ public class AccountFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        updateView();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -82,10 +93,10 @@ public class AccountFragment extends Fragment {
 
     private void addControls(View view) {
         imgAvatar = view.findViewById(R.id.imgAvatar);
-        new ImageDownloader(imgAvatar).execute(MapActivity.currentUser.getImgUrl());
         txtManageAccount = view.findViewById(R.id.txtManageAccount);
+        txtName = view.findViewById(R.id.txtName);
+        txtEmail = view.findViewById(R.id.txtEmail);
     }
-
 
     private void addEvents() {
         txtManageAccount.setOnClickListener(new View.OnClickListener() {
@@ -95,5 +106,19 @@ public class AccountFragment extends Fragment {
                         .navigate(R.id.action_accountFragment_to_profileFragment);
             }
         });
+    }
+
+    private void updateView() {
+        txtName.setText(MapActivity.currentUser.getUserName());
+        txtEmail.setText(MapActivity.currentUser.getUserEmail());
+
+        try {
+            GlideApp.with(txtName.getContext())
+                    .load(MapActivity.currentUser.getImgUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .into(imgAvatar);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

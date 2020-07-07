@@ -18,6 +18,6 @@
         android:title="Xem Báo cáo" />
     <item
         android:id="@+id/accountTabId"
-        android:icon="@drawable/ic_settings_tab"
-        android:title="Cài đặt" />
+        android:icon="@drawable/ic_account_box"
+        android:title="Tài khoản" />
 </menu>
