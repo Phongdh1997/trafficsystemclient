@@ -37,6 +37,7 @@ public class AccountFragment extends Fragment {
     private TextView txtManageAccount;
     private TextView txtCallVOH;
     private TextView txtLogout;
+    private TextView txtSetting;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -102,6 +103,7 @@ public class AccountFragment extends Fragment {
         txtEmail = view.findViewById(R.id.txtEmail);
         txtCallVOH = view.findViewById(R.id.txtCallVOH);
         txtLogout = view.findViewById(R.id.txtLogout);
+        txtSetting = view.findViewById(R.id.txtSetting);
     }
 
     private void addEvents(View view) {
@@ -110,6 +112,13 @@ public class AccountFragment extends Fragment {
             public void onClick(View view) {
                 NavHostFragment.findNavController(AccountFragment.this)
                         .navigate(R.id.action_accountFragment_to_profileFragment);
+            }
+        });
+        txtSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(AccountFragment.this)
+                        .navigate(R.id.action_accountFragment_to_settingFragment);
             }
         });
         try {
@@ -130,7 +139,6 @@ public class AccountFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void updateView() {

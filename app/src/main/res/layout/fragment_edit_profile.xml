@@ -13,8 +13,7 @@
         android:layout_weight="1"
         android:padding="16dp"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_back_white"
-        android:tint="@color/black"
+        android:src="@drawable/ic_arrow_back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
