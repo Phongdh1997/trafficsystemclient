@@ -20,26 +20,23 @@ public class ProbeForgroundServiceManager {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 888;
     public static final int MUTILE_PERMISSION_REQUEST = 777;
-    private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    private static final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
 
-    private Activity activity;
-
-    public ProbeForgroundServiceManager(Activity activity) {
-        this.activity = activity;
+    public ProbeForgroundServiceManager() {
     }
 
     /**
      *
      */
-    public void initLocationService() {
-        if (isServiceRunning()) {
+    public static void initLocationService(MapActivity activity) {
+        if (isServiceRunning(activity)) {
             return;
         }
 
         // check Google play service
-        if (!isPlayServicesInstalled()) {
+        if (!isPlayServicesInstalled(activity)) {
             // notification to user about google play service is not installed
             Toast.makeText(activity, "Google play service is not installed", Toast.LENGTH_SHORT).show();
             return;
@@ -53,7 +50,7 @@ public class ProbeForgroundServiceManager {
         }
     }
 
-    public boolean handleAppForgroundPermission(int requestCode, String[] permissions, int[] grantResults) {
+    public static boolean handleAppForgroundPermission(MapActivity activity, int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MUTILE_PERMISSION_REQUEST) {
             if ((grantResults.length > 2) && (grantResults[0] + grantResults[1] + grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
                 startLocationService(activity.getApplicationContext());
@@ -63,7 +60,7 @@ public class ProbeForgroundServiceManager {
         return false;
     }
 
-    private boolean isServiceRunning() {
+    private static boolean isServiceRunning(MapActivity activity) {
         ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
         if (manager == null) {
             return false;
@@ -79,7 +76,7 @@ public class ProbeForgroundServiceManager {
     /**
      *  @return:    true if google play service is installed else return false
      */
-    private boolean isPlayServicesInstalled() {
+    private static boolean isPlayServicesInstalled(MapActivity activity) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(activity);
         if (resultCode != ConnectionResult.SUCCESS) {
@@ -93,7 +90,7 @@ public class ProbeForgroundServiceManager {
         return true;
     }
 
-    private boolean hasPermisson(Context context, String... permissions) {
+    private static boolean hasPermisson(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission)

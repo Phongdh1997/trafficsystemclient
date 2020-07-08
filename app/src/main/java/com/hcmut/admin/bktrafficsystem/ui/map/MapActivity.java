@@ -59,6 +59,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.preference.PreferenceManager;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -367,7 +368,6 @@ public class MapActivity extends AppCompatActivity implements
     private RatingDialogListener ratingDialogListener;
     private List<OnMapReadyListener> onMapReadyListeners = new ArrayList<>();
 
-    private ProbeForgroundServiceManager appForgroundServiceManager;
     private AppFeaturePopup appFeaturePopup;
     private ProbeMapUi probeMapUi;
 
@@ -391,19 +391,6 @@ public class MapActivity extends AppCompatActivity implements
     private androidx.fragment.app.Fragment viewReportFragment;
     private androidx.fragment.app.Fragment accountReportFragment;
 
-
-    private CompoundButton.OnCheckedChangeListener swithCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if (b) {
-                initLocationService();
-            } else {
-                stopLoctionService();
-            }
-            LocationServiceAlarmUtil.cancelLocationAlarm(getApplicationContext());
-        }
-    };
-
     /**
      *
      * Init probe module variable to use
@@ -424,8 +411,6 @@ public class MapActivity extends AppCompatActivity implements
                 .addTab(R.id.viewReportTabId, viewReportTabWrapper)
                 .addTab(R.id.accountTabId, accountTabWrapper)
                 .build();
-
-        appForgroundServiceManager = new ProbeForgroundServiceManager(this);
 
         appFeaturePopup = new AppFeaturePopup(this);
         btnOption = findViewById(R.id.btnOption);
@@ -471,7 +456,6 @@ public class MapActivity extends AppCompatActivity implements
             }
 
         });
-        btnGPSColectionSwitch.setOnCheckedChangeListener(swithCheckedChangedListener);
         AppForegroundService.getMovingStateLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean isMoving) {
@@ -495,9 +479,11 @@ public class MapActivity extends AppCompatActivity implements
         });
 
         // show dialog ask user to turn on collect GPS data
-        boolean gpsDataSetting = GpsDataSettingSharedRefUtil.loadGpsDataSetting(getApplicationContext());
-        if (gpsDataSetting) {
-            initLocationService();
+        boolean gpsCollectionSwithValue = PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swGpsCollectionRef), true);
+        if (gpsCollectionSwithValue) {
+            ProbeForgroundServiceManager.initLocationService(this);
         }
 
         flFragment = findViewById(R.id.flFragment);
@@ -550,7 +536,6 @@ public class MapActivity extends AppCompatActivity implements
         btnGPSColectionSwitch.setOnCheckedChangeListener(null);
         btnGPSColectionSwitch.setChecked(value);
         GpsDataSettingSharedRefUtil.saveGpsDataSetting(getApplicationContext(), value);
-        btnGPSColectionSwitch.setOnCheckedChangeListener(swithCheckedChangedListener);
     }
 
     @Override
@@ -565,14 +550,6 @@ public class MapActivity extends AppCompatActivity implements
         return mMap;
     }
 
-    public void initLocationService() {
-        appForgroundServiceManager.initLocationService();
-    }
-
-    public void stopLoctionService() {
-        ProbeForgroundServiceManager.stopLocationService(getApplicationContext());
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -585,7 +562,7 @@ public class MapActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case ProbeForgroundServiceManager.MUTILE_PERMISSION_REQUEST:
-                appForgroundServiceManager.handleAppForgroundPermission(requestCode, permissions, grantResults);
+                ProbeForgroundServiceManager.handleAppForgroundPermission(MapActivity.this, requestCode, permissions, grantResults);
                 return;
             case CallPhone.CALL_PHONE_CODE:
                 boolean isHavePermission = CallPhone.handleCallPhonePermission(grantResults);
