@@ -100,12 +100,14 @@ public class CameraPhoto {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
-            RequestBody requestBody = RequestBody.create(byteArray, MediaType.parse("image/*"));
+            RequestBody requestBody = RequestBody.create(byteArray, MediaType.parse("image/png"));
+            // MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", null, requestBody);
             CallApi.createService().uploadFile(requestBody)
                     .enqueue(new Callback<BaseResponse<String>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {
                             // TODO: neu thanh cong thi set image vao imageview
+                            Log.e("fafa", response.toString());
                             if (response.body() != null &&
                                     response.body().getData() != null &&
                                     response.code() == 200) {

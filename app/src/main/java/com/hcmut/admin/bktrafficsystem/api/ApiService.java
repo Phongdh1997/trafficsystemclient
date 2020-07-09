@@ -120,7 +120,6 @@ public interface ApiService {
                                                           @Query("type") String type);
 
     @Multipart
-    @Headers("Content-Type: application/x-www-form-urlencoded")
     @POST("api/file/upload")
     Call<BaseResponse<String>> uploadFile(@Part("file") RequestBody file);
 }
