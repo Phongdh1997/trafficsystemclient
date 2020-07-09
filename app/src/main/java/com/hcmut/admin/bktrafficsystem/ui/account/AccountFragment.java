@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,8 @@ public class AccountFragment extends Fragment {
     private TextView txtCallVOH;
     private TextView txtLogout;
     private TextView txtSetting;
+    private TextView txtViewGuiding;
+    private TextView txtManageVoucher;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -104,6 +107,8 @@ public class AccountFragment extends Fragment {
         txtCallVOH = view.findViewById(R.id.txtCallVOH);
         txtLogout = view.findViewById(R.id.txtLogout);
         txtSetting = view.findViewById(R.id.txtSetting);
+        txtViewGuiding = view.findViewById(R.id.txtViewGuiding);
+        txtManageVoucher = view.findViewById(R.id.txtManageVoucher);
     }
 
     private void addEvents(View view) {
@@ -119,6 +124,18 @@ public class AccountFragment extends Fragment {
             public void onClick(View view) {
                 NavHostFragment.findNavController(AccountFragment.this)
                         .navigate(R.id.action_accountFragment_to_settingFragment);
+            }
+        });
+        txtViewGuiding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
+            }
+        });
+        txtManageVoucher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
             }
         });
         try {
