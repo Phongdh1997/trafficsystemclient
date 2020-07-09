@@ -1,42 +1,35 @@
 package com.hcmut.admin.bktrafficsystem.ui.rating;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
-import com.hcmut.admin.bktrafficsystem.model.ReportRatingTest;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity;
+import com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist.RatingAdapter;
 import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;

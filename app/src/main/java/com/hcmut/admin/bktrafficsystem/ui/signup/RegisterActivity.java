@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui;
+package com.hcmut.admin.bktrafficsystem.ui.signup;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;

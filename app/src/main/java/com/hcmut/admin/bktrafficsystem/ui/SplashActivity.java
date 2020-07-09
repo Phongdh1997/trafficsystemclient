@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hcmut.admin.bktrafficsystem.ui.login.LoginActivity;
+
 import java.util.Calendar;
 
 public class SplashActivity extends AppCompatActivity {

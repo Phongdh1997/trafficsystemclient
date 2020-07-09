@@ -1,28 +1,17 @@
-package com.hcmut.admin.bktrafficsystem.ui.rating;
+package com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListDownloader;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListSmartDownloader;
-import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RatingAdapter extends RecyclerView.Adapter<RatingViewHolder> {
@@ -81,7 +70,7 @@ public class RatingAdapter extends RecyclerView.Adapter<RatingViewHolder> {
         void onItemClick(int id, View view, int position, ArrayList<String> images);
     }
 
-    void setOnItemClickListener(final OnItemClickListener itemClickListener) {
+    public void setOnItemClickListener(final OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -89,7 +78,7 @@ public class RatingAdapter extends RecyclerView.Adapter<RatingViewHolder> {
         void onItemClicked(int viewId, View view, ReportResponse reportData);
     }
 
-    void setOnItemClickedListener(OnItemClickedListener itemClickedListener) {
+    public void setOnItemClickedListener(OnItemClickedListener itemClickedListener) {
         this.itemClickedListener = itemClickedListener;
     }
 }

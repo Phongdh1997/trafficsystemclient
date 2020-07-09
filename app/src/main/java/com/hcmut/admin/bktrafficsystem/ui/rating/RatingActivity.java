@@ -26,6 +26,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.PostRatingResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity;
+import com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist.RatingAdapter;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.hcmut.admin.bktrafficsystem.util.TimeUtil;
 import com.stepstone.apprating.AppRatingDialog;

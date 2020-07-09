@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.rating;
+package com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist;
 
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +13,7 @@ import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageListSmartDownloader;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist.RatingAdapter;
 
 public class RatingViewHolder extends RecyclerView.ViewHolder {
 

@@ -34,7 +34,7 @@
 
         </activity>
         <activity
-            android:name="com.hcmut.admin.bktrafficsystem.ui.LoginActivity"
+            android:name="com.hcmut.admin.bktrafficsystem.ui.login.LoginActivity"
             android:screenOrientation="portrait">
 
         </activity>
@@ -53,9 +53,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.RegisterActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.InformationActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.signup.RegisterActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity"
             android:screenOrientation="portrait">

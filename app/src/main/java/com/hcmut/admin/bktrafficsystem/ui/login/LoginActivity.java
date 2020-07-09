@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui;
+package com.hcmut.admin.bktrafficsystem.ui.login;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +41,8 @@ import com.hcmut.admin.bktrafficsystem.model.param.LoginParam;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.LoginResponse;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
+import com.hcmut.admin.bktrafficsystem.ui.signup.RegisterActivity;
+import com.hcmut.admin.bktrafficsystem.ui.SplashActivity;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 

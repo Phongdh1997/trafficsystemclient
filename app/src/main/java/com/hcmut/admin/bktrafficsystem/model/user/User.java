@@ -12,7 +12,7 @@ import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.GoogleSignInData;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.UserResponse;
-import com.hcmut.admin.bktrafficsystem.ui.LoginActivity;
+import com.hcmut.admin.bktrafficsystem.ui.login.LoginActivity;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
