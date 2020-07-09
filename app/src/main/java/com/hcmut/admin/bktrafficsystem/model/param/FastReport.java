@@ -22,17 +22,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FastReport {
-
     public PersonSharing personSharing;
-
     public int speed;
-
     public String address;
-
     public double longitude;
-
     public double latitude;
-
     public int distance;
 
     public static class PersonSharing {

@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by Admin on 10/5/2018.
  */
-
+@Deprecated
 public class RoadFinder {
     private GeoApiContext mContext;
     private MapActivity mapActivity;
@@ -55,11 +55,6 @@ public class RoadFinder {
         @Override
         protected void onPostExecute(SnappedPoint snappedPoint) {
             super.onPostExecute(snappedPoint);
-            //Toast.makeText(mapActivity, "My place ID:" + snappedPoint.placeId, Toast.LENGTH_LONG).show();
-            if (isFindPoint) mapActivity.addMarker(snappedPoint);
-            else mapActivity.onSnappedRoadSuccess(snappedPoint);
-            //mapActivity.updateTraffic(new TrafficData(point, radius, currentVelocity, trafficLevel, duration, snappedPoint.placeId));
-            //return;
         }
 
         @Override

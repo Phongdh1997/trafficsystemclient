@@ -7,18 +7,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
-import com.hcmut.admin.bktrafficsystem.model.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.UserLocation;
-import com.hcmut.admin.bktrafficsystem.ui.UserInputFormFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment;
-import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
