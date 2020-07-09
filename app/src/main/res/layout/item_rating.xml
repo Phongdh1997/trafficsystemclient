@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <com.hcmut.admin.bktrafficsystem.util.CircleImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/img_avatar"
         android:layout_width="41dp"
         android:layout_height="41dp"

@@ -5,37 +5,25 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
-import com.hcmut.admin.bktrafficsystem.util.Async_ReSizeImageFromBitmap;
-import com.hcmut.admin.bktrafficsystem.util.Async_ResizeImageFromUri;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,7 +32,6 @@ import retrofit2.Response;
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.hcmut.admin.bktrafficsystem.util.ImageUtils.getGalleryIntents;
-import static com.hcmut.admin.bktrafficsystem.util.ImageUtils.getRealPathFromURI;
 
 public class CameraPhoto {
     public static final int IMAGE_PERMISSION_CODE = 111;
