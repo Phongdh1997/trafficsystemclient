@@ -35,7 +35,6 @@ import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -71,7 +70,7 @@ public class ViewReportFragment extends Fragment {
         @Override
         public View getInfoWindow(Marker marker) {
             if (REPORT_RATING.equals(marker.getTag())) {
-                View v = getLayoutInflater().inflate(R.layout.layout_info_window, null);
+                View v = getLayoutInflater().inflate(R.layout.layout_marker_info_tile, null);
                 TextView tvInfo = v.findViewById(R.id.tvInfo);
                 String [] temp = marker.getTitle().split("/");
                 try {

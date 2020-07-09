@@ -2,7 +2,6 @@ package com.hcmut.admin.bktrafficsystem.model.response;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.annotations.SerializedName;
@@ -10,8 +9,6 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.param.RatingBody;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity;
-import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;

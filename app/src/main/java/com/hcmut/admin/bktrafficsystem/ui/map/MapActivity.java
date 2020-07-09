@@ -10,19 +10,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.libraries.places.api.Places;
 import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.report.CameraPhoto;
 import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
@@ -99,6 +99,9 @@ public class MapActivity extends AppCompatActivity implements
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
+        }
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.gg_api_key));
         }
 
         homeFragment = getSupportFragmentManager().findFragmentById(R.id.homeFragmentTab);

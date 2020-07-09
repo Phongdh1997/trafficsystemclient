@@ -33,18 +33,18 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name="com.hcmut.admin.bktrafficsystem.ui.login.LoginActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"/>
 
-        </activity>
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.map.MapActivity"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity"
-            android:screenOrientation="portrait"/>
+
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity"
             android:screenOrientation="portrait"/>
+
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity"
             android:screenOrientation="portrait">
             <intent-filter>

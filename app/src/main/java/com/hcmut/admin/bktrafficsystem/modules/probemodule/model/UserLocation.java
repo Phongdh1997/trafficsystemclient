@@ -2,14 +2,14 @@ package com.hcmut.admin.bktrafficsystem.modules.probemodule.model;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
-import afu.org.checkerframework.checker.nullness.qual.NonNull;
 
 public class UserLocation {
 
