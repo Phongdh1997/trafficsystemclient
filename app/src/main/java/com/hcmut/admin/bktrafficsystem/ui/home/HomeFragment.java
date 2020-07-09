@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.ui.home;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +16,22 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.MarkerCreating;
 import com.hcmut.admin.bktrafficsystem.model.SearchPlaceHandler;
+import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
+import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,6 +55,7 @@ public class HomeFragment extends Fragment
     private GoogleMap map;
     private FloatingActionButton btnDirect;
     private SearchInputView searchInputView;
+    private FloatingActionButton btnCurrentLocation;
 
     private MarkerCreating searchMarkerCreating;
 
@@ -143,6 +149,7 @@ public class HomeFragment extends Fragment
 
         btnDirect = view.findViewById(R.id.btnDirect);
         searchInputView = view.findViewById(R.id.searchInputView);
+        btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation);
         addEvents();
     }
 
@@ -177,6 +184,33 @@ public class HomeFragment extends Fragment
             public void onClick(View view) {
                 NavHostFragment.findNavController(HomeFragment.this)
                         .navigate(R.id.directionFragment);
+            }
+        });
+        btnCurrentLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MapUtil.checkGPSTurnOn(getActivity(), MapActivity.androidExt)) {
+                    LocationCollectionManager.getInstance(getContext())
+                            .getCurrentLocation(new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    if (location != null) {
+                                        if (map != null) {
+                                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                                    new LatLng(location.getLatitude(), location.getLongitude()), 18));
+                                        } else {
+                                            Toast.makeText(getContext(),
+                                                    "Bản đồ chưa được tải lên, vui lòng thử lại",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(),
+                                                "Không thể lấy vị trí, vui lòng thử lại",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
             }
         });
     }
