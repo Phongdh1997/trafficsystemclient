@@ -19,7 +19,6 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import java.util.Map;
@@ -80,12 +79,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         trafficNotificationFactory.sendNotification(notification, DIRECTION_NOTIFICATION_ID);
     }
 
+    // TODO: start Detail Report Fragment
     private void pushReportNotification(RemoteMessage remoteMessage) {
         String title = "Đánh giá";
         String reportId = remoteMessage.getData().get(REPORT_ID_FIELD);
         PendingIntent pendingIntent = null;
         if (reportId != null) {
-            Intent intent = new Intent(this, DetailReportActivity.class);
+            Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("REPORT_ID", Integer.parseInt(reportId));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,

@@ -154,6 +154,7 @@ public class MapActivity extends AppCompatActivity implements
         mMap = googleMap;
         mMap.setMaxZoomPreference(ProbeMapUi.MAX_ZOOM_LEVEL);
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
         for (OnMapReadyListener listener : onMapReadyListeners) {
             listener.onMapReady(googleMap);
         }
