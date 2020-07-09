@@ -160,7 +160,16 @@ public class DirectionFragment extends Fragment
                         @Override
                         public void onFail() {
                             try {
-                                Toast.makeText(getContext(), "Không thể tìm thấy đường đến đó, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {}
+                        }
+
+                        @Override
+                        public void onHaveNoData() {
+                            try {
+                                Toast.makeText(getContext(), "Đoạn đường không được hỗ trợ hoặc" +
+                                        " Không thể tìm thấy đường đến đó, vui lòng thử lại!", Toast.LENGTH_LONG)
+                                        .show();
                             } catch (Exception e) {}
                         }
                     });
