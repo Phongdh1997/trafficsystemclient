@@ -195,8 +195,7 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
         btnChooseOnMap = view.findViewById(R.id.btnChooseOnMap);
         btnFastReport = view.findViewById(R.id.btnFastReport);
         searchInputView = view.findViewById(R.id.searchInputView);
-        reportSendingHandler = new ReportSendingHandler(
-                view.getContext().getApplicationContext(),
+        reportSendingHandler = new ReportSendingHandler(view.getContext(),
                 (ConstraintLayout) view.findViewById(R.id.clCollectLocation),
                 (ConstraintLayout) view.findViewById(R.id.clCollectReportData));
 

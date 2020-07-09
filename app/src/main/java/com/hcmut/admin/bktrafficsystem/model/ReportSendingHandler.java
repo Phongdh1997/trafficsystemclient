@@ -155,7 +155,15 @@ public class ReportSendingHandler {
                                 e.printStackTrace();
                             }
                         }
-                        Toast.makeText(context, "Đoạn đường chưa được hổ trợ, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        if (context instanceof MapActivity) {
+                            MapActivity.androidExt.showErrorDialog((MapActivity) context, "Điểm đã chọn không thuộc con đường hoặc" +
+                                    " đoạn đường chưa được hổ trợ, vui lòng thử lại");
+                        } else {
+                            Toast.makeText(context, "Điểm đã chọn không thuộc con đường hoặc" +
+                                    " đoạn đường chưa được hổ trợ, vui lòng thử lại", Toast.LENGTH_LONG)
+                                    .show();
+                        }
+
                     }
 
                     @Override
