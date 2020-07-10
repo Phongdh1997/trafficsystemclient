@@ -1,7 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.direction;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,10 +25,9 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.model.MarkerCreating;
-import com.hcmut.admin.bktrafficsystem.model.SearchDirectionHandler;
-import com.hcmut.admin.bktrafficsystem.model.response.Coord;
-import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
+import com.hcmut.admin.bktrafficsystem.business.MarkerCreating;
+import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.Coord;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;

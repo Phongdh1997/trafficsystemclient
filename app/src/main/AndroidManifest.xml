@@ -69,7 +69,7 @@
             android:value="AIzaSyAbiDKZxP7G6JL30ec2gii9_2FaMEM0Efg" />
 
         <meta-data
-            android:name="com.hcmut.admin.bktrafficsystem.modules.data.model.glide.TrafficGlideModule"
+            android:name="com.hcmut.admin.bktrafficsystem.business.glide.TrafficGlideModule"
             android:value="TrafficGlideModule" />
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
@@ -103,7 +103,7 @@
 
         <!-- [START firebase_service] -->
          <service
-            android:name="com.hcmut.admin.bktrafficsystem.model.MyFirebaseMessagingService"
+            android:name="com.hcmut.admin.bktrafficsystem.service.FirebaseCloudMessageService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

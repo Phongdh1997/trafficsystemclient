@@ -9,9 +9,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
-import com.hcmut.admin.bktrafficsystem.modules.data.model.ImageDownloader;
-import com.hcmut.admin.bktrafficsystem.modules.data.model.ImageListSmartDownloader;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.business.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.business.ImageListSmartDownloader;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 public class RatingViewHolder extends RecyclerView.ViewHolder {

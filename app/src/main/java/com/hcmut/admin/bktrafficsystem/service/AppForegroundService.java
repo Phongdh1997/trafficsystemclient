@@ -10,9 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.hcmut.admin.bktrafficsystem.modules.data.model.SleepWakeupLocationService;
-import com.hcmut.admin.bktrafficsystem.modules.data.utils.LocationCollectionManager;
-import com.hcmut.admin.bktrafficsystem.modules.data.utils.TrafficNotificationFactory;
+import com.hcmut.admin.bktrafficsystem.business.SleepWakeupLocationService;
+import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
+import com.hcmut.admin.bktrafficsystem.util.TrafficNotificationFactory;
 
 public class AppForegroundService extends Service {
 

@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
 
 import java.util.ArrayList;
 import java.util.List;

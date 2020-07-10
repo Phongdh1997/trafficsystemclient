@@ -14,10 +14,9 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.RoadsApi;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.SnappedPoint;
-import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
+import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Cell;
 import com.hcmut.admin.bktrafficsystem.model.PlaceInfo;
-import com.hcmut.admin.bktrafficsystem.modules.data.utils.LocationCollectionManager;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -10,10 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.api.CallApi;
-import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
-import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
-import com.hcmut.admin.bktrafficsystem.model.response.LoginResponse;
+import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 
 import retrofit2.Call;
@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             confirmPassword.requestFocus();
         } else {
             progressDialog = ProgressDialog.show(RegisterActivity.this, "", getString(R.string.loading), true);
-            CallApi.createService().register(username.getText().toString(), password.getText().toString(),
+            RetrofitClient.getApiService().register(username.getText().toString(), password.getText().toString(),
                     name.getText().toString(), email.getText().toString(), phoneNumber.getText().toString())
                     .enqueue(new Callback<BaseResponse<LoginResponse>>() {
                         @Override

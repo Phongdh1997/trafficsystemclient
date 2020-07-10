@@ -15,8 +15,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.api.CallApi;
-import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -102,7 +102,7 @@ public class CameraPhoto {
             byte[] byteArray = stream.toByteArray();
             RequestBody requestBody = RequestBody.create(byteArray, MediaType.parse("image/png"));
             // MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", null, requestBody);
-            CallApi.createService().uploadFile(requestBody)
+            RetrofitClient.getApiService().uploadFile(requestBody)
                     .enqueue(new Callback<BaseResponse<String>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {

@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.api.CallApi;
-import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
-import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist.RatingAdapter;
@@ -159,8 +159,7 @@ public class RatingFragment extends Fragment
                 "",
                 getString(R.string.loading),
                 true);
-        CallApi.createService()
-                .getReportOfTrafficStatus((int) currentSegmentData.segmentId)
+        RetrofitClient.getApiService().getReportOfTrafficStatus((int) currentSegmentData.segmentId)
                 .enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<ReportResponse>>> call, final Response<BaseResponse<List<ReportResponse>>> response) {
