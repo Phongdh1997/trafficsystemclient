@@ -39,7 +39,7 @@ import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.LoginParam;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
-import com.hcmut.admin.bktrafficsystem.model.user.User;
+import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.signup.RegisterActivity;
 import com.hcmut.admin.bktrafficsystem.ui.SplashActivity;

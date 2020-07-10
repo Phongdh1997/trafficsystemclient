@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.hcmut.admin.bktrafficsystem.model.user.User;
+import com.hcmut.admin.bktrafficsystem.model.User;
 import com.google.gson.Gson;
 
 public class SharedPrefUtils {

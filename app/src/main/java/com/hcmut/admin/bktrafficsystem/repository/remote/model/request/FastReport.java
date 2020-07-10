@@ -57,6 +57,9 @@ public class FastReport {
     }
 
     public static void postFastReport(final Activity activity, final AndroidExt androidExt) {
+        if (activity != null) {
+            return;
+        }
         if (MapUtil.checkGPSTurnOn(activity, androidExt)) {
             LocationCollectionManager.getInstance(activity.getApplicationContext())
                     .getCurrentLocation(new OnSuccessListener<Location>() {

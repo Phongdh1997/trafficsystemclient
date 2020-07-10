@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.model.user;
+package com.hcmut.admin.bktrafficsystem.model;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,7 +8,6 @@ import android.content.Intent;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.hcmut.admin.bktrafficsystem.model.GoogleSignInData;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.UserResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;

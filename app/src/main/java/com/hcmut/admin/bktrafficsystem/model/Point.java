@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.model.point;
+package com.hcmut.admin.bktrafficsystem.model;
 
 import com.google.android.gms.maps.model.LatLng;
 

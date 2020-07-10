@@ -174,7 +174,7 @@ public class HomeFragment extends Fragment
             public void onClick(View view) {
                 refreshSearch();
             }
-        });
+        }, false);
         btnDirect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

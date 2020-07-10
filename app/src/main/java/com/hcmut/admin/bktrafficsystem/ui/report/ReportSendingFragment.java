@@ -49,7 +49,9 @@ import java.util.List;
  * Use the {@link ReportSendingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReportSendingFragment extends Fragment implements SearchResultCallback {
+public class ReportSendingFragment extends Fragment implements
+        SearchResultCallback,
+        MapActivity.OnBackPressCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -69,7 +71,6 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
 
     private TextView btnYourLocation;
     private TextView btnChooseOnMap;
-    private TextView btnFastReport;
     private SearchInputView searchInputView;
 
     private EditText txtNote;
@@ -193,7 +194,6 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
 
         btnYourLocation = view.findViewById(R.id.btnYourLocation);
         btnChooseOnMap = view.findViewById(R.id.btnChooseOnMap);
-        btnFastReport = view.findViewById(R.id.btnFastReport);
         searchInputView = view.findViewById(R.id.searchInputView);
         reportSendingHandler = new ReportSendingHandler(view.getContext(),
                 (ConstraintLayout) view.findViewById(R.id.clCollectLocation),
@@ -240,8 +240,9 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
             @Override
             public void onClick(View view) {
                 clearReport();
+                NavHostFragment.findNavController(ReportSendingFragment.this).popBackStack();
             }
-        });
+        }, true);
         btnYourLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -271,12 +272,6 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
                 bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.SELECTED_BEGIN_SEARCH);
                 NavHostFragment.findNavController(ReportSendingFragment.this)
                         .navigate(R.id.action_reportSendingFragment_to_pickPointOnMapFragment2, bundle);
-            }
-        });
-        btnFastReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FastReport.postFastReport(getActivity(), MapActivity.androidExt);
             }
         });
 
@@ -419,5 +414,10 @@ public class ReportSendingFragment extends Fragment implements SearchResultCallb
     @Override
     public void onSelectedEndSearchPlaceResultReady(LatLng result) {
 
+    }
+
+    @Override
+    public void onBackPress() {
+        NavHostFragment.findNavController(ReportSendingFragment.this).popBackStack();
     }
 }

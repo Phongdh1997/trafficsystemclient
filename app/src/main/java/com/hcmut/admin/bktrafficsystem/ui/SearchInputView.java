@@ -21,6 +21,9 @@ public class SearchInputView extends CardView {
 
     private OnClickListener backClickListener;
 
+    // only show back icon, don't show search icon
+    private boolean isOnlyBackIcon = false;
+
     public SearchInputView(@NonNull Context context) {
         super(context);
         initView();
@@ -59,14 +62,18 @@ public class SearchInputView extends CardView {
      */
     public void handleBackAndClearView(boolean isHaveSearchResult) {
         if (isHaveSearchResult) {
-            imgBack.setImageResource(R.drawable.ic_arrow_back);
             imgClearText.setVisibility(View.VISIBLE);
-            imgBack.setOnClickListener(backClickListener);
+            if (!isOnlyBackIcon) {
+                imgBack.setImageResource(R.drawable.ic_arrow_back);
+                imgBack.setOnClickListener(backClickListener);
+            }
         } else {
-            imgBack.setImageResource(R.drawable.ic_search);
-            imgClearText.setVisibility(View.GONE);
-            imgBack.setOnClickListener(null);
             txtSearchInput.setText("");
+            imgClearText.setVisibility(View.GONE);
+            if (!isOnlyBackIcon) {
+                imgBack.setImageResource(R.drawable.ic_search);
+                imgBack.setOnClickListener(null);
+            }
         }
     }
 
@@ -74,8 +81,13 @@ public class SearchInputView extends CardView {
         return txtSearchInput.getText().toString();
     }
 
-    public void setImgBackEvent(OnClickListener onClickListener) {
+    public void setImgBackEvent(OnClickListener onClickListener, boolean isOnlyBackIcon) {
         this.backClickListener = onClickListener;
+        this.isOnlyBackIcon = isOnlyBackIcon;
+        if (isOnlyBackIcon) {
+            imgBack.setImageResource(R.drawable.ic_arrow_back);
+            imgBack.setOnClickListener(backClickListener);
+        }
     }
 
     public void setImgClearTextEvent(OnClickListener onClickListener) {

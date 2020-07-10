@@ -65,7 +65,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-<!--    setting preference key-->
+    <!--    setting preference key-->
     <string name="swGpsCollectionRef">swGpsCollectionRef</string>
     <string name="swAutoSleepWakeupRef">swAutoSleepWakeupRef</string>
     <string name="swNotifyAroundRef">swNotifyAroundRef</string>

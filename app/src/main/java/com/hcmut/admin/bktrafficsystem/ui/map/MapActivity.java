@@ -21,7 +21,7 @@ import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
-import com.hcmut.admin.bktrafficsystem.model.user.User;
+import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.ui.report.CameraPhoto;
 import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
@@ -60,7 +60,7 @@ public class MapActivity extends AppCompatActivity implements
     private BottomNavigation bottomNavigation;
     private FrameLayout flFragment;
     private androidx.fragment.app.Fragment homeFragment;
-    private androidx.fragment.app.Fragment reportFragment;
+    private androidx.fragment.app.Fragment contributionFragment;
     private androidx.fragment.app.Fragment viewReportFragment;
     private androidx.fragment.app.Fragment accountReportFragment;
 
@@ -105,16 +105,16 @@ public class MapActivity extends AppCompatActivity implements
         }
 
         homeFragment = getSupportFragmentManager().findFragmentById(R.id.homeFragmentTab);
-        reportFragment = getSupportFragmentManager().findFragmentById(R.id.reportFragmentTab);
+        contributionFragment = getSupportFragmentManager().findFragmentById(R.id.contributionFragmentTab);
         viewReportFragment = getSupportFragmentManager().findFragmentById(R.id.viewReportFragmentTab);
         accountReportFragment = getSupportFragmentManager().findFragmentById(R.id.accountFragmentTab);
 
         View homeTabWrapper = findViewById(R.id.homeTabWrapper);
-        View reportTabWrapper = findViewById(R.id.reportTabWrapper);
+        View contributionTabWrapper = findViewById(R.id.contributionTabWrapper);
         View viewReportTabWrapper = findViewById(R.id.viewReportTabWrapper);
         View accountTabWrapper = findViewById(R.id.accountTabWrapper);
         bottomTab = new BottomTab.Builder(R.id.homeTabId)
-                .addTab(R.id.reportTabId, reportTabWrapper)
+                .addTab(R.id.contributeTabId, contributionTabWrapper)
                 .addTab(R.id.homeTabId, homeTabWrapper)
                 .addTab(R.id.viewReportTabId, viewReportTabWrapper)
                 .addTab(R.id.accountTabId, accountTabWrapper)
@@ -245,7 +245,7 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         if (onNavigationBackPress(homeFragment) ||
-                onNavigationBackPress(reportFragment) ||
+                onNavigationBackPress(contributionFragment) ||
                 onNavigationBackPress(viewReportFragment) ||
                 onNavigationBackPress(accountReportFragment)) {
             return;
