@@ -17,14 +17,11 @@ import com.google.maps.model.SnappedPoint;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Cell;
 import com.hcmut.admin.bktrafficsystem.model.PlaceInfo;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
-import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.modules.data.utils.LocationCollectionManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MapUtil {
     //BEARING

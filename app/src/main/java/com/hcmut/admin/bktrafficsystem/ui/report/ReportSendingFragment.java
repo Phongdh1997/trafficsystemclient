@@ -33,7 +33,7 @@ import com.hcmut.admin.bktrafficsystem.model.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.model.SearchDirectionHandler;
 import com.hcmut.admin.bktrafficsystem.model.param.FastReport;
 import com.hcmut.admin.bktrafficsystem.model.param.ReportRequest;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
+import com.hcmut.admin.bktrafficsystem.modules.data.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;

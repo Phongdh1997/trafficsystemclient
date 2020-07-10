@@ -1,6 +1,5 @@
 package com.hcmut.admin.bktrafficsystem.ui.account;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +14,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.CallPhone;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 

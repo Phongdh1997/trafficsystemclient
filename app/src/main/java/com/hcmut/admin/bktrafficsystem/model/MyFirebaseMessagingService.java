@@ -17,15 +17,15 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory;
+import com.hcmut.admin.bktrafficsystem.modules.data.utils.TrafficNotificationFactory;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import java.util.Map;
 import java.util.Objects;
 
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.DIRECTION_NOTIFICATION_ID;
-import static com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.TrafficNotificationFactory.NORMAL_NOTIFICATION_ID;
+import static com.hcmut.admin.bktrafficsystem.modules.data.utils.TrafficNotificationFactory.DIRECTION_NOTIFICATION_ID;
+import static com.hcmut.admin.bktrafficsystem.modules.data.utils.TrafficNotificationFactory.NORMAL_NOTIFICATION_ID;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {

@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.GoogleMapMemoryManager;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.RefreshStatusHandler;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.MatrixStatusRenderImpl;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.statusrender.StatusRender;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.tileoverlay.TilerOverlayRender;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.GoogleMapMemoryManager;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.RefreshStatusHandler;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.statusrender.MatrixStatusRenderImpl;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.statusrender.StatusRender;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.tileoverlay.TilerOverlayRender;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -22,7 +22,7 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.user.User;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.CallPhone;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.CallPhone;
 import com.hcmut.admin.bktrafficsystem.ui.report.CameraPhoto;
 import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;

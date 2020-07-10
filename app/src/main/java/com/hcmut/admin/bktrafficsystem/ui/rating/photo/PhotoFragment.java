@@ -10,9 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.ImageDownloader;
 
 public class PhotoFragment extends Fragment {
 

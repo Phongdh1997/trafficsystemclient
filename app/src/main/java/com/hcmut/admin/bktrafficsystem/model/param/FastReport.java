@@ -1,7 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.model.param;
 
 import android.app.Activity;
-import android.content.Context;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -9,13 +8,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.ext.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
-import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.modules.data.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationUtil;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
-
-import java.lang.ref.WeakReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;

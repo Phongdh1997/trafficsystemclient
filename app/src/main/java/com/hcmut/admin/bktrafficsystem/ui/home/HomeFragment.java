@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -25,10 +22,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.MarkerCreating;
 import com.hcmut.admin.bktrafficsystem.model.SearchPlaceHandler;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
+import com.hcmut.admin.bktrafficsystem.modules.data.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;

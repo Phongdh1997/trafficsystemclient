@@ -15,10 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.model.user.User;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.ImageDownloader;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.GlideApp;
-import com.hcmut.admin.bktrafficsystem.ui.account.AccountFragment;
+import com.hcmut.admin.bktrafficsystem.modules.data.model.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 

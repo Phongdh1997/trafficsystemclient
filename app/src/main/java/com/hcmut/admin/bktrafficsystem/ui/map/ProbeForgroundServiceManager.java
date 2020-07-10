@@ -2,7 +2,6 @@ package com.hcmut.admin.bktrafficsystem.ui.map;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +13,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 
 public class ProbeForgroundServiceManager {
 

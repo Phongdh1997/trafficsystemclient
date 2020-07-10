@@ -13,10 +13,8 @@ import com.hcmut.admin.bktrafficsystem.api.CallApi;
 import com.hcmut.admin.bktrafficsystem.model.response.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.Coord;
 import com.hcmut.admin.bktrafficsystem.model.response.DirectRespose;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.modules.data.repository.remote.retrofit.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 

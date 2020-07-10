@@ -2,7 +2,7 @@ package com.hcmut.admin.bktrafficsystem.model;
 
 import com.hcmut.admin.bktrafficsystem.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.model.response.ReportUser;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
+import com.hcmut.admin.bktrafficsystem.modules.data.repository.remote.retrofit.model.response.StatusRenderData;
 
 import java.util.ArrayList;
 import java.util.Arrays;

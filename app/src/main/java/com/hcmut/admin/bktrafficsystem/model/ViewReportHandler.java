@@ -2,7 +2,6 @@ package com.hcmut.admin.bktrafficsystem.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -17,11 +16,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hcmut.admin.bktrafficsystem.R;
 
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.StatusRepositoryService;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.StatusRemoteRepository;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.RetrofitClient;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.StatusResponse;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.repository.remote.retrofit.model.response.StatusRenderData;
+import com.hcmut.admin.bktrafficsystem.modules.data.repository.StatusRepositoryService;
+import com.hcmut.admin.bktrafficsystem.modules.data.repository.remote.StatusRemoteRepository;
+import com.hcmut.admin.bktrafficsystem.modules.data.repository.remote.retrofit.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.modules.data.repository.remote.retrofit.model.StatusResponse;
+import com.hcmut.admin.bktrafficsystem.modules.data.repository.remote.retrofit.model.response.StatusRenderData;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.ViewReportHandler;
-import com.hcmut.admin.bktrafficsystem.modules.probemodule.utils.LocationCollectionManager;
+import com.hcmut.admin.bktrafficsystem.modules.data.utils.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.rating.RatingFragment;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
