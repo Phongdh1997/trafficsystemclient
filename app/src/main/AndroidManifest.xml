@@ -42,7 +42,7 @@
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.report.traffic.detail.photo.PreViewPhotoActivity"
+        <activity android:name=".ui.reportdetail.traffic.photo.PreViewPhotoActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity"

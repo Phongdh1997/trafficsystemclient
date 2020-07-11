@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.photo;
+package com.hcmut.admin.bktrafficsystem.ui.reportdetail.traffic.photo;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

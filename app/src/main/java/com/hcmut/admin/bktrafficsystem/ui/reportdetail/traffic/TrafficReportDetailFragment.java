@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail;
+package com.hcmut.admin.bktrafficsystem.ui.reportdetail.traffic;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -22,8 +22,8 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.photo.PreViewPhotoActivity;
-import com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.ratinglist.RatingAdapter;
+import com.hcmut.admin.bktrafficsystem.ui.reportdetail.traffic.photo.PreViewPhotoActivity;
+import com.hcmut.admin.bktrafficsystem.ui.reportdetail.traffic.ratinglist.RatingAdapter;
 import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -98,7 +98,7 @@ public class TrafficReportDetailFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rating, container, false);
+        return inflater.inflate(R.layout.fragment_traffic_report_detail, container, false);
     }
 
     @Override
