@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mapFeatureFragment">
+
+    <fragment
+        android:id="@+id/mapFeatureFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment"
+        android:label="fragment_map_feature"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_mapFeatureFragment_to_searchPlaceFragment"
+            app:destination="@id/searchPlaceFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_top"/>
+        <action
+            android:id="@+id/action_mapFeatureFragment_to_directionFragment"
+            app:destination="@id/directionFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_top"/>
+    </fragment>
+    <fragment
+        android:id="@+id/searchPlaceFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment"
+        android:label="SearchPlaceFragment" >
+        <action
+            android:id="@+id/action_searchPlaceFragment_to_pickPointOnMapFragment"
+            app:destination="@id/pickPointOnMapFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_top"/>
+    </fragment>
+    <fragment
+        android:id="@+id/directionFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.direction.DirectionFragment"
+        android:label="DirectionFragment" >
+        <action
+            android:id="@+id/action_directionFragment_to_searchPlaceFragment"
+            app:destination="@id/searchPlaceFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/fade_out"/>
+    </fragment>
+    <fragment
+        android:id="@+id/pickPointOnMapFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.searchplace.PickPointOnMapFragment"
+        android:label="PickPointOnMapFragment" />
+</navigation>

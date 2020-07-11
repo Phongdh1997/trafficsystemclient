@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/tvInfo"
+    android:paddingTop="8dp"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp"
+    android:text="@dimen/text_size_small"
+    android:textColor="@color/white"
+    tools:text="The Garden of Morning Calm"
+    android:background="@drawable/bg_map_marker"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

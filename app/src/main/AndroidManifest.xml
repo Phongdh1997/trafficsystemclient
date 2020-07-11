@@ -33,18 +33,18 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:name="com.hcmut.admin.bktrafficsystem.ui.LoginActivity"
-            android:screenOrientation="portrait">
 
-        </activity>
+        <activity
+            android:name="com.hcmut.admin.bktrafficsystem.ui.login.LoginActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.map.MapActivity"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.RatingActivity"
+
+        <activity android:name=".ui.reportdetail.traffic.photo.PreViewPhotoActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity"
-            android:screenOrientation="portrait"/>
+
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -53,9 +53,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.RegisterActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.InformationActivity"
+        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.signup.RegisterActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity"
             android:screenOrientation="portrait">
@@ -71,7 +69,7 @@
             android:value="AIzaSyAbiDKZxP7G6JL30ec2gii9_2FaMEM0Efg" />
 
         <meta-data
-            android:name="com.hcmut.admin.bktrafficsystem.modules.probemodule.model.glide.TrafficGlideModule"
+            android:name="com.hcmut.admin.bktrafficsystem.business.glide.TrafficGlideModule"
             android:value="TrafficGlideModule" />
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
@@ -105,7 +103,7 @@
 
         <!-- [START firebase_service] -->
          <service
-            android:name="com.hcmut.admin.bktrafficsystem.model.MyFirebaseMessagingService"
+            android:name="com.hcmut.admin.bktrafficsystem.service.FirebaseCloudMessageService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -113,9 +111,9 @@
          </service>
         <!-- [END firebase_service] -->
 
-        <service android:name="com.hcmut.admin.bktrafficsystem.modules.probemodule.service.AppForegroundService"/>
+        <service android:name=".service.AppForegroundService"/>
 
-        <receiver android:name=".modules.probemodule.broadcast.LocationWakefulReceiver"/>
+        <receiver android:name=".broadcast.LocationWakefulReceiver"/>
     </application>
 
 </manifest>

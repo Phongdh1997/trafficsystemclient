@@ -2,12 +2,12 @@ package com.hcmut.admin.bktrafficsystem.util
 
 import android.app.Dialog
 import android.content.Context
-import android.support.constraint.Group
-import android.support.v7.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.Group
 import com.hcmut.admin.bktrafficsystem.R
 import java.lang.ref.WeakReference
 
