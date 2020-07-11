@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:maxImageSize="32dp" />
 
-    <com.hcmut.admin.bktrafficsystem.ui.SearchInputView
+    <com.hcmut.admin.bktrafficsystem.customview.SearchInputView
         android:id="@+id/searchInputView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

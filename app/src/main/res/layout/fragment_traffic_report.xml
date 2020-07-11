@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/white">
-        <com.hcmut.admin.bktrafficsystem.ui.SearchInputView
+        <com.hcmut.admin.bktrafficsystem.customview.SearchInputView
             android:id="@+id/searchInputView"
             android:elevation="6dp"
             android:layout_margin="16dp"

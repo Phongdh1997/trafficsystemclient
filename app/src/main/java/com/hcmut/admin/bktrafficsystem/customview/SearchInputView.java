@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui;
+package com.hcmut.admin.bktrafficsystem.customview;
 
 import android.content.Context;
 import android.util.AttributeSet;

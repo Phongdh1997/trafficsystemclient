@@ -23,7 +23,7 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.MarkerCreating;
 import com.hcmut.admin.bktrafficsystem.business.SearchPlaceHandler;
 import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
-import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
+import com.hcmut.admin.bktrafficsystem.customview.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
