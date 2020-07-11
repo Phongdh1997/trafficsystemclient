@@ -11,7 +11,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportRe
 import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment;
+import com.hcmut.admin.bktrafficsystem.ui.report.traffic.TrafficReportFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -83,7 +83,7 @@ public class ReportRequest {
         return true;
     }
 
-    public void sendReport(final ReportSendingFragment fragment) {
+    public void sendReport(final TrafficReportFragment fragment) {
         final Activity activity = fragment.getActivity();
         if (activity == null) return;
 

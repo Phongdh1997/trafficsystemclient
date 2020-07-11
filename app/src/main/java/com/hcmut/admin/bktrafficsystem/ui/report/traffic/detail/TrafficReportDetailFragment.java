@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.rating;
+package com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -22,8 +22,8 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.rating.photo.PreViewPhotoActivity;
-import com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist.RatingAdapter;
+import com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.photo.PreViewPhotoActivity;
+import com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.ratinglist.RatingAdapter;
 import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -38,10 +38,10 @@ import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RatingFragment#newInstance} factory method to
+ * Use the {@link TrafficReportDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RatingFragment extends Fragment
+public class TrafficReportDetailFragment extends Fragment
         implements MapActivity.OnBackPressCallback{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,7 +62,7 @@ public class RatingFragment extends Fragment
 
     private ViewReportFragment.SegmentData currentSegmentData;
 
-    public RatingFragment() {
+    public TrafficReportDetailFragment() {
         // Required empty public constructor
     }
 
@@ -75,8 +75,8 @@ public class RatingFragment extends Fragment
      * @return A new instance of fragment RatingFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RatingFragment newInstance(String param1, String param2) {
-        RatingFragment fragment = new RatingFragment();
+    public static TrafficReportDetailFragment newInstance(String param1, String param2) {
+        TrafficReportDetailFragment fragment = new TrafficReportDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -148,7 +148,7 @@ public class RatingFragment extends Fragment
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(RatingFragment.this).popBackStack();
+                NavHostFragment.findNavController(TrafficReportDetailFragment.this).popBackStack();
             }
         });
     }
@@ -232,6 +232,6 @@ public class RatingFragment extends Fragment
 
     @Override
     public void onBackPress() {
-        NavHostFragment.findNavController(RatingFragment.this).popBackStack();
+        NavHostFragment.findNavController(TrafficReportDetailFragment.this).popBackStack();
     }
 }

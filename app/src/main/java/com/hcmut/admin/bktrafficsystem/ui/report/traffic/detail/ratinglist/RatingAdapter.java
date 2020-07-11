@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist;
+package com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.ratinglist;
 
 import android.content.Context;
 import android.view.LayoutInflater;

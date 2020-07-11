@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.rating.ratinglist;
+package com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.ratinglist;
 
 import android.view.View;
 import android.widget.Button;

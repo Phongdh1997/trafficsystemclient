@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/reportSendingFragment"
-        android:name="com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.report.traffic.TrafficReportFragment"
         android:label="fragment_report_sending"
-        tools:layout="@layout/fragment_report_sending" >
+        tools:layout="@layout/fragment_traffic_report" >
         <action
             android:id="@+id/action_reportSendingFragment_to_searchPlaceFragment2"
             app:destination="@id/searchPlaceFragment2"

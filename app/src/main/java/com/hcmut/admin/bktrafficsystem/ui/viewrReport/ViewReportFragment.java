@@ -30,7 +30,7 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.ViewReportHandler;
 import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.rating.RatingFragment;
+import com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.TrafficReportDetailFragment;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 import java.io.Serializable;
@@ -181,7 +181,7 @@ public class ViewReportFragment extends Fragment {
             public void onClick(View v) {
                 if (selectedSegment != null) {
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(RatingFragment.SEGMENT_DATA, selectedSegment);
+                    bundle.putSerializable(TrafficReportDetailFragment.SEGMENT_DATA, selectedSegment);
                     NavHostFragment.findNavController(ViewReportFragment.this)
                             .navigate(R.id.action_viewReportFragment_to_ratingFragment2, bundle);
                 }

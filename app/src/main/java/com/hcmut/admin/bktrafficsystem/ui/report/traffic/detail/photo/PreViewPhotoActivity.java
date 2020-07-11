@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.rating.photo;
+package com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.photo;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

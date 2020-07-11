@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.report;
+package com.hcmut.admin.bktrafficsystem.business;
 
 import android.Manifest;
 import android.app.Activity;

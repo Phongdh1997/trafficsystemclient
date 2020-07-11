@@ -30,7 +30,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.NearSegmentResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.report.ReportSendingFragment;
+import com.hcmut.admin.bktrafficsystem.ui.report.traffic.TrafficReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 import java.util.List;
@@ -120,7 +120,7 @@ public class ReportSendingHandler {
      * @param note
      * @param images
      */
-    public void reviewReport(ReportSendingFragment fragment, String address, int velocity, List<String> causes, String note, List<String> images) {
+    public void reviewReport(TrafficReportFragment fragment, String address, int velocity, List<String> causes, String note, List<String> images) {
         ReportRequest reportRequest = new ReportRequest();
         reportRequest.setCurrentLatLng(currLatLng);
         reportRequest.setNextLatLng(nextLatLng);
@@ -219,7 +219,7 @@ public class ReportSendingHandler {
         return MapUtil.snapToRoad(geoApiContext, latLng);
     }
 
-    private void showReportInfoDialog(final ReportSendingFragment fragment, final ReportRequest reportRequest) {
+    private void showReportInfoDialog(final TrafficReportFragment fragment, final ReportRequest reportRequest) {
         Activity activity = fragment.getActivity();
         if (activity == null) return;
 

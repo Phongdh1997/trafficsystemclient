@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.report;
+package com.hcmut.admin.bktrafficsystem.ui.report.traffic;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,10 +28,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.business.CameraPhoto;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.business.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
-import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.FastReport;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.ui.SearchInputView;
@@ -46,10 +46,10 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ReportSendingFragment#newInstance} factory method to
+ * Use the {@link TrafficReportFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReportSendingFragment extends Fragment implements
+public class TrafficReportFragment extends Fragment implements
         SearchResultCallback,
         MapActivity.OnBackPressCallback {
     // TODO: Rename parameter arguments, choose names that match
@@ -86,7 +86,7 @@ public class ReportSendingFragment extends Fragment implements
 
     private GoogleMap map;
 
-    public ReportSendingFragment() {
+    public TrafficReportFragment() {
         // Required empty public constructor
     }
 
@@ -99,8 +99,8 @@ public class ReportSendingFragment extends Fragment implements
      * @return A new instance of fragment ReportSendingFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ReportSendingFragment newInstance(String param1, String param2) {
-        ReportSendingFragment fragment = new ReportSendingFragment();
+    public static TrafficReportFragment newInstance(String param1, String param2) {
+        TrafficReportFragment fragment = new TrafficReportFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -185,7 +185,7 @@ public class ReportSendingFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_report_sending, container, false);
+        return inflater.inflate(R.layout.fragment_traffic_report, container, false);
     }
 
     @Override
@@ -222,10 +222,10 @@ public class ReportSendingFragment extends Fragment implements
             public void onFocusChange(View view, boolean b) {
                 if (b) {
                     SearchPlaceResultHandler.getInstance()
-                            .addSearchPlaceResultListener(ReportSendingFragment.this);
+                            .addSearchPlaceResultListener(TrafficReportFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.NORMAL_SEARCH);
-                    NavHostFragment.findNavController(ReportSendingFragment.this)
+                    NavHostFragment.findNavController(TrafficReportFragment.this)
                             .navigate(R.id.action_reportSendingFragment_to_searchPlaceFragment2, bundle);
                 }
             }
@@ -240,7 +240,7 @@ public class ReportSendingFragment extends Fragment implements
             @Override
             public void onClick(View view) {
                 clearReport();
-                NavHostFragment.findNavController(ReportSendingFragment.this).popBackStack();
+                NavHostFragment.findNavController(TrafficReportFragment.this).popBackStack();
             }
         }, true);
         btnYourLocation.setOnClickListener(new View.OnClickListener() {
@@ -267,10 +267,10 @@ public class ReportSendingFragment extends Fragment implements
         btnChooseOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SearchPlaceResultHandler.getInstance().addSearchPlaceResultListener(ReportSendingFragment.this);
+                SearchPlaceResultHandler.getInstance().addSearchPlaceResultListener(TrafficReportFragment.this);
                 Bundle bundle = new Bundle();
                 bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.SELECTED_BEGIN_SEARCH);
-                NavHostFragment.findNavController(ReportSendingFragment.this)
+                NavHostFragment.findNavController(TrafficReportFragment.this)
                         .navigate(R.id.action_reportSendingFragment_to_pickPointOnMapFragment2, bundle);
             }
         });
@@ -332,7 +332,7 @@ public class ReportSendingFragment extends Fragment implements
             @Override
             public void onClick(View view) {
                 reportSendingHandler.reviewReport(
-                        ReportSendingFragment.this,
+                        TrafficReportFragment.this,
                         searchInputView.getSearchInputText(),
                         sbSpeed.getProgress(),
                         Arrays.asList(snReason.getSelectedItem().toString()),
@@ -418,6 +418,6 @@ public class ReportSendingFragment extends Fragment implements
 
     @Override
     public void onBackPress() {
-        NavHostFragment.findNavController(ReportSendingFragment.this).popBackStack();
+        NavHostFragment.findNavController(TrafficReportFragment.this).popBackStack();
     }
 }

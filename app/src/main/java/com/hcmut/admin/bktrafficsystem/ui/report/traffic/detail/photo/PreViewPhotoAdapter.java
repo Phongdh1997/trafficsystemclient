@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.rating.photo;
+package com.hcmut.admin.bktrafficsystem.ui.report.traffic.detail.photo;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
