@@ -29,7 +29,9 @@ public class LoadedTileManager {
         if (tile != null) {
             String tileState = loadedTiles.get(tile);
             if (tileState != null) {
-                return tileState.equals(LOAD_FAIL_STATE);
+                // TODO: schedule to reload 'fail tile'
+                //return tileState.equals(LOAD_FAIL_STATE);
+                return false;
             }
         }
         return true;
