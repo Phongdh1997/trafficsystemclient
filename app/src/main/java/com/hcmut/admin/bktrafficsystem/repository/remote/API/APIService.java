@@ -117,7 +117,8 @@ public interface APIService {
     Call<BaseResponse<ReportResponse>> getDetailTrafficReport(@Query("id") String id);
 
     @GET("api/report/segment/reports")
-    Call<BaseResponse<List<ReportResponse>>> getReportOfTrafficStatus(@Query("segmentId") int segmentId);
+    Call<BaseResponse<List<ReportResponse>>> getReportOfTrafficStatus(@Query("time") Long time,
+                                                                      @Query("segmentId") int segmentId);
 
     @FormUrlEncoded
     @POST("api/notification/update-current-location")

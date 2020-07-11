@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +108,7 @@ public class TrafficReportDetailFragment extends Fragment
         try {
             currentSegmentData = (ViewReportFragment.SegmentData) getArguments().getSerializable(SEGMENT_DATA);
         } catch (Exception e) {
-            currentSegmentData = new ViewReportFragment.SegmentData(-1, 0, "");
+            currentSegmentData = new ViewReportFragment.SegmentData(-1, 0, "", 0);
         }
 
         addControls(view);
@@ -159,10 +160,13 @@ public class TrafficReportDetailFragment extends Fragment
                 "",
                 getString(R.string.loading),
                 true);
-        RetrofitClient.getApiService().getReportOfTrafficStatus((int) currentSegmentData.segmentId)
+        RetrofitClient.getApiService().getReportOfTrafficStatus(
+                currentSegmentData.createdDate,
+                (int) currentSegmentData.segmentId)
                 .enqueue(new Callback<BaseResponse<List<ReportResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<ReportResponse>>> call, final Response<BaseResponse<List<ReportResponse>>> response) {
+                        Log.e("faf", response.toString());
                         progressDialog.dismiss();
                         if (response.body() != null) {
                             updateData(response.body().getData());

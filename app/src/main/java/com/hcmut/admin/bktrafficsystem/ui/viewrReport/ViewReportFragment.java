@@ -206,7 +206,7 @@ public class ViewReportFragment extends Fragment {
 
     private void showSelectedUserReport(String [] datas) {
         try {
-            setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2]));
+            setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2], Long.parseLong(datas[3])));
             txtSpeed.setText("Vận tốc trung bình: " + datas[1] + "km/h");
             txtStatusColor.setBackgroundColor(Color.parseColor(datas[2]));
         } catch (Exception e) {}
@@ -316,14 +316,18 @@ public class ViewReportFragment extends Fragment {
     }
 
     public static class SegmentData implements Serializable {
+        private static final int offset = 15000;
+
         public final int speed;
         public final String color;
         public final long segmentId;
+        public final long createdDate;
 
-        public SegmentData(long segmentId, int speed, String color) {
+        public SegmentData(long segmentId, int speed, String color, long createdDate) {
             this.speed = speed;
             this.color = color;
             this.segmentId = segmentId;
+            this.createdDate = createdDate - offset;
         }
     }
 }

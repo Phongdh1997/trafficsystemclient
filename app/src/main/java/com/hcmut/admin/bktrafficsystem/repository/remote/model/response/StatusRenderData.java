@@ -18,6 +18,7 @@ import com.google.gson.annotations.SerializedName;
 import com.hcmut.admin.bktrafficsystem.business.statusrender.BitmapLineData;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class StatusRenderData {
@@ -33,6 +34,9 @@ public class StatusRenderData {
     @SerializedName("velocity")
     @Expose
     private int velocity;
+    @SerializedName("createdAt")
+    @Expose
+    private Date createdAt;
 
     @NonNull
     @Override
@@ -70,6 +74,14 @@ public class StatusRenderData {
 
     public void setVelocity(int velocity) {
         this.velocity = velocity;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public List<LatLng> getLatLngPolyline() {
@@ -132,7 +144,7 @@ public class StatusRenderData {
                 try {
                     markerOptions = new MarkerOptions()
                             .position(data.getStartPointLatLng())
-                            .title(data.getSegment() + "/" + data.getVelocity() + "/" + data.getColor())
+                            .title(data.getSegment() + "/" + data.getVelocity() + "/" + data.getColor() + "/" + data.getCreatedAt().getTime())
                             .icon(icon);
                     markerOptionsList.add(markerOptions);
                 } catch (Exception e) {}
