@@ -119,6 +119,12 @@ public class ViewReportFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -162,8 +168,6 @@ public class ViewReportFragment extends Fragment {
         addEvents(view);
     }
 
-
-
     private void addControls(View view) {
         btnViewDetail = view.findViewById(R.id.btnViewDetail);
         txtSpeed = view.findViewById(R.id.tv_speed);
@@ -198,8 +202,7 @@ public class ViewReportFragment extends Fragment {
             public void onClick(View view) {
                 clearSelectedSegment();
                 removeReportStatus();
-                imgBack.setVisibility(View.GONE);
-                showBottomNav();
+                updateUI();
             }
         });
     }
@@ -234,8 +237,6 @@ public class ViewReportFragment extends Fragment {
     private void refreshUserReport() {
         clearSelectedSegment();
         removeReportStatus();
-        imgBack.setVisibility(View.VISIBLE);
-        hideBottomNav();
         if (MapUtil.checkGPSTurnOn(getActivity(), MapActivity.androidExt)) {
             final ProgressDialog progressDialog = ProgressDialog.show(
                     getContext(),
@@ -259,6 +260,24 @@ public class ViewReportFragment extends Fragment {
                             }
                         }
                     });
+        }
+    }
+
+    private boolean isHaveReportData() {
+        return userReportMarker.size() > 0;
+    }
+
+    private void updateUI() {
+        if (isHaveReportData()) {
+            if (imgBack.getVisibility() != View.VISIBLE) {
+                imgBack.setVisibility(View.VISIBLE);
+                hideBottomNav();
+            }
+        } else {
+            if (imgBack.getVisibility() == View.VISIBLE) {
+                imgBack.setVisibility(View.GONE);
+                showBottomNav();
+            }
         }
     }
 
@@ -291,12 +310,14 @@ public class ViewReportFragment extends Fragment {
                     marker.setTag(REPORT_RATING);
                 }
                 progressDialog.dismiss();
+                updateUI();
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
             }
 
             @Override
             public void onHaveNotResult() {
                 progressDialog.dismiss();
+                updateUI();
                 Toast.makeText(getContext(), "Không có dữ liệu báo cáo tại thời điểm này", Toast.LENGTH_SHORT).show();
             }
         });

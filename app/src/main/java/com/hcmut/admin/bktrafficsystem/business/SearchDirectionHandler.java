@@ -30,26 +30,7 @@ public class SearchDirectionHandler {
                               final LatLng endPoint,
                               final boolean isTimeType,
                               final DirectResultCallback listener) {
-        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (startPoint != null && endPoint != null) {
-                    GeoApiContext geoApiContext = new GeoApiContext()
-                            .setApiKey("AIzaSyBfloTm067WfYy3ZiE2BiubYjOhv4H-Jrw");
-                    final LatLng optimizedStartPoint = MapUtil.snapToRoad(geoApiContext, startPoint);
-                    final LatLng optimizedEndPoint = MapUtil.snapToRoad(geoApiContext, endPoint);
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            direct(context,
-                                    optimizedStartPoint == null ? startPoint : optimizedStartPoint,
-                                    optimizedEndPoint == null ? endPoint : optimizedEndPoint,
-                                    (isTimeType) ? TYPE_TIME : TYPE_DISTANCE, listener);
-                        }
-                    });
-                }
-            }
-        });
+        direct(context, startPoint, endPoint, (isTimeType) ? TYPE_TIME : TYPE_DISTANCE, listener);
     }
 
     public static LatLng addressStringToLatLng(Context context, String beginAddressString) {

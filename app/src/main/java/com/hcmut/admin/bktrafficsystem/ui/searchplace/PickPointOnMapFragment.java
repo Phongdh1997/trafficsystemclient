@@ -1,8 +1,11 @@
 package com.hcmut.admin.bktrafficsystem.ui.searchplace;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,7 +136,15 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
 
     private void handleGetPointOnMap() {
         int [] screenCoord = new int[2];
-        middlePoint.getLocationOnScreen(screenCoord);
+        Activity activity = getActivity();
+        if (activity != null) {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            screenCoord[0] = displayMetrics.widthPixels / 2;
+            screenCoord[1] = displayMetrics.heightPixels / 2;
+        } else {
+            middlePoint.getLocationOnScreen(screenCoord);
+        }
         try {
             LatLng location = map.getProjection().fromScreenLocation(
                     new Point(screenCoord[0], screenCoord[1]));
