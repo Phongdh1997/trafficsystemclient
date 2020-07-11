@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

@@ -1,10 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.ui.setting;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -15,7 +12,7 @@ import androidx.preference.SwitchPreference;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
-import com.hcmut.admin.bktrafficsystem.ui.map.ProbeForgroundServiceManager;
+import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
 
 public class SettingReferenceFragment extends PreferenceFragmentCompat {
     SwitchPreference swGpsCollectionRef;
@@ -44,9 +41,9 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
                         if ("true".equals(newValue.toString())) {
-                            ProbeForgroundServiceManager.initLocationService((MapActivity) activity);
+                            GPSForegroundServiceHandler.initLocationService((MapActivity) activity);
                         } else {
-                            ProbeForgroundServiceManager.stopLocationService(getContext());
+                            GPSForegroundServiceHandler.stopLocationService(getContext());
                         }
                         return true;
                     }

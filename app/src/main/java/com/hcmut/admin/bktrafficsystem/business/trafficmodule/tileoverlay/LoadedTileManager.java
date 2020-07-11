@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.tileoverlay;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay;
 
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 

@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,7 +8,7 @@ import com.hcmut.admin.bktrafficsystem.business.Priority;
 import com.hcmut.admin.bktrafficsystem.business.PriorityFutureTask;
 import com.hcmut.admin.bktrafficsystem.business.PriorityRunable;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
-import com.hcmut.admin.bktrafficsystem.business.tileoverlay.TrafficDataLoader;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TrafficDataLoader;
 import com.hcmut.admin.bktrafficsystem.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 

@@ -19,6 +19,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.libraries.places.api.Places;
 import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficRenderModule;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.User;
@@ -48,6 +50,7 @@ public class MapActivity extends AppCompatActivity implements
     public static GoogleMap mMap;
     public static AndroidExt androidExt = new AndroidExt();
     private Date pressTime;
+    private TrafficRenderModule trafficRenderModule;
 
     // Listener
     private ViewReportFragment.OnReportMakerClick reportMakerClickListener;
@@ -130,7 +133,7 @@ public class MapActivity extends AppCompatActivity implements
                 .getDefaultSharedPreferences(this)
                 .getBoolean(getResources().getString(R.string.swGpsCollectionRef), true);
         if (gpsCollectionSwithValue) {
-            ProbeForgroundServiceManager.initLocationService(this);
+            GPSForegroundServiceHandler.initLocationService(this);
         }
 
         flFragment = findViewById(R.id.flFragment);
@@ -152,13 +155,15 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMaxZoomPreference(ProbeMapUi.MAX_ZOOM_LEVEL);
+        mMap.setMaxZoomPreference(TrafficRenderModule.MAX_ZOOM_LEVEL);
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         for (OnMapReadyListener listener : onMapReadyListeners) {
             listener.onMapReady(googleMap);
         }
         onMapReadyListeners.clear();
+        trafficRenderModule = new TrafficRenderModule(getApplicationContext(), mMap, mapFragment);
+        trafficRenderModule.startStatusRenderTimer();
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -184,6 +189,13 @@ public class MapActivity extends AppCompatActivity implements
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (trafficRenderModule != null) {
+            trafficRenderModule.startStatusRenderTimer();
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -195,6 +207,14 @@ public class MapActivity extends AppCompatActivity implements
     protected void onPause() {
         clearActivity();
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (trafficRenderModule != null) {
+            trafficRenderModule.stopStatusRenderTimer();
+        }
     }
 
     @Override
@@ -290,8 +310,8 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case ProbeForgroundServiceManager.MUTILE_PERMISSION_REQUEST:
-                ProbeForgroundServiceManager.handleAppForgroundPermission(MapActivity.this, requestCode, permissions, grantResults);
+            case GPSForegroundServiceHandler.MUTILE_PERMISSION_REQUEST:
+                GPSForegroundServiceHandler.handleAppForgroundPermission(MapActivity.this, requestCode, permissions, grantResults);
                 return;
             case CallPhone.CALL_PHONE_CODE:
                 boolean isHavePermission = CallPhone.handleCallPhonePermission(grantResults);

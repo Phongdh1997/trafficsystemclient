@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
 
 import android.graphics.Bitmap;
 
@@ -16,7 +16,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import static com.hcmut.admin.bktrafficsystem.business.statusrender.TrafficBitmap.TILE_ZOOM_15_SCALE;
+import static com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.TrafficBitmap.TILE_ZOOM_15_SCALE;
 
 public class BitmapTileRenderHandlerImpl extends TileRenderHandler {
 

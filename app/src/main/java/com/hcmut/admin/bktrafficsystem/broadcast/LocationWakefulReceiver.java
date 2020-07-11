@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.hcmut.admin.bktrafficsystem.ui.map.ProbeForgroundServiceManager;
+import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
 
 public class LocationWakefulReceiver extends BroadcastReceiver {
     public static long WAKEUP_DELAY_MILLIS = 60000 * 10;    // 10 minutes
@@ -19,7 +19,7 @@ public class LocationWakefulReceiver extends BroadcastReceiver {
         int wakeupId = intent.getIntExtra(WAKEUP_ID, 0);
         if (wakeupId == WAKEUP_LOCATION_SERVICE_ID) {
             try {
-                ProbeForgroundServiceManager.startLocationService(context.getApplicationContext());
+                GPSForegroundServiceHandler.startLocationService(context.getApplicationContext());
             } catch (Exception e) {
             }
         }

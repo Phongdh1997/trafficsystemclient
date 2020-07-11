@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.tileoverlay;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
-import com.hcmut.admin.bktrafficsystem.business.statusrender.TrafficBitmap;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.TrafficBitmap;
 import com.hcmut.admin.bktrafficsystem.repository.local.room.entity.StatusRenderDataEntity;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-import static com.hcmut.admin.bktrafficsystem.business.statusrender.TrafficBitmap.TILE_ZOOM_15_SCALE;
+import static com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.TrafficBitmap.TILE_ZOOM_15_SCALE;
 
 public class TrafficTileProvider implements TileProvider {
     public static final int MAX_ZOOM_RENDER = 16;

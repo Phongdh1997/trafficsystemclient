@@ -1,11 +1,11 @@
-package com.hcmut.admin.bktrafficsystem.business.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
 
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
-import com.hcmut.admin.bktrafficsystem.business.tileoverlay.TrafficTileProvider;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TrafficTileProvider;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 

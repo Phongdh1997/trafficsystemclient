@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

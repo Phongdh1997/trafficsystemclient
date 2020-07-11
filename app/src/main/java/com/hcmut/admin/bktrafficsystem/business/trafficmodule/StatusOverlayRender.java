@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule;
 
 import android.content.Context;
 
@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.hcmut.admin.bktrafficsystem.business.tile.CustomTileProvider;
-import com.hcmut.admin.bktrafficsystem.business.tile.TileBitmapRender;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tile.CustomTileProvider;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tile.TileBitmapRender;
 
 /**
  * Đại diện cho nguồn dữ liệu status sẽ được render lên TileOverlay

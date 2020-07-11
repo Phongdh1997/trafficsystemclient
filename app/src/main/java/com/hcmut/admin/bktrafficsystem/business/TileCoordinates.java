@@ -5,8 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.hcmut.admin.bktrafficsystem.business.statusrender.GroundOverlayMatrix;
-import com.hcmut.admin.bktrafficsystem.business.statusrender.StatusRender;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.GroundOverlayMatrix;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.StatusRender;
 import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 
 import org.jetbrains.annotations.NotNull;

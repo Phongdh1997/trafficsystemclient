@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.tile;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.tile;
 
 import android.util.Log;
 

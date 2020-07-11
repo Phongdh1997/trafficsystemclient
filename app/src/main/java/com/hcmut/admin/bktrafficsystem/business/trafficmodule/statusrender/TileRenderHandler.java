@@ -1,11 +1,11 @@
-package com.hcmut.admin.bktrafficsystem.business.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
-import com.hcmut.admin.bktrafficsystem.business.tileoverlay.LoadedTileManager;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.LoadedTileManager;
 
 import org.jetbrains.annotations.NotNull;
 

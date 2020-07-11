@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.map;
+package com.hcmut.admin.bktrafficsystem.business;
 
 
 import android.Manifest;
@@ -14,8 +14,9 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
-public class ProbeForgroundServiceManager {
+public class GPSForegroundServiceHandler {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 888;
     public static final int MUTILE_PERMISSION_REQUEST = 777;
@@ -23,7 +24,7 @@ public class ProbeForgroundServiceManager {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
 
-    public ProbeForgroundServiceManager() {
+    public GPSForegroundServiceHandler() {
     }
 
     /**

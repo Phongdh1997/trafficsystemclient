@@ -11,7 +11,7 @@ import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
-import com.hcmut.admin.bktrafficsystem.business.statusrender.TrafficBitmap;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.TrafficBitmap;
 
 import java.io.File;
 import java.io.IOException;
