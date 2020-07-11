@@ -177,7 +177,8 @@ public class SearchPlaceFragment extends Fragment implements
                 SearchPlaceResultHandler.getInstance().addSearchPlaceResultListener(SearchPlaceFragment.this);
                 Bundle bundle = new Bundle();
                 bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.SELECTED_BEGIN_SEARCH);
-                NavHostFragment.findNavController(SearchPlaceFragment.this).navigate(R.id.pickPointOnMapFragment, bundle);
+                NavHostFragment.findNavController(SearchPlaceFragment.this)
+                        .navigate(R.id.action_searchPlaceFragment_to_pickPointOnMapFragment, bundle);
             }
         });
     }

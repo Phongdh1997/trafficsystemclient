@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_report_sending" >
         <action
             android:id="@+id/action_reportSendingFragment_to_searchPlaceFragment2"
-            app:destination="@id/searchPlaceFragment2" />
+            app:destination="@id/searchPlaceFragment2"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom"/>
         <action
             android:id="@+id/action_reportSendingFragment_to_pickPointOnMapFragment2"
-            app:destination="@id/pickPointOnMapFragment2" />
+            app:destination="@id/pickPointOnMapFragment2"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_top"/>
     </fragment>
     <fragment
         android:id="@+id/searchPlaceFragment2"
@@ -32,6 +40,10 @@
         tools:layout="@layout/fragment_contribution" >
         <action
             android:id="@+id/action_contributionFragment_to_reportSendingFragment"
-            app:destination="@id/reportSendingFragment" />
+            app:destination="@id/reportSendingFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_bottom"
+            app:popEnterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_top" />
     </fragment>
 </navigation>

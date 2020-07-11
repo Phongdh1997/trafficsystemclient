@@ -159,7 +159,7 @@ public class HomeFragment extends Fragment
                     Bundle bundle = new Bundle();
                     bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.NORMAL_SEARCH);
                     NavHostFragment.findNavController(HomeFragment.this)
-                            .navigate(R.id.searchPlaceFragment, bundle);
+                            .navigate(R.id.action_mapFeatureFragment_to_searchPlaceFragment, bundle);
                 }
             }
         });
@@ -179,7 +179,7 @@ public class HomeFragment extends Fragment
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(HomeFragment.this)
-                        .navigate(R.id.directionFragment);
+                        .navigate(R.id.action_mapFeatureFragment_to_directionFragment);
             }
         });
         btnCurrentLocation.setOnClickListener(new View.OnClickListener() {

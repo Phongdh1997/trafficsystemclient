@@ -297,7 +297,7 @@ public class DirectionFragment extends Fragment
         bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, type);
         bundle.putBoolean(SearchPlaceFragment.CHOOSE_MAP_POINT, true);
         NavHostFragment.findNavController(DirectionFragment.this)
-                .navigate(R.id.searchPlaceFragment, bundle);
+                .navigate(R.id.action_directionFragment_to_searchPlaceFragment, bundle);
     }
 
     private void createMarker(LatLng beginLatLng, LatLng endLatLng) {

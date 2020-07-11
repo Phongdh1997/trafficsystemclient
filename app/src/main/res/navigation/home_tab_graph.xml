@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_mapFeatureFragment_to_searchPlaceFragment"
-            app:destination="@id/searchPlaceFragment" />
+            app:destination="@id/searchPlaceFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_top"/>
         <action
             android:id="@+id/action_mapFeatureFragment_to_directionFragment"
-            app:destination="@id/directionFragment" />
+            app:destination="@id/directionFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_top"/>
     </fragment>
     <fragment
         android:id="@+id/searchPlaceFragment"
@@ -23,7 +31,11 @@
         android:label="SearchPlaceFragment" >
         <action
             android:id="@+id/action_searchPlaceFragment_to_pickPointOnMapFragment"
-            app:destination="@id/pickPointOnMapFragment" />
+            app:destination="@id/pickPointOnMapFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_top"/>
     </fragment>
     <fragment
         android:id="@+id/directionFragment"
@@ -31,7 +43,11 @@
         android:label="DirectionFragment" >
         <action
             android:id="@+id/action_directionFragment_to_searchPlaceFragment"
-            app:destination="@id/searchPlaceFragment" />
+            app:destination="@id/searchPlaceFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/fade_out"/>
     </fragment>
     <fragment
         android:id="@+id/pickPointOnMapFragment"
