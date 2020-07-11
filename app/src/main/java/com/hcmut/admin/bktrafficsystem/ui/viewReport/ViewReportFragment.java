@@ -230,10 +230,6 @@ public class ViewReportFragment extends Fragment {
         txtStatusColor.setBackgroundColor(Color.parseColor("#e9e9ef"));
     }
 
-    private void toggleReview(int state) {
-        clReview.setVisibility(state);
-    }
-
     private void refreshUserReport() {
         clearSelectedSegment();
         removeReportStatus();
@@ -248,8 +244,6 @@ public class ViewReportFragment extends Fragment {
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-                                location.setLatitude(10.7789167);
-                                location.setLongitude(106.657139);
                                 loadUserReport(new LatLng(location.getLatitude(), location.getLongitude()),
                                         progressDialog);
                             } else {
