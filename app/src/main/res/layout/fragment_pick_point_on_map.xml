@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <LinearLayout
+    <com.hcmut.admin.bktrafficsystem.customview.NonGestureLinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             android:paddingEnd="16dp"
             android:text="Ok"
             android:textColor="@color/white" />
-    </LinearLayout>
+    </com.hcmut.admin.bktrafficsystem.customview.NonGestureLinearLayout>
 
     <TextView
         android:layout_width="24dp"

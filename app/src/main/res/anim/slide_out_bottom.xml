@@ -10,7 +10,7 @@
         android:toYDelta="0%"
         />
     <translate
-        android:duration="500"
+        android:duration="350"
         android:fromXDelta="0%"
         android:fromYDelta="0%"
         android:toXDelta="0%"

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.report.traffic.TrafficReportFragment">
 
-    <FrameLayout
+    <com.hcmut.admin.bktrafficsystem.customview.NonGestureFrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/searchInputViewContainer"
@@ -22,9 +22,9 @@
             android:layout_margin="16dp"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
-    </FrameLayout>
+    </com.hcmut.admin.bktrafficsystem.customview.NonGestureFrameLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout
         android:id="@+id/clCollectLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,9 +81,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/border1" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/clCollectReportData"
@@ -269,6 +269,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txtNote" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

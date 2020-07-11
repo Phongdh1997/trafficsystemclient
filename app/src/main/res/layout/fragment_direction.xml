@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.cardview.widget.CardView
+    <com.hcmut.admin.bktrafficsystem.customview.NonGestureCardView
         android:id="@+id/ctlDestination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -167,5 +167,5 @@
                 app:layout_constraintTop_toBottomOf="@+id/ctlEnd" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.hcmut.admin.bktrafficsystem.customview.NonGestureCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

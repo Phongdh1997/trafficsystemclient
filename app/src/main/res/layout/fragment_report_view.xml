@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -67,9 +67,9 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="58dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout
         android:id="@+id/clReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -130,6 +130,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_speed"
             app:layout_constraintVertical_bias="0.0" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

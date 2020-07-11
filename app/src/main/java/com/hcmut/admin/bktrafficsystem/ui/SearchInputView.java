@@ -13,8 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.customview.NonGestureCardView;
 
-public class SearchInputView extends CardView {
+public class SearchInputView extends NonGestureCardView {
     private ImageView imgClearText;
     private ImageView imgBack;
     private AutoCompleteTextView txtSearchInput;
