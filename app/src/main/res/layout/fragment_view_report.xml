@@ -32,15 +32,17 @@
             app:layout_constraintTop_toTopOf="@id/txtReportViewTitle" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:id="@+id/txtReportViewTitle"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/guideline4"
             app:layout_constraintEnd_toStartOf="@+id/btnRefresh"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Các báo cáo gần đây"
+            android:text="Các báo cáo gần đây\nChọn nút tải lại để làm mới dữ liệu"
             android:textSize="16dp"/>
 
         <Button

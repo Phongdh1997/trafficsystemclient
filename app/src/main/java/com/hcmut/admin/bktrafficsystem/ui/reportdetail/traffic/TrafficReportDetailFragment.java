@@ -25,7 +25,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.reportdetail.traffic.photo.PreViewPhotoActivity;
 import com.hcmut.admin.bktrafficsystem.ui.reportdetail.traffic.ratinglist.RatingAdapter;
-import com.hcmut.admin.bktrafficsystem.ui.viewrReport.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 
