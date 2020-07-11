@@ -16,7 +16,7 @@
             app:enterAnim="@anim/slide_in_top"
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_top"
-            app:popExitAnim="@anim/slide_out_bottom"/>
+            app:popExitAnim="@anim/fade_out"/>
         <action
             android:id="@+id/action_reportSendingFragment_to_pickPointOnMapFragment2"
             app:destination="@id/pickPointOnMapFragment2"

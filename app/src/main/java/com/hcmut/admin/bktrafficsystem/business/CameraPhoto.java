@@ -97,8 +97,15 @@ public class CameraPhoto {
                 photoUploadCallback.onUpLoadFail();
                 return;
             }
+            final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+            try {
+                bitmap.recycle();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
             RequestBody requestBody = RequestBody.create(byteArray, MediaType.parse("image/png"));
             // MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", null, requestBody);
@@ -111,7 +118,7 @@ public class CameraPhoto {
                             if (response.body() != null &&
                                     response.body().getData() != null &&
                                     response.code() == 200) {
-                                photoUploadCallback.onUpLoaded(bitmap, response.body().getData());
+                                photoUploadCallback.onUpLoaded(scaledBitmap, response.body().getData());
                             } else {
                                 photoUploadCallback.onUpLoadFail();
                             }

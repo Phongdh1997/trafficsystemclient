@@ -124,7 +124,7 @@ public class TrafficReportFragment extends Fragment implements
             handleSearchResult();
         } else {
             try {
-                ((MapActivity) getContext()).showBottomNav();
+                ((MapActivity) getContext()).hideBottomNav();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -221,6 +221,7 @@ public class TrafficReportFragment extends Fragment implements
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
+                    reportSendingHandler.clear();
                     SearchPlaceResultHandler.getInstance()
                             .addSearchPlaceResultListener(TrafficReportFragment.this);
                     Bundle bundle = new Bundle();
@@ -251,6 +252,7 @@ public class TrafficReportFragment extends Fragment implements
                             .getCurrentLocation(new OnSuccessListener<Location>() {
                                 @Override
                                 public void onSuccess(Location location) {
+                                    reportSendingHandler.clear();
                                     if (location != null) {
                                         setReportLocation(new LatLng(location.getLatitude(), location.getLongitude()));
                                         searchInputView.setTxtSearchInputText("Vị trí của bạn");
@@ -267,6 +269,7 @@ public class TrafficReportFragment extends Fragment implements
         btnChooseOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                reportSendingHandler.clear();
                 SearchPlaceResultHandler.getInstance().addSearchPlaceResultListener(TrafficReportFragment.this);
                 Bundle bundle = new Bundle();
                 bundle.putInt(SearchPlaceResultHandler.SEARCH_TYPE, SearchPlaceResultHandler.SELECTED_BEGIN_SEARCH);
@@ -343,12 +346,6 @@ public class TrafficReportFragment extends Fragment implements
     }
 
     public void clearReport() {
-        try {
-            ((MapActivity) getContext()).showBottomNav();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         searchInputView.handleBackAndClearView(false);
         reportSendingHandler.clear();
         initOptionDataView();
@@ -378,12 +375,6 @@ public class TrafficReportFragment extends Fragment implements
      * @param latLng
      */
     private void setReportLocation(LatLng latLng) {
-        try {
-            ((MapActivity) getContext()).hideBottomNav();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         reportLatLng = latLng;
         searchInputView.handleBackAndClearView(true);
         reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);

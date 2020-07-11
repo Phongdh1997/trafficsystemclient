@@ -67,6 +67,16 @@ public class ContributionFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).showBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment

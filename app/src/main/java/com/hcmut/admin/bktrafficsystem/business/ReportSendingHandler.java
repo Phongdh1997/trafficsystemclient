@@ -84,9 +84,6 @@ public class ReportSendingHandler {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if (reportMarker != null) {
-                    reportMarker.removeMarker();
-                }
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(optimizeLatLng, 17));
                 reportMarker = new MarkerCreating(optimizeLatLng);
                 reportMarker.createMarker(
@@ -177,9 +174,6 @@ public class ReportSendingHandler {
 
     private void drawOrientationArrow(GoogleMap map, LatLng start, LatLng end) {
         try {
-            if (arrowMarker != null) {
-                arrowMarker.remove();
-            }
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_arrow);
             Bitmap smallMarker = Bitmap.createScaledBitmap(bitmap, 240, 180, false);
             double bearing = MapUtil.GetBearing(start, end);
