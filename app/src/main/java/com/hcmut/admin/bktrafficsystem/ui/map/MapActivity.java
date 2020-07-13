@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
@@ -57,6 +58,7 @@ public class MapActivity extends AppCompatActivity implements
     private MarkerListener markerListener;
     private RatingDialogListener ratingDialogListener;
     private List<OnMapReadyListener> onMapReadyListeners = new ArrayList<>();
+    private CameraPhoto cameraPhoto;
 
     private SupportMapFragment mapFragment;
     private BottomTab bottomTab;
@@ -85,6 +87,10 @@ public class MapActivity extends AppCompatActivity implements
 
     public void setRatingDialogListener(RatingDialogListener ratingDialogListener) {
         this.ratingDialogListener = ratingDialogListener;
+    }
+
+    public void setCameraPhotoHandler(CameraPhoto cameraPhoto) {
+        this.cameraPhoto = cameraPhoto;
     }
 
     @Override
@@ -301,7 +307,7 @@ public class MapActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
             case CameraPhoto.IMAGE_REQUEST:
-                CameraPhoto.onActivityResult(getApplicationContext(), resultCode, data);
+                Objects.requireNonNull(cameraPhoto).onActivityResult(getApplicationContext(), resultCode, data);
                 return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -320,7 +326,7 @@ public class MapActivity extends AppCompatActivity implements
                 }
                 return;
             case CameraPhoto.IMAGE_PERMISSION_CODE:
-                CameraPhoto.onRequestPermissionsResult(
+                Objects.requireNonNull(cameraPhoto).onRequestPermissionsResult(
                         requestCode,
                         permissions,
                         grantResults,

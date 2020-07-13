@@ -18,6 +18,8 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,17 +40,13 @@ public class CameraPhoto {
     public static final int IMAGE_PERMISSION_CODE = 111;
     public static final int IMAGE_REQUEST = 112;
 
-    private static PhotoUploadCallback photoUploadCallback;
+    private CameraPhoto.PhotoUploadCallback photoUploadCallback;
 
-    public static void registerPhotoUploadCallback(PhotoUploadCallback listener) {
-        photoUploadCallback = listener;
+    public CameraPhoto(@NotNull PhotoUploadCallback callback) {
+        photoUploadCallback = callback;
     }
 
-    public static void unRegisterPhotoUploadCallback() {
-        photoUploadCallback = null;
-    }
-
-    public static void collectPhoto(Activity activity) {
+    public void collectPhoto(Activity activity) {
         if (activity == null) return;
         Context context = activity.getApplicationContext();
 
@@ -64,7 +62,7 @@ public class CameraPhoto {
         }
     }
 
-    public static void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, Activity activity) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, Activity activity) {
         if (requestCode == IMAGE_PERMISSION_CODE) {
             Log.e("test", "length" + grantResults.length);
             if ((grantResults.length > 2) && (grantResults[0] + grantResults[1] + grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
@@ -73,13 +71,13 @@ public class CameraPhoto {
         }
     }
 
-    public static void onActivityResult(Context context, int resultCode, Intent data) {
+    public void onActivityResult(Context context, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             handleImageResult(context, data);
         }
     }
 
-    private static void handleImageResult(Context context, Intent data) {
+    private void handleImageResult(Context context, Intent data) {
         Bitmap bitmap = null;
         try {
             if (data.getData() == null) {
@@ -92,49 +90,61 @@ public class CameraPhoto {
         uploadFile(bitmap);
     }
 
-    private static void uploadFile(final Bitmap bitmap) {
-        if (photoUploadCallback != null) {
-            if (bitmap == null) {
-                photoUploadCallback.onUpLoadFail();
-                return;
-            }
-            final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+    private void uploadFile(final Bitmap bitmap) {
+        if (bitmap == null) {
+            photoUploadCallback.onUpLoadFail();
+            return;
+        }
+
+        final Bitmap scaledBitmap = getScaleBitmap(bitmap, 640, 960);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        final byte[] byteArray = stream.toByteArray();
+
+        RequestBody fileReqBody = RequestBody.create(byteArray, MediaType.parse("image/*"));
+        MultipartBody.Part parts = MultipartBody.Part.createFormData(
+                "file", String.valueOf(System.currentTimeMillis()), fileReqBody);
+        RetrofitClient.getApiService().uploadFile(parts)
+                .enqueue(new Callback<BaseResponse<String>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {
+                        // TODO: neu thanh cong thi set image vao imageview
+                        if (response.body() != null &&
+                                response.body().getData() != null &&
+                                response.code() == 200) {
+                            photoUploadCallback.onUpLoaded(scaledBitmap, response.body().getData());
+                        } else {
+                            photoUploadCallback.onUpLoadFail();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<String>> call, Throwable t) {
+                        photoUploadCallback.onUpLoadFail();
+                    }
+                });
+    }
+
+    /**
+     * Scale bitmap if its size greater than max size
+     */
+    private Bitmap getScaleBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        if (width > maxWidth || height > maxHeight) {
+            final Bitmap scaledBitmap = Bitmap.createScaledBitmap(
+                    bitmap, Math.min(width, maxWidth), Math.min(height, maxHeight), false);
             try {
                 bitmap.recycle();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-
-            RequestBody fileReqBody = RequestBody.create(byteArray, MediaType.parse("image/*"));
-            MultipartBody.Part parts = MultipartBody.Part.createFormData(
-                    "file", String.valueOf(System.currentTimeMillis()), fileReqBody);
-            RetrofitClient.getApiService().uploadFile(parts)
-                    .enqueue(new Callback<BaseResponse<String>>() {
-                        @Override
-                        public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {
-                            // TODO: neu thanh cong thi set image vao imageview
-                            if (response.body() != null &&
-                                    response.body().getData() != null &&
-                                    response.code() == 200) {
-                                photoUploadCallback.onUpLoaded(scaledBitmap, response.body().getData());
-                            } else {
-                                photoUploadCallback.onUpLoadFail();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<BaseResponse<String>> call, Throwable t) {
-                            photoUploadCallback.onUpLoadFail();
-                        }
-                    });
+            return scaledBitmap;
         }
+        return bitmap;
     }
 
-    private static void getPhotoIntent(Activity activity) {
+    private void getPhotoIntent(Activity activity) {
         Context context = activity.getApplicationContext();
         if (context == null) return;
 

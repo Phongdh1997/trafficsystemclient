@@ -83,6 +83,7 @@ public class TrafficReportFragment extends Fragment implements
 
     private List<String> images;
     private List<Bitmap> imageBitmaps = new ArrayList<>();
+    private CameraPhoto cameraPhoto;
 
     private GoogleMap map;
 
@@ -156,32 +157,6 @@ public class TrafficReportFragment extends Fragment implements
     }
 
     @Override
-    public void onAttach(final Context context) {
-        super.onAttach(context);
-        if (context instanceof MapActivity) {
-            MapActivity mapActivity = (MapActivity) context;
-            mapActivity.addMapReadyCallback(new MapActivity.OnMapReadyListener() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    map = googleMap;
-                }
-            });
-            mapActivity.setMarkerListener(new MarkerListener() {
-                @Override
-                public void onClick(Marker marker) {
-                    reportSendingHandler.onArrowMarkerClicked(context, map, marker);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        CameraPhoto.unRegisterPhotoUploadCallback();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -216,7 +191,48 @@ public class TrafficReportFragment extends Fragment implements
         addEvents(view);
     }
 
-    private void addEvents(final View view) {
+    private void addEvents(View view) {
+        cameraPhoto = new CameraPhoto(new CameraPhoto.PhotoUploadCallback() {
+            @Override
+            public void onUpLoaded(Bitmap bitmap, String url) {
+                if (bitmap != null) {
+                    ImageView imageView = new ImageView(getContext());
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
+                    imageView.setImageBitmap(bitmap);
+                    imageView.setLayoutParams(params);
+                    llImageContainer.addView(imageView);
+                    if (images == null) {
+                        images = new ArrayList<>();
+                    }
+                    images.add(url);
+                    imageBitmaps.add(bitmap);
+                }
+            }
+
+            @Override
+            public void onUpLoadFail() {
+                Toast.makeText(getContext(),
+                        "Không thể tải ảnh lên, vui lòng thử lại",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        final Context context = view.getContext();
+        if (context instanceof MapActivity) {
+            MapActivity mapActivity = (MapActivity) context;
+            mapActivity.addMapReadyCallback(new MapActivity.OnMapReadyListener() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    map = googleMap;
+                }
+            });
+            mapActivity.setMarkerListener(new MarkerListener() {
+                @Override
+                public void onClick(Marker marker) {
+                    reportSendingHandler.onArrowMarkerClicked(context, map, marker);
+                }
+            });
+            mapActivity.setCameraPhotoHandler(cameraPhoto);
+        }
         searchInputView.setTxtSearchInputEvent(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -299,8 +315,7 @@ public class TrafficReportFragment extends Fragment implements
             @Override
             public void onClick(View view) {
                 if (images == null || images.size() < MAX_PHOTO_TOTAL) {
-                    registerPhotoUploadCallback();
-                    CameraPhoto.collectPhoto(getActivity());
+                    cameraPhoto.collectPhoto(getActivity());
                 } else {
                     Toast.makeText(getContext(),
                             "Bạn chỉ có thể thêm tối đa " + MAX_PHOTO_TOTAL + " hình ảnh",
@@ -318,33 +333,6 @@ public class TrafficReportFragment extends Fragment implements
                         Arrays.asList(snReason.getSelectedItem().toString()),
                         txtNote.getText().toString(),
                         images);
-            }
-        });
-    }
-
-    public void registerPhotoUploadCallback() {
-        CameraPhoto.registerPhotoUploadCallback(new CameraPhoto.PhotoUploadCallback() {
-            @Override
-            public void onUpLoaded(Bitmap bitmap, String url) {
-                if (bitmap != null) {
-                    ImageView imageView = new ImageView(getContext());
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
-                    imageView.setImageBitmap(bitmap);
-                    imageView.setLayoutParams(params);
-                    llImageContainer.addView(imageView);
-                    if (images == null) {
-                        images = new ArrayList<>();
-                    }
-                    images.add(url);
-                    imageBitmaps.add(bitmap);
-                }
-            }
-
-            @Override
-            public void onUpLoadFail() {
-                Toast.makeText(getContext(),
-                        "Không thể tải ảnh lên, vui lòng thử lại",
-                        Toast.LENGTH_SHORT).show();
             }
         });
     }
