@@ -28,7 +28,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.business.CameraPhoto;
+import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
+import com.hcmut.admin.bktrafficsystem.business.TrafficReportPhotoUploader;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.business.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
@@ -43,6 +44,7 @@ import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,7 +85,7 @@ public class TrafficReportFragment extends Fragment implements
 
     private List<String> images;
     private List<Bitmap> imageBitmaps = new ArrayList<>();
-    private CameraPhoto cameraPhoto;
+    private PhotoUploader photoUploader;
 
     private GoogleMap map;
 
@@ -164,6 +166,16 @@ public class TrafficReportFragment extends Fragment implements
     }
 
     @Override
+    public void onDetach() {
+        try {
+            Objects.requireNonNull((MapActivity) getContext()).unRegisterCameraPhotoHandler();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onDetach();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -192,7 +204,7 @@ public class TrafficReportFragment extends Fragment implements
     }
 
     private void addEvents(View view) {
-        cameraPhoto = new CameraPhoto(new CameraPhoto.PhotoUploadCallback() {
+        photoUploader = new TrafficReportPhotoUploader(new PhotoUploader.PhotoUploadCallback() {
             @Override
             public void onUpLoaded(Bitmap bitmap, String url) {
                 if (bitmap != null) {
@@ -231,7 +243,7 @@ public class TrafficReportFragment extends Fragment implements
                     reportSendingHandler.onArrowMarkerClicked(context, map, marker);
                 }
             });
-            mapActivity.setCameraPhotoHandler(cameraPhoto);
+            mapActivity.registerCameraPhotoHandler(photoUploader);
         }
         searchInputView.setTxtSearchInputEvent(new View.OnFocusChangeListener() {
             @Override
@@ -315,7 +327,7 @@ public class TrafficReportFragment extends Fragment implements
             @Override
             public void onClick(View view) {
                 if (images == null || images.size() < MAX_PHOTO_TOTAL) {
-                    cameraPhoto.collectPhoto(getActivity());
+                    photoUploader.collectPhoto(getActivity());
                 } else {
                     Toast.makeText(getContext(),
                             "Bạn chỉ có thể thêm tối đa " + MAX_PHOTO_TOTAL + " hình ảnh",

@@ -25,7 +25,7 @@ import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
-import com.hcmut.admin.bktrafficsystem.business.CameraPhoto;
+import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -58,7 +58,7 @@ public class MapActivity extends AppCompatActivity implements
     private MarkerListener markerListener;
     private RatingDialogListener ratingDialogListener;
     private List<OnMapReadyListener> onMapReadyListeners = new ArrayList<>();
-    private CameraPhoto cameraPhoto;
+    private PhotoUploader photoUploader;
 
     private SupportMapFragment mapFragment;
     private BottomTab bottomTab;
@@ -89,8 +89,12 @@ public class MapActivity extends AppCompatActivity implements
         this.ratingDialogListener = ratingDialogListener;
     }
 
-    public void setCameraPhotoHandler(CameraPhoto cameraPhoto) {
-        this.cameraPhoto = cameraPhoto;
+    public void registerCameraPhotoHandler(PhotoUploader photoUploader) {
+        this.photoUploader = photoUploader;
+    }
+
+    public void unRegisterCameraPhotoHandler() {
+        this.photoUploader = null;
     }
 
     @Override
@@ -306,8 +310,8 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
-            case CameraPhoto.IMAGE_REQUEST:
-                Objects.requireNonNull(cameraPhoto).onActivityResult(getApplicationContext(), resultCode, data);
+            case PhotoUploader.IMAGE_REQUEST:
+                Objects.requireNonNull(photoUploader).onActivityResult(getApplicationContext(), resultCode, data);
                 return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -325,8 +329,8 @@ public class MapActivity extends AppCompatActivity implements
                     CallPhone.makeAPhoneCall(MapActivity.this);
                 }
                 return;
-            case CameraPhoto.IMAGE_PERMISSION_CODE:
-                Objects.requireNonNull(cameraPhoto).onRequestPermissionsResult(
+            case PhotoUploader.IMAGE_PERMISSION_CODE:
+                Objects.requireNonNull(photoUploader).onRequestPermissionsResult(
                         requestCode,
                         permissions,
                         grantResults,
