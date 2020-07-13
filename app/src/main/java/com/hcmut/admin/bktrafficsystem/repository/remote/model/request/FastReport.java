@@ -57,7 +57,7 @@ public class FastReport {
     }
 
     public static void postFastReport(final Activity activity, final AndroidExt androidExt) {
-        if (activity != null) {
+        if (activity == null) {
             return;
         }
         if (MapUtil.checkGPSTurnOn(activity, androidExt)) {
