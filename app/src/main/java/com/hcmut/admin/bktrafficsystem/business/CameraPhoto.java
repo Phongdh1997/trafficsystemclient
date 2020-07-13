@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,7 +48,7 @@ public class CameraPhoto {
         photoUploadCallback = null;
     }
 
-    public static void checkPermission(Activity activity) {
+    public static void collectPhoto(Activity activity) {
         if (activity == null) return;
         Context context = activity.getApplicationContext();
 
@@ -107,14 +108,15 @@ public class CameraPhoto {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
-            RequestBody requestBody = RequestBody.create(byteArray, MediaType.parse("image/png"));
-            // MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", null, requestBody);
-            RetrofitClient.getApiService().uploadFile(requestBody)
+
+            RequestBody fileReqBody = RequestBody.create(byteArray, MediaType.parse("image/*"));
+            MultipartBody.Part parts = MultipartBody.Part.createFormData(
+                    "file", String.valueOf(System.currentTimeMillis()), fileReqBody);
+            RetrofitClient.getApiService().uploadFile(parts)
                     .enqueue(new Callback<BaseResponse<String>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<String>> call, final Response<BaseResponse<String>> response) {
                             // TODO: neu thanh cong thi set image vao imageview
-                            Log.e("fafa", response.toString());
                             if (response.body() != null &&
                                     response.body().getData() != null &&
                                     response.code() == 200) {

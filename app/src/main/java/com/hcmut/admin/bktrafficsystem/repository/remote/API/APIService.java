@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -138,5 +139,5 @@ public interface APIService {
 
     @Multipart
     @POST("api/file/upload")
-    Call<BaseResponse<String>> uploadFile(@Part("file") RequestBody file);
+    Call<BaseResponse<String>> uploadFile(@Part MultipartBody.Part file);
 }

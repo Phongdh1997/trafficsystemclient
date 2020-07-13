@@ -299,7 +299,8 @@ public class TrafficReportFragment extends Fragment implements
             @Override
             public void onClick(View view) {
                 if (images == null || images.size() < MAX_PHOTO_TOTAL) {
-                    CameraPhoto.checkPermission(getActivity());
+                    registerPhotoUploadCallback();
+                    CameraPhoto.collectPhoto(getActivity());
                 } else {
                     Toast.makeText(getContext(),
                             "Bạn chỉ có thể thêm tối đa " + MAX_PHOTO_TOTAL + " hình ảnh",
@@ -307,6 +308,21 @@ public class TrafficReportFragment extends Fragment implements
                 }
             }
         });
+        txtReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reportSendingHandler.reviewReport(
+                        TrafficReportFragment.this,
+                        searchInputView.getSearchInputText(),
+                        sbSpeed.getProgress(),
+                        Arrays.asList(snReason.getSelectedItem().toString()),
+                        txtNote.getText().toString(),
+                        images);
+            }
+        });
+    }
+
+    public void registerPhotoUploadCallback() {
         CameraPhoto.registerPhotoUploadCallback(new CameraPhoto.PhotoUploadCallback() {
             @Override
             public void onUpLoaded(Bitmap bitmap, String url) {
@@ -329,18 +345,6 @@ public class TrafficReportFragment extends Fragment implements
                 Toast.makeText(getContext(),
                         "Không thể tải ảnh lên, vui lòng thử lại",
                         Toast.LENGTH_SHORT).show();
-            }
-        });
-        txtReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                reportSendingHandler.reviewReport(
-                        TrafficReportFragment.this,
-                        searchInputView.getSearchInputText(),
-                        sbSpeed.getProgress(),
-                        Arrays.asList(snReason.getSelectedItem().toString()),
-                        txtNote.getText().toString(),
-                        images);
             }
         });
     }
