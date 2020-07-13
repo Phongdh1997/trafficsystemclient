@@ -34,7 +34,6 @@ public class AccountFragment extends Fragment {
     private TextView txtName;
     private TextView txtEmail;
     private TextView txtManageAccount;
-    private TextView txtCallVOH;
     private TextView txtLogout;
     private TextView txtSetting;
     private TextView txtViewGuiding;
@@ -102,7 +101,6 @@ public class AccountFragment extends Fragment {
         txtManageAccount = view.findViewById(R.id.txtManageAccount);
         txtName = view.findViewById(R.id.txtName);
         txtEmail = view.findViewById(R.id.txtEmail);
-        txtCallVOH = view.findViewById(R.id.txtCallVOH);
         txtLogout = view.findViewById(R.id.txtLogout);
         txtSetting = view.findViewById(R.id.txtSetting);
         txtViewGuiding = view.findViewById(R.id.txtViewGuiding);
@@ -133,18 +131,12 @@ public class AccountFragment extends Fragment {
         txtManageVoucher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
+                NavHostFragment.findNavController(AccountFragment.this)
+                        .navigate(R.id.action_accountFragment_to_voucherFragment);
             }
         });
         try {
             final MapActivity mapActivity = (MapActivity) view.getContext();
-            txtCallVOH.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CallPhone callPhone = new CallPhone(mapActivity);
-                    callPhone.checkCallPhonePermisstion();
-                }
-            });
             txtLogout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

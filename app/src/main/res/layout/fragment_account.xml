@@ -130,7 +130,7 @@
             app:layout_constraintTop_toBottomOf="@+id/txtSetting"/>
 
         <TextView
-            android:id="@+id/txtCallVOH"
+            android:id="@+id/txtContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_btn_bg"
@@ -140,7 +140,7 @@
             android:drawableTint="@color/blue"
             android:gravity="left|center_vertical"
             android:padding="15dp"
-            android:text="Liên hệ biên tập viên"
+            android:text="Liên hệ"
             android:textSize="16dp"
             app:layout_constraintTop_toBottomOf="@id/border2" />
 
@@ -149,7 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/gray"
-            app:layout_constraintTop_toBottomOf="@+id/txtCallVOH"/>
+            app:layout_constraintTop_toBottomOf="@+id/txtContact"/>
 
         <TextView
             android:id="@+id/txtViewGuiding"

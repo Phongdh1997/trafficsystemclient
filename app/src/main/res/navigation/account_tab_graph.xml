@@ -24,6 +24,13 @@
             app:exitAnim="@anim/non_anim"
             app:popEnterAnim="@anim/non_anim"
             app:popExitAnim="@anim/slide_out_bottom"/>
+        <action
+            android:id="@+id/action_accountFragment_to_voucherFragment"
+            app:destination="@id/voucherFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -47,4 +54,8 @@
         android:name="com.hcmut.admin.bktrafficsystem.ui.setting.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/voucherFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.VoucherFragment"
+        android:label="VoucherFragment" />
 </navigation>

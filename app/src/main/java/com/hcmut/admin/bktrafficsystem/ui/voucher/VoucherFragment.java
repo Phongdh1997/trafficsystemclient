@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.report.infrastructure;
+package com.hcmut.admin.bktrafficsystem.ui.voucher;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,10 +13,10 @@ import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link InfrastructureReportFragment#newInstance} factory method to
+ * Use the {@link VoucherFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class InfrastructureReportFragment extends Fragment implements MapActivity.OnBackPressCallback {
+public class VoucherFragment extends Fragment implements MapActivity.OnBackPressCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -26,7 +26,7 @@ public class InfrastructureReportFragment extends Fragment implements MapActivit
     private String mParam1;
     private String mParam2;
 
-    public InfrastructureReportFragment() {
+    public VoucherFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class InfrastructureReportFragment extends Fragment implements MapActivit
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment InfrastructureReportFragment.
+     * @return A new instance of fragment VoucherFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static InfrastructureReportFragment newInstance(String param1, String param2) {
-        InfrastructureReportFragment fragment = new InfrastructureReportFragment();
+    public static VoucherFragment newInstance(String param1, String param2) {
+        VoucherFragment fragment = new VoucherFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,11 +61,11 @@ public class InfrastructureReportFragment extends Fragment implements MapActivit
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_infrastructure_report, container, false);
+        return inflater.inflate(R.layout.fragment_voucher, container, false);
     }
 
     @Override
     public void onBackPress() {
-        NavHostFragment.findNavController(InfrastructureReportFragment.this).popBackStack();
+        NavHostFragment.findNavController(VoucherFragment.this).popBackStack();
     }
 }

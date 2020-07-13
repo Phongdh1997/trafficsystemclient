@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.FastReport;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
@@ -34,6 +35,7 @@ public class ContributionFragment extends Fragment {
     private TextView txtReportTraffic;
     private TextView txtReportInfrastructure;
     private TextView txtFastReport;
+    private TextView txtCallVOH;
 
     public ContributionFragment() {
         // Required empty public constructor
@@ -95,6 +97,7 @@ public class ContributionFragment extends Fragment {
         txtReportTraffic = view.findViewById(R.id.txtReportTraffic);
         txtReportInfrastructure = view.findViewById(R.id.txtReportInfrastructure);
         txtFastReport = view.findViewById(R.id.txtFastReport);
+        txtCallVOH = view.findViewById(R.id.txtCallVOH);
     }
 
     private void addEvents() {
@@ -108,13 +111,25 @@ public class ContributionFragment extends Fragment {
         txtReportInfrastructure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
+                NavHostFragment.findNavController(ContributionFragment.this)
+                        .navigate(R.id.action_contributionFragment_to_infrastructureReportFragment);
             }
         });
         txtFastReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastReport.postFastReport(getActivity(), MapActivity.androidExt);
+            }
+        });
+        txtCallVOH.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    CallPhone callPhone = new CallPhone((MapActivity) getContext());
+                    callPhone.checkCallPhonePermisstion();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

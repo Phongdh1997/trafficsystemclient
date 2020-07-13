@@ -45,5 +45,17 @@
             app:exitAnim="@anim/slide_out_bottom"
             app:popEnterAnim="@anim/slide_in_bottom"
             app:popExitAnim="@anim/slide_out_top" />
+        <action
+            android:id="@+id/action_contributionFragment_to_infrastructureReportFragment"
+            app:destination="@id/infrastructureReportFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_bottom"
+            app:popEnterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_top"/>
     </fragment>
+    <fragment
+        android:id="@+id/infrastructureReportFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.report.infrastructure.InfrastructureReportFragment"
+        android:label="fragment_infrastructure_report"
+        tools:layout="@layout/fragment_infrastructure_report" />
 </navigation>
