@@ -104,6 +104,9 @@ public class ReportSendingHandler {
                     LatLng temp = currLatLng;
                     currLatLng = nextLatLng;
                     nextLatLng = temp;
+                    if (arrowMarker != null) {
+                        arrowMarker.remove();
+                    }
                     drawOrientationArrow(map, reportMarker.getLocation(), nextLatLng);
                 }
             });
