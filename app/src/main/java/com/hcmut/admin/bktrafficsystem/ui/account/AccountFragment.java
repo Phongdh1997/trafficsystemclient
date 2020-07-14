@@ -38,6 +38,7 @@ public class AccountFragment extends Fragment {
     private TextView txtSetting;
     private TextView txtViewGuiding;
     private TextView txtManageVoucher;
+    private TextView txtContact;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -105,6 +106,7 @@ public class AccountFragment extends Fragment {
         txtSetting = view.findViewById(R.id.txtSetting);
         txtViewGuiding = view.findViewById(R.id.txtViewGuiding);
         txtManageVoucher = view.findViewById(R.id.txtManageVoucher);
+        txtContact = view.findViewById(R.id.txtContact);
     }
 
     private void addEvents(View view) {
@@ -123,6 +125,12 @@ public class AccountFragment extends Fragment {
             }
         });
         txtViewGuiding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
+            }
+        });
+        txtContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
