@@ -96,6 +96,12 @@ public class ProfileFragment extends Fragment implements MapActivity.OnBackPress
     }
 
     private void addControls(View view) {
+        try {
+            ((MapActivity) view.getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         txtEditProfile = view.findViewById(R.id.txtEditProfile);
         txtName = view.findViewById(R.id.txtName);
         txtEmail = view.findViewById(R.id.txtEmail);

@@ -157,6 +157,7 @@ public class AccountFragment extends Fragment {
                     .load(MapActivity.currentUser.getImgUrl())
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(imgAvatar);
+            ((MapActivity) getActivity()).showBottomNav();
         } catch (Exception e) {
             e.printStackTrace();
         }

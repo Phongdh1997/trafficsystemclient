@@ -6,16 +6,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Button
+
+    <TextView
+        android:id="@+id/btnChooseMapPoint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/transparent_btn_bg"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_map_tab"
+        android:drawablePadding="10dp"
+        android:gravity="left|center_vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
         android:text="Chọn một điểm trên bản đồ"
-        android:id="@+id/btnChooseMapPoint"
+        android:textSize="12dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_toolbar"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/cv_toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcSearchPlaceResult"

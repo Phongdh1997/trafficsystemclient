@@ -80,6 +80,12 @@ public class SettingFragment extends Fragment implements MapActivity.OnBackPress
     }
 
     private void addControls(View view) {
+        try {
+            ((MapActivity) view.getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Fragment settingRefFragment = new SettingReferenceFragment();
         getChildFragmentManager()
                 .beginTransaction()

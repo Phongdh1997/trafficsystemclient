@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,7 +50,7 @@ public class SearchPlaceFragment extends Fragment implements
     private RecyclerView rcSearchPlaceResult;
     private SearchPlaceAdapter searchPlaceAdapter;
     private ImageView imgBack;
-    private Button btnChooseMapPoint;
+    private TextView btnChooseMapPoint;
 
     private LatLng selectedLatLngOnScreen;
     private boolean isHaveResult = false;

@@ -1,5 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.ui.map;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.view.View;
 
 import java.util.HashMap;
@@ -15,13 +17,26 @@ public class BottomTab {
     }
 
     public void showTab(int id) {
-        View currentTab = tabs.get(currentTabId);
-        if (currentTab != null) {
-            currentTab.setVisibility(View.GONE);
+        final View currentTab = tabs.get(currentTabId);
+        if (currentTab != null) {   // hide current tab
+            currentTab.animate()
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            currentTab.setVisibility(View.GONE);
+                        }
+                    });
         }
         View showTab = tabs.get(id);
-        if (showTab != null) {
+        if (showTab != null) {  // show tab
+            showTab.setAlpha(0f);
             showTab.setVisibility(View.VISIBLE);
+            showTab.animate()
+                    .alpha(1.0f)
+                    .setDuration(300)
+                    .setListener(null);
         }
         currentTabId = id;
     }
