@@ -11,7 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.UserResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
-import com.hcmut.admin.bktrafficsystem.ui.login.LoginActivity;
+import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
@@ -147,7 +147,7 @@ public class User {
                             }
                         }
                         SharedPrefUtils.saveUser(activity, null);
-                        Intent intent = new Intent(activity, LoginActivity.class);
+                        Intent intent = new Intent(activity, SignInActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         activity.startActivity(intent);
                     }

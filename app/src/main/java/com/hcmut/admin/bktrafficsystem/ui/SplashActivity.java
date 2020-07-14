@@ -6,7 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.hcmut.admin.bktrafficsystem.ui.login.LoginActivity;
+import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
 
 import java.util.Calendar;
 
@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         time = Calendar.getInstance().getTimeInMillis();
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
         finish();
     }

@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.ui.login;
+package com.hcmut.admin.bktrafficsystem.ui.signin;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -41,7 +41,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
 import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
-import com.hcmut.admin.bktrafficsystem.ui.signup.RegisterActivity;
+import com.hcmut.admin.bktrafficsystem.ui.signup.SignUpActivity;
 import com.hcmut.admin.bktrafficsystem.ui.SplashActivity;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
@@ -55,7 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
 
@@ -94,13 +94,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         User user = SharedPrefUtils.getUser(this);
         if (user != null) {
-            Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+            Intent intent = new Intent(SignInActivity.this, MapActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_signin);
         FacebookSdk.sdkInitialize(getApplicationContext());
         getPermissions();
         callbackManager = CallbackManager.Factory.create();
@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .requestEmail()
                 .build();
 
-        googleApiClient = new GoogleApiClient.Builder(LoginActivity.this)
+        googleApiClient = new GoogleApiClient.Builder(SignInActivity.this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -170,7 +170,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.facebook_login_button: {
                 if (AccessToken.getCurrentAccessToken() != null)
                     LoginManager.getInstance().logOut();
-                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this,
+                LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this,
                         Collections.singletonList("public_profile"));
 //                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
 //                        new ResultCallback<BaseResponse<Status>() {
@@ -194,14 +194,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
             case R.id.tv_sign_up: {
-                startActivity(new Intent(this, RegisterActivity.class));
+                startActivity(new Intent(this, SignUpActivity.class));
                 break;
             }
         }
     }
 
     private void signIn() {
-        progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.loading), true);
+        progressDialog = ProgressDialog.show(SignInActivity.this, "", getString(R.string.loading), true);
         RetrofitClient.getApiService().login(username.getText().toString(), password.getText().toString())
                 .enqueue(new Callback<BaseResponse<LoginResponse>>() {
                     @Override
@@ -222,17 +222,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     user.setUserId(loginResponse.getId());
                                     user.setEvaluation_score(loginResponse.getEvaluation_score());
                                     user.setmLocationPermissionsGranted(mPermissionsGranted);
-                                    SharedPrefUtils.saveUser(LoginActivity.this, user);
-                                    Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+                                    SharedPrefUtils.saveUser(SignInActivity.this, user);
+                                    Intent intent = new Intent(SignInActivity.this, MapActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                     Log.d("Sign In", String.valueOf(Calendar.getInstance().getTimeInMillis() - current));
                                 } else {
-                                    androidExt.showErrorDialog(LoginActivity.this, "Có lỗi, vui lòng thông báo cho admin");
+                                    androidExt.showErrorDialog(SignInActivity.this, "Có lỗi, vui lòng thông báo cho admin");
                                 }
                             } else {
-                                androidExt.showErrorDialog(LoginActivity.this, "Tài Khoản hoặc mật khẩu không đúng");
+                                androidExt.showErrorDialog(SignInActivity.this, "Tài Khoản hoặc mật khẩu không đúng");
                             }
                         }
                     }
@@ -240,7 +240,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onFailure(Call<BaseResponse<LoginResponse>> call, Throwable t) {
                         progressDialog.dismiss();
-                        androidExt.showErrorDialog(LoginActivity.this, "Kết nối thất bại, vui lòng kiểm tra lại");
+                        androidExt.showErrorDialog(SignInActivity.this, "Kết nối thất bại, vui lòng kiểm tra lại");
                     }
                 });
     }
@@ -284,7 +284,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // Google and Facebook login-support functions
     protected void updateUIGoogle(final GoogleSignInAccount account) {
-        progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.loading), true);
+        progressDialog = ProgressDialog.show(SignInActivity.this, "", getString(R.string.loading), true);
         //Get access token from server
         RetrofitClient.getApiService().loginWithGoogle(account.getId(), account.getIdToken()).enqueue(new Callback<BaseResponse<LoginResponse>>() {
             @Override
@@ -302,8 +302,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     user.setPhoneNumber(loginResponse.getPhoneNumber());
                     user.setUserId(loginResponse.getId());
                     user.setmLocationPermissionsGranted(mPermissionsGranted);
-                    SharedPrefUtils.saveUser(LoginActivity.this, user);
-                    Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+                    SharedPrefUtils.saveUser(SignInActivity.this, user);
+                    Intent intent = new Intent(SignInActivity.this, MapActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -321,7 +321,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     protected void updateUIFacebook(final AccessToken accessToken) {
-        progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.loading), true);
+        progressDialog = ProgressDialog.show(SignInActivity.this, "", getString(R.string.loading), true);
         GraphRequest request = GraphRequest.newMeRequest(accessToken,
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
@@ -348,8 +348,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         user.setPhoneNumber(loginResponse.getPhoneNumber());
                                         user.setUserId(loginResponse.getId());
                                         user.setmLocationPermissionsGranted(mPermissionsGranted);
-                                        SharedPrefUtils.saveUser(LoginActivity.this, user);
-                                        Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+                                        SharedPrefUtils.saveUser(SignInActivity.this, user);
+                                        Intent intent = new Intent(SignInActivity.this, MapActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);

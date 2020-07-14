@@ -20,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
     EditText username, password, confirmPassword, email, phoneNumber, name;
     Button btnSignUp;
     AndroidExt androidExt = new AndroidExt();
@@ -30,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_signup);
         init();
     }
 
@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             androidExt.showErrorDialog(this, "Mật khẩu xác nhận không chính xác");
             confirmPassword.requestFocus();
         } else {
-            progressDialog = ProgressDialog.show(RegisterActivity.this, "", getString(R.string.loading), true);
+            progressDialog = ProgressDialog.show(SignUpActivity.this, "", getString(R.string.loading), true);
             RetrofitClient.getApiService().register(username.getText().toString(), password.getText().toString(),
                     name.getText().toString(), email.getText().toString(), phoneNumber.getText().toString())
                     .enqueue(new Callback<BaseResponse<LoginResponse>>() {
@@ -74,24 +74,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         public void onResponse(Call<BaseResponse<LoginResponse>> call, Response<BaseResponse<LoginResponse>> response) {
                             if (response.body() != null) {
                                 if (response.body().getData() != null) {
-                                    androidExt.showSuccessDialog(RegisterActivity.this, "Đăng ký thành công", new ClickDialogListener.OK() {
+                                    androidExt.showSuccessDialog(SignUpActivity.this, "Đăng ký thành công", new ClickDialogListener.OK() {
                                         @Override
                                         public void onCLickOK() {
                                             onBackPressed();
                                         }
                                     });
                                 } else {
-                                    androidExt.showErrorDialog(RegisterActivity.this, "Tên đăng nhập đã tồn tại");
+                                    androidExt.showErrorDialog(SignUpActivity.this, "Tên đăng nhập đã tồn tại");
                                 }
                             } else {
-                                androidExt.showErrorDialog(RegisterActivity.this, "Tên đăng nhập đã tồn tại");
+                                androidExt.showErrorDialog(SignUpActivity.this, "Tên đăng nhập đã tồn tại");
                             }
                             progressDialog.dismiss();
                         }
 
                         @Override
                         public void onFailure(Call<BaseResponse<LoginResponse>> call, Throwable t) {
-                            androidExt.showErrorDialog(RegisterActivity.this, "Đăng ký thất bại, vui lòng liên hệ admin");
+                            androidExt.showErrorDialog(SignUpActivity.this, "Đăng ký thất bại, vui lòng liên hệ admin");
                             progressDialog.dismiss();
                         }
                     });
