@@ -29,6 +29,8 @@ import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResult
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallback;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
@@ -87,6 +89,7 @@ public class HomeFragment extends Fragment
         }
 
         if (isHaveSearchResult && searchPlaceResult != null) {
+            Objects.requireNonNull((MapActivity) getActivity()).hideBottomNav();
             handleSearchResult();
         } else {
             searchInputView.updateView();
@@ -223,6 +226,7 @@ public class HomeFragment extends Fragment
      * refresh Search Place
      */
     public void refreshSearch() {
+        Objects.requireNonNull((MapActivity) getActivity()).showBottomNav();
         if (searchMarkerCreating != null) {
             searchMarkerCreating.removeMarker();
         }
