@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -134,6 +135,9 @@ public class SearchPlaceFragment extends Fragment implements
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rcSearchPlaceResult.setLayoutManager(layoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                view.getContext(), LinearLayoutManager.VERTICAL);
+        rcSearchPlaceResult.addItemDecoration(dividerItemDecoration);
         searchPlaceAdapter = new SearchPlaceAdapter();
         rcSearchPlaceResult.setAdapter(searchPlaceAdapter);
         txtSearchInput = view.findViewById(R.id.search_edt);
@@ -151,7 +155,6 @@ public class SearchPlaceFragment extends Fragment implements
         searchPlaceAdapter.setOnItemClickedListener(new SearchPlaceAdapter.OnItemClickCallback() {
             @Override
             public void onItemClicked(AutocompletePrediction itemData) {
-                // Toast.makeText(view.getContext(), itemData.getPrimaryText(null), Toast.LENGTH_SHORT).show();
                 try {
                     int type = getArguments().getInt(SearchPlaceResultHandler.SEARCH_TYPE, -1);
                     SearchPlaceResultHandler.getInstance()
