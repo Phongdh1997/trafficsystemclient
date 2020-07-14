@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.UserResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.ui.profile.EditProfileFragment;
 import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
@@ -102,11 +103,11 @@ public class User {
         this.evaluation_score = evaluation_score;
     }
 
-    public void updateUser(final Activity activity, String name, String phone) {
+    public void updateUser(final Activity activity, final EditProfileFragment fragment, String name, String avatarUrl, String phone) {
         if (activity == null) return;
 
         final ProgressDialog progressDialog = ProgressDialog.show(activity, "", "Đang lưu thông tin...", true);
-        RetrofitClient.getApiService().updateUserInfo(accessToken, name, null, null, phone).enqueue(new Callback<BaseResponse<UserResponse>>() {
+        RetrofitClient.getApiService().updateUserInfo(accessToken, name, null, avatarUrl, phone).enqueue(new Callback<BaseResponse<UserResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<UserResponse>> call, Response<BaseResponse<UserResponse>> response) {
                 progressDialog.dismiss();
@@ -114,15 +115,21 @@ public class User {
                     UserResponse userResponse = response.body().getData();
                     phoneNumber = userResponse.getPhoneNumber();
                     userName = userResponse.getName();
+                    imgUrl = userResponse.getAvatar();
                     SharedPrefUtils.saveUser(activity.getApplicationContext(), User.this);
                     MapActivity.androidExt.showSuccess(activity, "Lưu thành công");
+                    fragment.updateView(true);
+                } else {
+                    fragment.updateView(false);
+                    MapActivity.androidExt.showErrorDialog(activity, "Không thể cập nhật thông tin, vui lòng thử lại");
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<UserResponse>> call, Throwable t) {
                 progressDialog.dismiss();
-                MapActivity.androidExt.showErrorDialog(activity, "Có lỗi, cập nhật thất bại");
+                fragment.updateView(false);
+                MapActivity.androidExt.showErrorDialog(activity, "Không thể cập nhật thông tin, vui lòng thử lại");
             }
         });
     }

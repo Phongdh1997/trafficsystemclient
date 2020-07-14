@@ -17,8 +17,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TrafficReportPhotoUploader extends PhotoUploader {
-    public TrafficReportPhotoUploader(@NotNull PhotoUploadCallback callback) {
+    private int maxWidth;
+    private int maxHeight;
+
+    public TrafficReportPhotoUploader(int maxWidth, int maxHeight, @NotNull PhotoUploadCallback callback) {
         super(callback);
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
     }
 
     @Override
@@ -28,7 +33,7 @@ public class TrafficReportPhotoUploader extends PhotoUploader {
             return;
         }
 
-        final Bitmap scaledBitmap = getScaleBitmap(bitmap, 640, 960);
+        final Bitmap scaledBitmap = getScaleBitmap(bitmap, maxWidth, maxHeight);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         final byte[] byteArray = stream.toByteArray();

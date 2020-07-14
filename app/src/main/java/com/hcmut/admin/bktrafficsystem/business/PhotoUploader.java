@@ -62,6 +62,7 @@ public abstract class PhotoUploader {
 
     public void onActivityResult(Context context, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            photoUploadCallback.onPreUpload();
             handleImageResult(context, data);
         }
     }
@@ -136,6 +137,7 @@ public abstract class PhotoUploader {
     }
 
     public interface PhotoUploadCallback {
+        void onPreUpload();
         void onUpLoaded(Bitmap bitmap, String url);
         void onUpLoadFail();
     }

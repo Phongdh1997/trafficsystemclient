@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.report.traffic;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -86,6 +87,7 @@ public class TrafficReportFragment extends Fragment implements
     private List<String> images;
     private List<Bitmap> imageBitmaps = new ArrayList<>();
     private PhotoUploader photoUploader;
+    private ProgressDialog progressDialog;
 
     private GoogleMap map;
 
@@ -204,7 +206,16 @@ public class TrafficReportFragment extends Fragment implements
     }
 
     private void addEvents(View view) {
-        photoUploader = new TrafficReportPhotoUploader(new PhotoUploader.PhotoUploadCallback() {
+        photoUploader = new TrafficReportPhotoUploader(640, 960, new PhotoUploader.PhotoUploadCallback() {
+            @Override
+            public void onPreUpload() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+                progressDialog = (getActivity() == null) ? null :
+                        ProgressDialog.show(getActivity(), "", "Đang tải ảnh lên", true);
+            }
+
             @Override
             public void onUpLoaded(Bitmap bitmap, String url) {
                 if (bitmap != null) {
@@ -219,10 +230,16 @@ public class TrafficReportFragment extends Fragment implements
                     images.add(url);
                     imageBitmaps.add(bitmap);
                 }
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
             }
 
             @Override
             public void onUpLoadFail() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
                 Toast.makeText(getContext(),
                         "Không thể tải ảnh lên, vui lòng thử lại",
                         Toast.LENGTH_SHORT).show();
