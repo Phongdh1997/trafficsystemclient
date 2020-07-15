@@ -83,7 +83,7 @@ public class InfrastructureReportFragment extends Fragment implements MapActivit
     }
 
     private void addEvents() {
-
+        // TODO: implement Infrastructure Report feature here
     }
 
     @Override
