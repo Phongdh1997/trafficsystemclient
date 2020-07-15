@@ -83,7 +83,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
     }
 
     private void addEvents() {
-
+        // TODO: implement voucher feature here
     }
 
     @Override
