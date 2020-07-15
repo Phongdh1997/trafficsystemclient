@@ -82,6 +82,16 @@ public class EditProfileFragment extends Fragment implements MapActivity.OnBackP
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getActivity()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
