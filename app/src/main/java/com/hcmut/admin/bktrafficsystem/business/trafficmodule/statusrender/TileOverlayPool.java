@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class TileOverlayPool {
     private List<TileOverlay> idleOverlays = new ArrayList<>();
     private final int minSize;

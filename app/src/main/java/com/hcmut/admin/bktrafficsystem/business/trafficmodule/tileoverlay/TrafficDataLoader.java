@@ -16,6 +16,7 @@ import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 
 import java.util.List;
 
+@Deprecated
 public class TrafficDataLoader {
     public static final int LOAD_TILE_LEVEL = 15;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
@@ -32,28 +33,8 @@ public class TrafficDataLoader {
     }
 
     public List<StatusRenderDataEntity> loadTrafficData (TileCoordinates renderTile) {
-        TileCoordinates loadTile = MyLatLngBoundsUtil.convertTile(renderTile, LOAD_TILE_LEVEL);
-        if (loadedTileManager.isNotLoaded(loadTile)) {
-            Log.e("tile", "loading");
-            loadedTileManager.setLoadingTile(loadTile);
-            List<StatusRenderData> serverDatas = loadDataFromServer(loadTile);
-            if (serverDatas != null && serverDatas.size() > 0) {
-                List<StatusRenderDataEntity> dataEntities = StatusRenderDataEntity
-                        .parseStatusRenderDataEntity(serverDatas);
-                roomDatabaseService.insertTrafficStatus(dataEntities);
-                loadedTileManager.setLoadedTile(loadTile);
-                Log.e("tile", "loaded from server");
-                return dataEntities;
-            } else {
-                loadedTileManager.setLoadFailTile(loadTile);
-                Log.e("tile", "load fail");
-            }
-        } else {
-            Log.e("tile", "loaded from db");
-            return roomDatabaseService.getTrafficStatus(
-                    MyLatLngBoundsUtil.tileToLatLngBound(renderTile));
-        }
-        return null;
+        return roomDatabaseService.getTrafficStatus(
+                MyLatLngBoundsUtil.tileToLatLngBound(renderTile));
     }
 
     /**

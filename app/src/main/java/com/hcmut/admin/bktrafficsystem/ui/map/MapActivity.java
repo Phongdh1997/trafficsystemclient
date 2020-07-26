@@ -12,9 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.libraries.places.api.Places;
 import com.hcmut.admin.bktrafficsystem.MyApplication;
@@ -174,6 +176,7 @@ public class MapActivity extends AppCompatActivity implements
         onMapReadyListeners.clear();
         trafficRenderModule = new TrafficRenderModule(getApplicationContext(), mMap, mapFragment);
         trafficRenderModule.startStatusRenderTimer();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 15));
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {

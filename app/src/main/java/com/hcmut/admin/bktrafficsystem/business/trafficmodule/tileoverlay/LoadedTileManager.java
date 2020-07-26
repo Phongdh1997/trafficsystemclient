@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay;
 
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 
 import java.util.HashMap;
 
@@ -26,12 +27,25 @@ public class LoadedTileManager {
     }
 
     public synchronized boolean isNotLoaded (TileCoordinates tile) {
+        tile = MyLatLngBoundsUtil.convertTile(tile, 15);
         if (tile != null) {
             String tileState = loadedTiles.get(tile);
             if (tileState != null) {
                 // TODO: schedule to reload 'fail tile'
                 //return tileState.equals(LOAD_FAIL_STATE);
                 return false;
+            }
+        }
+        return true;
+    }
+
+    public synchronized boolean isLoadingOrNotLoad(TileCoordinates tile) {
+        tile = MyLatLngBoundsUtil.convertTile(tile, 15);
+        if (tile != null) {
+            String tileState = loadedTiles.get(tile);
+            if (tileState != null) {
+                // TODO: schedule to reload 'fail tile'
+                return tileState.equals(LOADING_STATE);
             }
         }
         return true;
