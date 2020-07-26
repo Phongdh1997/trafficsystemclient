@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay;
 
 import android.graphics.Bitmap;
 
@@ -24,10 +24,10 @@ public class TileRenderHandlerImpl extends TileRenderHandler {
         Bitmap bitmap = trafficBitmap.createTrafficBitmap(tile, datas, 4, 0.00018f);
         if (bitmap != null) {
             synchronized (TileRenderHandlerImpl.class) {
-                GroundOverlayMatrixItem groundOverlayMatrixItem = GroundOverlayMatrix.getMatrixItem(tile);
+                GroundOverlayItem groundOverlayItem = GroundOverlayMatrix.getMatrixItem(tile);
                 GoogleMap googleMap = googleMapWeakReference.get();
-                if (groundOverlayMatrixItem != null && googleMap != null) {
-                    groundOverlayMatrixItem.invalidateItself(bitmap, tile, googleMap);
+                if (groundOverlayItem != null && googleMap != null) {
+                    groundOverlayItem.invalidateItself(bitmap, tile, googleMap);
                 }
             }
         }

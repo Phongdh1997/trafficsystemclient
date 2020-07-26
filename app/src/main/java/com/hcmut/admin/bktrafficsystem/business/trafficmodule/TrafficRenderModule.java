@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.hcmut.admin.bktrafficsystem.business.GoogleMapMemoryManager;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.StatusRenderImpl;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.StatusRender;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.StatusRenderImpl;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.StatusRender;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TilerOverlayRenderModule;
 
 import org.jetbrains.annotations.NotNull;

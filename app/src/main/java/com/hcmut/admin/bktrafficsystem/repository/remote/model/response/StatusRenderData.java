@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.BitmapLineData;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.BitmapLineData;
 
 import java.util.ArrayList;
 import java.util.Date;

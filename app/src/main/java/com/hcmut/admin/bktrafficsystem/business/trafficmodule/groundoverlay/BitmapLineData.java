@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay;
 
 import com.google.android.gms.maps.model.LatLng;
 

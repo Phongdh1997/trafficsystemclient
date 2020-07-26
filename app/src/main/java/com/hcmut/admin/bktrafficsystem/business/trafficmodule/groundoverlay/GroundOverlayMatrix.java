@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,9 +18,9 @@ public class GroundOverlayMatrix {
 
     private TileRenderHandler tileRenderHandler;
     private TrafficDataLoader trafficDataLoader;
-    private static HashMap<TileCoordinates, GroundOverlayMatrixItem> matrix = new HashMap<>();
+    private static HashMap<TileCoordinates, GroundOverlayItem> matrix = new HashMap<>();
 
-    public static GroundOverlayMatrixItem getMatrixItem(TileCoordinates tile) {
+    public static GroundOverlayItem getMatrixItem(TileCoordinates tile) {
         return matrix.get(tile);
     }
 
@@ -45,7 +45,7 @@ public class GroundOverlayMatrix {
     private List<TileCoordinates> preProccessMatrix(List<TileCoordinates> tileItems) {
         List<TileCoordinates> newTiles = new ArrayList<>();
         //HashMap<TileCoordinates, GroundOverlayMatrixItem> removeTiles = new HashMap<>();
-        HashMap<TileCoordinates, GroundOverlayMatrixItem> newMatrix = new HashMap<>();
+        HashMap<TileCoordinates, GroundOverlayItem> newMatrix = new HashMap<>();
         for (TileCoordinates tile : tileItems) {
             if (matrix.containsKey(tile)) {
                 newMatrix.put(tile, matrix.get(tile));
@@ -55,15 +55,15 @@ public class GroundOverlayMatrix {
             }
         }
 
-        Iterator<GroundOverlayMatrixItem> removeItems = matrix.values().iterator();
-        GroundOverlayMatrixItem matrixItem;
+        Iterator<GroundOverlayItem> removeItems = matrix.values().iterator();
+        GroundOverlayItem matrixItem;
         for (TileCoordinates tile : newTiles) {
             if (removeItems.hasNext()) {
                 matrixItem = removeItems.next();
                 matrixItem.overlayInit();
                 newMatrix.put(tile, matrixItem);
             } else {
-                newMatrix.put(tile, new GroundOverlayMatrixItem());
+                newMatrix.put(tile, new GroundOverlayItem());
             }
         }
         matrix = newMatrix;

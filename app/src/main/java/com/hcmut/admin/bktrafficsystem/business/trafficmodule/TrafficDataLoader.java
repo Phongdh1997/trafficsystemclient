@@ -6,7 +6,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.business.UserLocation;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.GroundOverlayMatrix;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.GroundOverlayMatrix;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.LoadedTileManager;
 import com.hcmut.admin.bktrafficsystem.repository.RoomDatabaseService;
 import com.hcmut.admin.bktrafficsystem.repository.StatusRemoteRepository;
