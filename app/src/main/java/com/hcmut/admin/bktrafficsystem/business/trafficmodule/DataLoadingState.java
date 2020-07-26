@@ -22,7 +22,7 @@ public class DataLoadingState {
     }
 
     public synchronized void putLoadingTile(TileCoordinates tile) {
-        if (tile != null) {
+        if (tile != null && !loadingTiles.containsKey(tile)) {
             loadingTiles.put(tile, LOADING_STATE);
         }
         Log.e("xxxxx", "put tile " + tile.toString());
