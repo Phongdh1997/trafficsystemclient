@@ -93,11 +93,11 @@ public class TrafficDataLoader {
                             callback.onSuccess(tile_15, entities);
                             tileLoadFinishListeners.remove(tile_15);
                         }
-                        if (dataLoadingState != null) {
-                            dataLoadingState.removeLoadingTile(tile_15);
-                        }
                     } else {
                         loadedTileManager.setLoadFailTile(tile_15);
+                    }
+                    if (dataLoadingState != null) {
+                        dataLoadingState.removeLoadingTile(tile_15);
                     }
                     Log.e("tile status", tile_15.toString() + "loaded, " + userLocation.toString());
                 }
