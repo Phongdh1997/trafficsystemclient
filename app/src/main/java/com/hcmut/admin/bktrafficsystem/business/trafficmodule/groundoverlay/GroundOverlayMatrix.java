@@ -75,12 +75,12 @@ public class GroundOverlayMatrix {
      * TODO: Load tile to render
      * @param tile
      */
-    private void renderTile(TileCoordinates tile) {
+    private void renderTile(final TileCoordinates tile) {
         if (!render(tile)) {
             trafficDataLoader.addTileLoadFinishListener(tile,
                     new TrafficDataLoader.TileLoadFinishCallback() {
                         @Override
-                        public void onSuccess(TileCoordinates tile, List<StatusRenderDataEntity> entities) {
+                        public void onSuccess(List<StatusRenderDataEntity> entities) {
                             tileRenderHandler.render(tile, entities);
                         }
                     });

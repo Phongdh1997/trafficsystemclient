@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TrafficDataLoader {
-    public static final int LOAD_TILE_LEVEL = 15;
+    public static final int LOAD_TILE_LEVEL = 14;
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
     private RoomDatabaseService roomDatabaseService;
     private LoadedTileManager loadedTileManager;
@@ -47,7 +47,6 @@ public class TrafficDataLoader {
     }
 
     public void addTileLoadFinishListener(TileCoordinates tile, TileLoadFinishCallback callback) {
-        tile = MyLatLngBoundsUtil.convertTile(tile, 15);
         if (!tileLoadFinishListeners.containsKey(tile)) {
             tileLoadFinishListeners.put(tile, callback);
         }
@@ -58,7 +57,7 @@ public class TrafficDataLoader {
      * @param centerTile: tile zoom level 15
      */
     public void loadPaddingTrafficData(TileCoordinates centerTile) {
-        centerTile = MyLatLngBoundsUtil.convertTile(centerTile, 15);
+        centerTile = MyLatLngBoundsUtil.convertTile(centerTile, LOAD_TILE_LEVEL);
         List<TileCoordinates> tileList = GroundOverlayMatrix.generateMatrixItems(centerTile, 5, false);
         for (final TileCoordinates tile : tileList) {
             RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
@@ -70,36 +69,36 @@ public class TrafficDataLoader {
         }
     }
 
-    public void loadTrafficDataFromServerAsync(TileCoordinates tile, final boolean isTrackState) {
-        final TileCoordinates tile_15 = MyLatLngBoundsUtil.convertTile(tile, 15);
-        if (isTrackState && loadedTileManager.isLoadingOrNotLoad(tile_15)) {
-            dataLoadingState.putLoadingTile(tile_15);
+    public synchronized void loadTrafficDataFromServerAsync(TileCoordinates tile, final boolean isTrackState) {
+        final TileCoordinates loadTile = MyLatLngBoundsUtil.convertTile(tile, LOAD_TILE_LEVEL);
+        if (isTrackState && loadedTileManager.isLoadingOrNotLoad(loadTile)) {
+            dataLoadingState.putLoadingTile(loadTile);
         }
-        if (loadedTileManager.isNotLoaded(tile_15)) {
+        if (loadedTileManager.isNotLoaded(loadTile)) {
+            loadedTileManager.setLoadingTile(loadTile);
             RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
                 @Override
                 public void run() {
-                    loadedTileManager.setLoadingTile(tile_15);
-                    LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tile_15);
+                    LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(loadTile);
                     UserLocation userLocation = new UserLocation(bounds.getCenter());
                     List<StatusRenderData> dataList = statusRepositoryService
-                            .loadStatusRenderData(userLocation, getTileRadius(tile_15));
+                            .loadStatusRenderData(userLocation, getTileRadius(loadTile));
                     if (dataList != null) {
-                        loadedTileManager.setLoadedTile(tile_15);
+                        loadedTileManager.setLoadedTile(loadTile);
                         List<StatusRenderDataEntity> entities = StatusRenderDataEntity.parseStatusRenderDataEntity(dataList);
                         roomDatabaseService.insertTrafficStatus(entities);
-                        TileLoadFinishCallback callback = tileLoadFinishListeners.get(tile_15);
+                        TileLoadFinishCallback callback = tileLoadFinishListeners.get(loadTile);
                         if (callback != null) {
-                            callback.onSuccess(tile_15, entities);
-                            tileLoadFinishListeners.remove(tile_15);
+                            callback.onSuccess(entities);
+                            tileLoadFinishListeners.remove(loadTile);
                         }
                     } else {
-                        loadedTileManager.setLoadFailTile(tile_15);
+                        loadedTileManager.setLoadFailTile(loadTile);
                     }
                     if (dataLoadingState != null) {
-                        dataLoadingState.removeLoadingTile(tile_15);
+                        dataLoadingState.removeLoadingTile(loadTile);
                     }
-                    Log.e("tile status", tile_15.toString() + "loaded, " + userLocation.toString());
+                    Log.e("tile status", loadTile.toString() + "loaded, " + userLocation.toString());
                 }
             });
         }
@@ -143,6 +142,6 @@ public class TrafficDataLoader {
     }
 
     public interface TileLoadFinishCallback {
-        void onSuccess(TileCoordinates tile, List<StatusRenderDataEntity> entities);
+        void onSuccess(List<StatusRenderDataEntity> entities);
     }
 }

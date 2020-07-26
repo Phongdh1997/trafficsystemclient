@@ -27,7 +27,6 @@ public class LoadedTileManager {
     }
 
     public synchronized boolean isNotLoaded (TileCoordinates tile) {
-        tile = MyLatLngBoundsUtil.convertTile(tile, 15);
         if (tile != null) {
             String tileState = loadedTiles.get(tile);
             if (tileState != null) {
@@ -40,7 +39,6 @@ public class LoadedTileManager {
     }
 
     public synchronized boolean isLoadingOrNotLoad(TileCoordinates tile) {
-        tile = MyLatLngBoundsUtil.convertTile(tile, 15);
         if (tile != null) {
             String tileState = loadedTiles.get(tile);
             if (tileState != null) {
