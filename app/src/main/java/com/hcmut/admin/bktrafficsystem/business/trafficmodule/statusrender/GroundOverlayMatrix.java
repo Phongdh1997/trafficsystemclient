@@ -6,8 +6,6 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficDataLoader;
-import com.hcmut.admin.bktrafficsystem.repository.RoomDatabaseService;
-import com.hcmut.admin.bktrafficsystem.repository.local.RoomDatabaseImpl;
 import com.hcmut.admin.bktrafficsystem.repository.local.room.entity.StatusRenderDataEntity;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class GroundOverlayMatrix {
     }
 
     public GroundOverlayMatrix(GoogleMap googleMap, Context context) {
-        tileRenderHandler = new MatrixRenderHandler(googleMap);
+        tileRenderHandler = new TileRenderHandlerImpl(googleMap);
         trafficDataLoader = TrafficDataLoader.getInstance(context);
     }
 

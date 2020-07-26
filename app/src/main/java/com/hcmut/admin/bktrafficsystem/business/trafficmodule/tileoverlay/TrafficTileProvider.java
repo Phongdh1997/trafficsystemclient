@@ -8,10 +8,8 @@ import com.google.android.gms.maps.model.TileProvider;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.DataLoadingState;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficDataLoader;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.TrafficBitmap;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficBitmap;
 import com.hcmut.admin.bktrafficsystem.repository.local.room.entity.StatusRenderDataEntity;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;

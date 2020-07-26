@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.BitmapLineData;
 import com.hcmut.admin.bktrafficsystem.repository.local.room.entity.StatusRenderDataEntity;
 import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 
