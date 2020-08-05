@@ -70,4 +70,38 @@
     <string name="swAutoSleepWakeupRef">swAutoSleepWakeupRef</string>
     <string name="swNotifyAroundRef">swNotifyAroundRef</string>
     <string name="swNotifyMoveRef">swNotifyMoveRef</string>
+    <string name="trending">Nổi bật</string>
+    <string name="top">Đổi nhiều</string>
+    <string name="see_all">Xem thêm</string>
+    <string name="recently_viewed_items">Xem gần đây</string>
+    easy_use
+    <string name="easy_use">Sử dụng dễ dàng</string>
+    <string name="payment">Thanh toán trực tuyến</string>
+    <string name="looking_for">Tìm kiếm</string>
+    <string name="nameuser">Name</string>
+    <string name="emailuser">Email</string>
+    <string name="profile_picture">Profile</string>
+    <string name="my_voucher">My voucher</string>
+    <string name="my_account">My Account</string>
+    <string name="my_report">My Report</string>
+    <string name="my_history">My History</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="voucher_image">Voucher Image</string>
+    <string name="voucher1">Mã giảm giá 1</string>
+    <string name="point_90">90 điểm</string>
+    <string name="buy">Đổi</string>
+    <string name="detail">Chi tiết</string>
+    <string name="detail_content">Nội dung chi tiết khuyến mãi</string>
+    <string name="my_list_voucher">Dánh sách voucher</string>
+    <string name="number_voucher">Mã giao dịch:</string>
+    <string name="infor_voucher">Thông tin voucher</string>
+    <string name="status_bar">Trạng thái sử dụng</string>
+    <string name="use_voucher">Sử dụng</string>
+    <string name="info_perform">Thông tin giao dịch</string>
+    <string name="pay_success">Giao dịch thành công</string>
+    <string name="recent_searches">Tìm kiếm gần đây</string>
+    <string name="clear_all">Xóa</string>
+
+
 </resources>
