@@ -1,0 +1,153 @@
+package com.hcmut.admin.bktrafficsystem.ui.voucher.transferpoint;
+
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
+import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.UserResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.PayVoucherFragment;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.ResultFragment;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.VoucherFragment;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ChooseTransferFragment extends Fragment implements View.OnClickListener, MapActivity.OnBackPressCallback  {
+    Button btnContinue;
+    Toolbar toolbar;
+    EditText txtChoose;
+    Bundle bundle = new Bundle();
+    String word;
+
+
+
+    AndroidExt androidExt = new AndroidExt();
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_continue:
+                findUser(word);
+
+                break;
+        }
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_choose_transfer, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        btnContinue = view.findViewById(R.id.btn_continue);
+        btnContinue.setEnabled(false);
+        btnContinue.setOnClickListener(this);
+        txtChoose = view.findViewById(R.id.txtChoose);
+
+
+        toolbar = (androidx.appcompat.widget.Toolbar) view.findViewById(R.id.toolbar_voucher);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPress();
+            }
+        });
+        setButtonChange();
+
+    }
+
+    @Override
+    public void onBackPress() {
+        NavHostFragment.findNavController(ChooseTransferFragment.this).popBackStack();
+    }
+    public void setButtonChange(){
+        txtChoose.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().length()>0){
+                    btnContinue.setEnabled(true);
+                    word=editable.toString();
+                }
+                else{
+                    btnContinue.setEnabled(false);
+                }
+
+            }
+        });
+    }
+    private void findUser(String word) {
+
+        RetrofitClient.getApiService().findUser(SharedPrefUtils.getUser(getContext()).getAccessToken(),word)
+                .enqueue(new Callback<BaseResponse<UserResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<UserResponse>> call, Response<BaseResponse<UserResponse>> response) {
+
+                        if (response.body() != null) {
+                            if (response.body().getCode() == 200) {
+                                if (response.body().getData() != null) {
+                                    UserResponse userResponse = response.body().getData();
+                                    bundle.putString("id",userResponse.getId());
+                                    bundle.putString("avatar",userResponse.getAvatar());
+                                    bundle.putString("name",userResponse.getName());
+                                    bundle.putString("phone",userResponse.getPhoneNumber());
+                                    bundle.putInt("point",userResponse.getPoint());
+                                    NavHostFragment.findNavController(ChooseTransferFragment.this)
+                                            .navigate(R.id.action_chooseTransferFragment_to_transferPointFragment,bundle);
+
+
+                                } else {
+                                    androidExt.showErrorDialog(getContext(), "Người dùng không tồn tại");
+                                }
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<UserResponse>> call, Throwable t) {
+
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
+                    }
+                });
+    }
+}

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,21 +18,35 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.adapter.TestVoucherAdapter;
+import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Voucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AllVoucherFragment extends Fragment implements TestVoucherAdapter.ProductAdapterOnClickHandler, MapActivity.OnBackPressCallback {
 
     TestVoucherAdapter allVoucherAdapter;
-    ArrayList<Voucher> listVoucher;
+    ArrayList<VoucherResponse> listVoucher;
     RecyclerView listViewAll;
     private Toolbar toolbar;
+    Bundle bundle = new Bundle();
+    AndroidExt androidExt = new AndroidExt();
+
     @Override
-    public void onClick(Voucher voucher) {
+    public void onClick(VoucherResponse voucher) {
+        bundle.putString("idVoucher", voucher.getId());
         NavHostFragment.findNavController(AllVoucherFragment.this)
-                .navigate(R.id.action_allVoucherFragment_to_detailVoucherFragment);
+                .navigate(R.id.action_allVoucherFragment_to_detailVoucherFragment,bundle);
 
     }
 
@@ -61,11 +77,17 @@ public class AllVoucherFragment extends Fragment implements TestVoucherAdapter.P
             }
         });
         listVoucher = new ArrayList<>();
-        listVoucher.add(new Voucher(1, "Giảm giá 1", 500,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(2, "Giảm giá 2", 600,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(3, "Giảm giá 3", 700,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(4, "Giảm giá 4", 800,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(5, "Giảm giá 5", 900,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+        if(getArguments().getInt("type")==0){
+            getAllTopVoucher();
+        }
+        else{
+            getAllTrendVoucher();
+        }
+//        listVoucher.add(new Voucher(1, "Giảm giá 1", 500,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        listVoucher.add(new Voucher(2, "Giảm giá 2", 600,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        listVoucher.add(new Voucher(3, "Giảm giá 3", 700,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        listVoucher.add(new Voucher(4, "Giảm giá 4", 800,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        listVoucher.add(new Voucher(5, "Giảm giá 5", 900,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
         allVoucherAdapter=new TestVoucherAdapter(listVoucher,getContext(),AllVoucherFragment.this);
         listViewAll = view.findViewById(R.id.allvoucher);
         setUpRecycleView();
@@ -81,5 +103,53 @@ public class AllVoucherFragment extends Fragment implements TestVoucherAdapter.P
     @Override
     public void onBackPress() {
         NavHostFragment.findNavController(AllVoucherFragment.this).popBackStack();
+    }
+    private void getAllTrendVoucher(){
+        RetrofitClient.getApiService().getAllTrendVoucher()
+                .enqueue(new Callback<BaseResponse<List<VoucherResponse>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<VoucherResponse>>> call, Response<BaseResponse<List<VoucherResponse>>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                List<VoucherResponse> voucherResponse = response.body().getData();
+                                listVoucher.clear();
+                                listVoucher.addAll(voucherResponse);
+                                allVoucherAdapter.notifyDataSetChanged();
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        } else {
+                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<VoucherResponse>>> call, Throwable t) {
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
+                    }
+                });
+    }
+    private void getAllTopVoucher(){
+        RetrofitClient.getApiService().getAllTopVoucher()
+                .enqueue(new Callback<BaseResponse<List<VoucherResponse>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<VoucherResponse>>> call, Response<BaseResponse<List<VoucherResponse>>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                List<VoucherResponse> voucherResponse = response.body().getData();
+                                listVoucher.clear();
+                                listVoucher.addAll(voucherResponse);
+                                allVoucherAdapter.notifyDataSetChanged();
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        } else {
+                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<VoucherResponse>>> call, Throwable t) {
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
+                    }
+                });
     }
 }

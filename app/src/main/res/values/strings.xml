@@ -81,10 +81,10 @@
     <string name="nameuser">Name</string>
     <string name="emailuser">Email</string>
     <string name="profile_picture">Profile</string>
-    <string name="my_voucher">My voucher</string>
-    <string name="my_account">My Account</string>
-    <string name="my_report">My Report</string>
-    <string name="my_history">My History</string>
+    <string name="my_voucher">Voucher của tôi</string>
+    <string name="my_account">Chuyển điểm</string>
+    <string name="my_report">Mua điểm</string>
+    <string name="my_history">Lịch sử</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="voucher_image">Voucher Image</string>
@@ -102,6 +102,11 @@
     <string name="pay_success">Giao dịch thành công</string>
     <string name="recent_searches">Tìm kiếm gần đây</string>
     <string name="clear_all">Xóa</string>
+    <string name="otp_title">Vui lòng nhập mã xác thực gồm 6 chữ số</string>
+    <string name="sent_to_84_xxx_xxx">được gửi đến +84 XXX XXX</string>
+    <string name="otp_button_text">Xác thực</string>
+    <string name="resend_msg">Không nhận được OTP?</string>
+    <string name="resend_again_msg">Gửi lại</string>
 
 
 </resources>

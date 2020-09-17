@@ -61,7 +61,7 @@
                 android:layout_gravity="end"
                 android:paddingStart="@dimen/dimen10dp"
                 android:paddingEnd="@dimen/dimen10dp"
-                android:text="123456"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/dimen20sp" />
 

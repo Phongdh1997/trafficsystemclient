@@ -20,11 +20,17 @@
                 android:id="@+id/nav_newsFeed"
                 android:icon="@drawable/ic_newsfeed"
                 android:title="@string/my_report" />
+        <item
+            android:id="@+id/nav_report"
+            android:icon="@drawable/ic_newsfeed"
+            android:title="Báo cáo" />
 
             <item
                 android:id="@+id/nav_wishList"
-                android:icon="@drawable/ic_favorite_border"
+                android:icon="@drawable/ic_schedule"
                 android:title="@string/my_history" />
+
+
     </group>
 </menu>
 

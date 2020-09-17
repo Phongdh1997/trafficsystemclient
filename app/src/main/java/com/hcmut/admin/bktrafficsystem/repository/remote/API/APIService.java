@@ -1,19 +1,25 @@
 package com.hcmut.admin.bktrafficsystem.repository.remote.API;
 
+import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.RatingBody;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DealResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoPaymentResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.MyVoucherResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.NearSegmentResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PatchNotiResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PostRatingResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponseVoucher;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.TrafficReportResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.TrafficStatusResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.UserResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.StatusResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.StatusRenderData;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
 
 import java.util.List;
 
@@ -140,4 +146,54 @@ public interface APIService {
     @Multipart
     @POST("api/file/upload")
     Call<BaseResponse<String>> uploadFile(@Part MultipartBody.Part file);
+
+
+    @GET("api/voucher/gettopvoucher")
+    Call<BaseResponse<List<VoucherResponse>>> getTopVoucher();
+
+    @GET("api/voucher/gettrendvoucher")
+    Call<BaseResponse<List<VoucherResponse>>> getTrendVoucher();
+
+    @GET("api/voucher/getalltopvoucher")
+    Call<BaseResponse<List<VoucherResponse>>> getAllTopVoucher();
+
+    @GET("api/voucher/getalltrendvoucher")
+    Call<BaseResponse<List<VoucherResponse>>> getAllTrendVoucher();
+
+    @GET("api/voucher/getdetailvoucher")
+    Call<BaseResponse<VoucherResponse>> getDetailVoucher(@Query("_id") String id);
+
+    @GET("api/voucher/getinfopaymentvoucher")
+    Call<BaseResponse<InfoPaymentResponse>> getInfoPaymentVoucher(@Header("Authorization") String Authorization,@Query("_id") String id);
+
+    @POST("api/voucher/confirmpaymentvoucher")
+    @FormUrlEncoded
+    Call<BaseResponse<VoucherResponse>> paymentVoucher(@Header("Authorization") String Authorization,
+                                                         @Field("id") String id);
+
+    @GET("api/voucher/getsearchvoucher")
+    Call<BaseResponse<List<VoucherResponse>>> getSearchVoucher(@Header("Authorization") String Authorization,@Query("word") String word);
+
+    @GET("api/voucher/getmyvoucher")
+    Call<BaseResponse<List<MyVoucherResponse>>> getMyVoucher(@Header("Authorization") String Authorization);
+
+    @GET("api/voucher/getdetailmyvoucher")
+    Call<BaseResponse<MyVoucherResponse>> getDetailMyVoucher(@Header("Authorization") String Authorization,@Query("id") String id);
+
+    @POST("api/voucher/finduser")
+    @FormUrlEncoded
+    Call<BaseResponse<UserResponse>> findUser(@Header("Authorization") String Authorization, @Field("word") String word);
+
+    @GET("api/voucher/getmessageauthentication")
+    Call<BaseResponse> getMessageAuthentication(@Header("Authorization") String Authorization);
+
+    @POST("api/voucher/confirmauthentication")
+    @FormUrlEncoded
+    Call<BaseResponse> confirmAuthentication(@Header("Authorization") String Authorization, @Field("point") int point,@Field("message") String message,@Field("authen") String authen,@Field("receive") String receive);
+
+    @GET("api/voucher/getdealvoucher")
+    Call<BaseResponse<List<DealResponse>>> getDealVoucher(@Header("Authorization") String Authorization);
+
+    @GET("api/voucher/getreportvoucher")
+    Call<BaseResponse<List<ReportResponseVoucher>>> getReportVoucher(@Header("Authorization") String Authorization);
 }

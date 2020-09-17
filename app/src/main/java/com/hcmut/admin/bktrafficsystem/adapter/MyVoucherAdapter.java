@@ -13,25 +13,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.MyVoucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.MyVoucherResponse;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MyVoucherAdapter extends RecyclerView.Adapter<MyVoucherAdapter.MyVoucherViewHolder>{
     private Context mContext;
-    private List<MyVoucher> orderList;
-    private MyVoucher currentOrder;
-
+    private List<MyVoucherResponse> orderList;
+    private MyVoucherResponse currentOrder;
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private MyVoucherAdapter.OrderAdapterOnClickHandler clickHandler;
 
     /**
      * The interface that receives onClick messages.
      */
     public interface OrderAdapterOnClickHandler {
-        void onClick(MyVoucher order);
+        void onClick(MyVoucherResponse order);
     }
 
-    public MyVoucherAdapter(Context mContext, List<MyVoucher> orderList, MyVoucherAdapter.OrderAdapterOnClickHandler clickHandler) {
+    public MyVoucherAdapter(Context mContext, List<MyVoucherResponse> orderList, MyVoucherAdapter.OrderAdapterOnClickHandler clickHandler) {
         this.mContext = mContext;
         this.orderList = orderList;
         this.clickHandler = clickHandler;
@@ -60,11 +62,11 @@ public class MyVoucherAdapter extends RecyclerView.Adapter<MyVoucherAdapter.MyVo
 
 //        DecimalFormat formatter = new DecimalFormat("#,###,###");
 //        String formattedPrice = formatter.format(currentOrder.getProductPrice());
-        holder.nameMyVoucher.setText(currentOrder.getProductName());
-        holder.priceMyVoucher.setText(currentOrder.getProductPrice() + " điểm");
+        holder.nameMyVoucher.setText(currentOrder.getVoucherResponse().getName());
+        holder.priceMyVoucher.setText(currentOrder.getVoucherResponse().getValue() + " điểm");
 
-        holder.numberMyVoucher.setText(currentOrder.getOrderNumber());
-        holder.dateMyVoucher.setText(currentOrder.getOrderDate());
+
+        holder.dateMyVoucher.setText(formatter.format(currentOrder.getDate()));
 
     }
 
@@ -82,7 +84,7 @@ public class MyVoucherAdapter extends RecyclerView.Adapter<MyVoucherAdapter.MyVo
         public TextView nameMyVoucher;
         public TextView priceMyVoucher;
         public TextView dateMyVoucher;
-        public TextView numberMyVoucher;
+
 
 
         public MyVoucherViewHolder(View itemView) {
@@ -90,7 +92,6 @@ public class MyVoucherAdapter extends RecyclerView.Adapter<MyVoucherAdapter.MyVo
             itemView.setOnClickListener(this);
             nameMyVoucher = itemView.findViewById(R.id.nameMyVoucher);
             priceMyVoucher = itemView.findViewById(R.id.priceMyVoucher);
-            numberMyVoucher = itemView.findViewById(R.id.numberMyvoucher);
             dateMyVoucher = itemView.findViewById(R.id.dateMyvoucher);
 
         }

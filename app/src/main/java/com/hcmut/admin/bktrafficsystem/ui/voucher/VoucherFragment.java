@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.annotation.NonNull;
@@ -31,12 +32,26 @@ import com.google.android.material.navigation.NavigationView;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.adapter.TestVoucherAdapter;
 import com.hcmut.admin.bktrafficsystem.adapter.VoucherAdapter;
+import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Voucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
 import com.hcmut.admin.bktrafficsystem.ui.account.AccountFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
+import com.hcmut.admin.bktrafficsystem.ui.signup.SignUpActivity;
+import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.Slide;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,10 +74,14 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
     private String mParam2;
     TestVoucherAdapter trendingAdapter;
     TestVoucherAdapter topAdapter;
-    ArrayList<Voucher> listVoucher;
+    ArrayList<VoucherResponse> listTopVoucher;
+    ArrayList<VoucherResponse> listTrendVoucher;
     RecyclerView listViewTop;
     RecyclerView listViewTrending;
     TextView txtSearch;
+    Bundle bundle = new Bundle();
+    AndroidExt androidExt = new AndroidExt();
+
 
     public VoucherFragment() {
         // Required empty public constructor
@@ -119,16 +138,20 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         txtAllTrending.setOnClickListener(this);
         txtSearch.setOnClickListener(this);
 
-        listVoucher = new ArrayList<>();
-        listVoucher.add(new Voucher(1, "Giảm giá 1", 500,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(2, "Giảm giá 2", 600,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(3, "Giảm giá 3", 700,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(4, "Giảm giá 4", 800,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        listVoucher.add(new Voucher(5, "Giảm giá 5", 900,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+        listTopVoucher = new ArrayList<>();
+        listTrendVoucher = new ArrayList<>();
+        getTopVoucher();
+        getTrendVoucher();
+
+//        listVoucher.add(new VoucherResponse("1", "Giảm giá 1", 500,"sfsdf", new Date(),new Date(),"sdfsd",10));
+//        listVoucher.add(new Voucher(2, "Giảm giá 2", 600,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        listVoucher.add(new Voucher(3, "Giảm giá 3", 700,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        listVoucher.add(new Voucher(4, "Giảm giá 4", 800,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        listVoucher.add(new Voucher(5, "Giảm giá 5", 900,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
 
         setUpViews();
-        topAdapter = new TestVoucherAdapter(listVoucher,getContext(),VoucherFragment.this);
-        trendingAdapter = new TestVoucherAdapter(listVoucher,getContext(),VoucherFragment.this);
+        topAdapter = new TestVoucherAdapter(listTopVoucher,getContext(),VoucherFragment.this);
+        trendingAdapter = new TestVoucherAdapter(listTrendVoucher,getContext(),VoucherFragment.this);
         listViewTop = view.findViewById(R.id.listOfTop);
         listViewTop.setAdapter(topAdapter);
         listViewTrending = view.findViewById(R.id.listOfTrending);
@@ -143,6 +166,8 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 
         addControls(view);
         addEvents();
+
+
     }
 
     private void addControls(View view) {
@@ -223,25 +248,26 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 
 
     @Override
-    public void onClick(Voucher voucher) {
+    public void onClick(VoucherResponse voucher) {
 
+        bundle.putString("idVoucher", voucher.getId());
         NavHostFragment.findNavController(VoucherFragment.this)
-                .navigate(R.id.action_voucherFragment_to_detailVoucherFragment);
+                .navigate(R.id.action_voucherFragment_to_detailVoucherFragment,bundle);
 
     }
 
     @Override
     public void onClick(View view) {
-        System.out.println("aaaa");
         switch (view.getId()) {
             case R.id.txtSeeAllTop:
-                System.out.println("dsfsd");
+                bundle.putInt("type", 0);
                 NavHostFragment.findNavController(VoucherFragment.this)
-                        .navigate(R.id.action_voucherFragment_to_allVoucherFragment);
+                        .navigate(R.id.action_voucherFragment_to_allVoucherFragment,bundle);
                 break;
             case R.id.txtSeeAllTrending:
+                bundle.putInt("type", 1);
                 NavHostFragment.findNavController(VoucherFragment.this)
-                        .navigate(R.id.action_voucherFragment_to_allVoucherFragment);
+                        .navigate(R.id.action_voucherFragment_to_allVoucherFragment,bundle);
                 break;
             case R.id.txtSearch:
                 NavHostFragment.findNavController(VoucherFragment.this)
@@ -260,13 +286,67 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
             NavHostFragment.findNavController(VoucherFragment.this)
                     .navigate(R.id.action_voucherFragment_to_MyVoucherFragment);
         } else if (id == R.id.nav_myAccount) {
+            NavHostFragment.findNavController(VoucherFragment.this)
+                    .navigate(R.id.action_voucherFragment_to_ChooseTransferFragment);
 
         } else if (id == R.id.nav_newsFeed) {
-
+            NavHostFragment.findNavController(VoucherFragment.this)
+                    .navigate(R.id.action_voucherFragment_to_BuyPointFragment);
+        } else if (id == R.id.nav_report) {
+            NavHostFragment.findNavController(VoucherFragment.this)
+                    .navigate(R.id.action_voucherFragment_to_reportFragment);
         } else if (id == R.id.nav_wishList) {
-
+            NavHostFragment.findNavController(VoucherFragment.this)
+                    .navigate(R.id.action_voucherFragment_to_HistoryFragment);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private void getTopVoucher(){
+        RetrofitClient.getApiService().getTopVoucher()
+                .enqueue(new Callback<BaseResponse<List<VoucherResponse>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<VoucherResponse>>> call, Response<BaseResponse<List<VoucherResponse>>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                List<VoucherResponse> voucherResponse = response.body().getData();
+                                listTopVoucher.clear();
+                                listTopVoucher.addAll(voucherResponse);
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        } else {
+                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<VoucherResponse>>> call, Throwable t) {
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
+                    }
+                });
+    }
+    private void getTrendVoucher(){
+        RetrofitClient.getApiService().getTrendVoucher()
+                .enqueue(new Callback<BaseResponse<List<VoucherResponse>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<VoucherResponse>>> call, Response<BaseResponse<List<VoucherResponse>>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                List<VoucherResponse> voucherResponse = response.body().getData();
+                                listTrendVoucher.clear();
+                                listTrendVoucher.addAll(voucherResponse);
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        } else {
+                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<VoucherResponse>>> call, Throwable t) {
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");                    }
+                });
+    }
+
+
 }

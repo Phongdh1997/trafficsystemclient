@@ -87,6 +87,34 @@
             app:exitAnim="@anim/non_anim"
             app:popEnterAnim="@anim/non_anim"
             app:popExitAnim="@anim/slide_out_bottom"/>
+        <action
+            android:id="@+id/action_voucherFragment_to_ChooseTransferFragment"
+            app:destination="@id/chooseTransferFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+        <action
+            android:id="@+id/action_voucherFragment_to_BuyPointFragment"
+            app:destination="@id/buyPointFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+        <action
+            android:id="@+id/action_voucherFragment_to_HistoryFragment"
+            app:destination="@id/historyFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+        <action
+            android:id="@+id/action_voucherFragment_to_reportFragment"
+            app:destination="@id/reportFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
     </fragment>
     <fragment
         android:id="@+id/detailVoucherFragment"
@@ -125,12 +153,21 @@
             app:exitAnim="@anim/non_anim"
             app:popEnterAnim="@anim/non_anim"
             app:popExitAnim="@anim/slide_out_bottom"/>
+
     </fragment>
     <fragment
         android:id="@+id/detailMyVoucherFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.myvoucher.DetailMyVoucherFragment"
         android:label="DetailMyVoucherFragment"
-        />
+        >
+        <action
+            android:id="@+id/action_detailMyVoucherFragment_to_qrVoucherFragment"
+            app:destination="@id/QRVoucherFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+    </fragment>
     <fragment
     android:id="@+id/PayVoucherFragment"
     android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.PayVoucherFragment"
@@ -166,7 +203,76 @@
         android:id="@+id/resultFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.ResultFragment"
         android:label="ResultFragment"
+        >
+        <action
+            android:id="@+id/action_resultFragment_to_detailVoucherFragment"
+            app:destination="@id/detailVoucherFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+    </fragment>
+    <fragment
+        android:id="@+id/QRVoucherFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.myvoucher.QRVoucherFragment"
+        android:label="QRVoucherFragment"
         />
+    <fragment
+        android:id="@+id/chooseTransferFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.transferpoint.ChooseTransferFragment"
+        android:label="ChooseTransferFragment"
+        >
+        <action
+            android:id="@+id/action_chooseTransferFragment_to_transferPointFragment"
+            app:destination="@id/transferPointFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+    </fragment>
+    <fragment
+        android:id="@+id/transferPointFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.transferpoint.TransferPointFragment"
+        android:label="TransferPointFragment"
+        >
+        <action
+            android:id="@+id/action_transferPointFragment_to_transferOTPFragment"
+            app:destination="@id/transferOTPFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+    </fragment>
+    <fragment
+        android:id="@+id/transferOTPFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.transferpoint.TransferOTPFragment"
+        android:label="TransferOTPFragment"
+        >
+        <action
+            android:id="@+id/action_transferOTPFragment_to_successTransferFragment"
+            app:destination="@id/PaySuccessVoucherFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+    </fragment>
+    <fragment
+        android:id="@+id/buyPointFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.buypoint.BuyPointFragment"
+        android:label="BuyPointFragment"
+        />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.history.HistoryFragment"
+        android:label="HistoryFragment"
+        />
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.report.ReportFragment"
+        android:label="ReportFragment"
+        />
+
+
 
 
 

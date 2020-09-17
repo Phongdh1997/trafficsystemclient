@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -32,12 +33,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.adapter.VoucherAdapter;
 import com.hcmut.admin.bktrafficsystem.adapter.WordAdapter;
+import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SearchFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
+public class SearchFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, MapActivity.OnBackPressCallback,View.OnClickListener {
 
     private static String word;
     private WordAdapter adapter;
@@ -46,6 +48,9 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
     private ListView wordList;
     private TextView editQuery;
+    private TextView clearText;
+    Toolbar toolbar;
+    Bundle bundle = new Bundle();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,9 +72,25 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        toolbar = (androidx.appcompat.widget.Toolbar) view.findViewById(R.id.toolbar_voucher);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPress();
+            }
+        });
+
 
         wordList = view.findViewById(R.id.wordList);
         editQuery = view.findViewById(R.id.editQuery);
+        clearText = view.findViewById(R.id.clearAll);
+        clearText.setOnClickListener(this);
+
 
 
         wordList.setOnItemClickListener(this);
@@ -111,13 +132,14 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     // Your piece of code on keyboard search click
 //                    Intent searchIntent = new Intent(SearchFragment.this, ResultActivity.class);
-//                    word = binding.editQuery.getText().toString().trim();
+                    word = editQuery.getText().toString().trim();
 //                    // Set Key with its specific key
-//                    setWord(getApplicationContext(), word, word);
+                    setWord(getContext(), word, word);
 //                    searchIntent.putExtra(KEYWORD, word);
 //                    startActivity(searchIntent);
+                    bundle.putString("word", word);
                     NavHostFragment.findNavController(SearchFragment.this)
-                            .navigate(R.id.action_searchFragment_to_resultFragment);
+                            .navigate(R.id.action_searchFragment_to_resultFragment,bundle);
                     return true;
                 }
                 return false;
@@ -192,7 +214,7 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
         super.onDestroy();
     }
 
-    public void clearAll(View view) {
+    public void clearAll() {
         clearSharedPreferences(getContext());
         adapter.clear();
         Toast.makeText(getContext(), "Cleared", Toast.LENGTH_SHORT).show();
@@ -204,8 +226,9 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
 //        // Send KEYWORD to ResultActivity
 //        intent.putExtra(KEYWORD, list.get(position));
 //        startActivity(intent);
+        bundle.putString("word", list.get(position));
         NavHostFragment.findNavController(SearchFragment.this)
-                .navigate(R.id.action_searchFragment_to_resultFragment);
+                .navigate(R.id.action_searchFragment_to_resultFragment,bundle);
     }
 
 
@@ -220,5 +243,19 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
         adapter.remove(word);
         Toast.makeText(getContext(), "Removed", Toast.LENGTH_SHORT).show();
         return true;
+    }
+
+    @Override
+    public void onBackPress() {
+        NavHostFragment.findNavController(SearchFragment.this).popBackStack();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.clearAll:
+                clearAll();
+                break;
+        }
     }
 }

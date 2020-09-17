@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.Voucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -81,15 +82,15 @@ import java.util.ArrayList;
 ////}
 public class TestVoucherAdapter extends RecyclerView.Adapter<TestVoucherAdapter.ViewHolder> {
 
-    final ArrayList<Voucher> listVoucher;
+    final ArrayList<VoucherResponse> listVoucher;
     private Context mContext;
     private ProductAdapterOnClickHandler clickHandler;
     public interface ProductAdapterOnClickHandler {
-        void onClick(Voucher voucher);
+        void onClick(VoucherResponse voucher);
     }
 
 
-    public TestVoucherAdapter(ArrayList<Voucher> listVoucher, Context mContext,ProductAdapterOnClickHandler clickHandler) {
+    public TestVoucherAdapter(ArrayList<VoucherResponse> listVoucher, Context mContext,ProductAdapterOnClickHandler clickHandler) {
         super();
 
         this.listVoucher = listVoucher;
@@ -112,9 +113,9 @@ public class TestVoucherAdapter extends RecyclerView.Adapter<TestVoucherAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Voucher voucher = listVoucher.get(position);
-        holder.voucherName.setText(voucher.getVoucherName());
-        holder.voucherValue.setText(voucher.getVoucherValue()+" điểm");
+        VoucherResponse voucher = listVoucher.get(position);
+        holder.voucherName.setText(voucher.getName());
+        holder.voucherValue.setText(voucher.getValue()+" điểm");
         holder.imageView.setImageResource(R.drawable.voucher1);
 
     }
@@ -150,7 +151,7 @@ public class TestVoucherAdapter extends RecyclerView.Adapter<TestVoucherAdapter.
         public void onClick(View view) {
             System.out.println("sfsdaf");
             int position = getAdapterPosition();
-            Voucher voucher =listVoucher.get(position);
+            VoucherResponse voucher =listVoucher.get(position);
             switch (view.getId()) {
                 case R.id.card_view:
                     clickHandler.onClick(voucher);

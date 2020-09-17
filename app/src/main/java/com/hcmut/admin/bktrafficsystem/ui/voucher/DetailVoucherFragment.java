@@ -1,5 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +21,22 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
+import com.hcmut.admin.bktrafficsystem.model.User;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+
+import java.util.Calendar;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetailVoucherFragment extends Fragment implements MapActivity.OnBackPressCallback,View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
@@ -28,7 +45,13 @@ public class DetailVoucherFragment extends Fragment implements MapActivity.OnBac
     private String mParam2;
     private androidx.appcompat.widget.Toolbar toolbar;
     private Button btnBuy;
+    private TextView name;
+    private TextView price;
+    private TextView content;
+    private VoucherResponse detailVoucher;
+    Bundle bundle = new Bundle();
 
+    AndroidExt androidExt = new AndroidExt();
     public static DetailVoucherFragment newInstance(String param1, String param2) {
         DetailVoucherFragment fragment = new DetailVoucherFragment();
         Bundle args = new Bundle();
@@ -69,10 +92,12 @@ public class DetailVoucherFragment extends Fragment implements MapActivity.OnBac
             }
         });
         btnBuy = view.findViewById(R.id.buy);
+        name = view.findViewById(R.id.nameOfVoucher);
+        price = view.findViewById(R.id.priceOfVoucher);
+        content = view.findViewById(R.id.txtDetailContent);
         btnBuy.setOnClickListener(this);
 
-
-
+        getDetailVoucher(getArguments().getString("idVoucher"));
     }
 
     @Override
@@ -106,9 +131,35 @@ public class DetailVoucherFragment extends Fragment implements MapActivity.OnBac
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buy:
+                bundle.putString("idVoucher", getArguments().getString("idVoucher"));
                 NavHostFragment.findNavController(DetailVoucherFragment.this)
-                        .navigate(R.id.action_detailVoucherFragment_to_PayVoucherFragment);
+                        .navigate(R.id.action_detailVoucherFragment_to_PayVoucherFragment,bundle);
                 break;
         }
     }
+    private void getDetailVoucher(String id){
+        RetrofitClient.getApiService().getDetailVoucher(id)
+                .enqueue(new Callback<BaseResponse<VoucherResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<VoucherResponse>> call, Response<BaseResponse<VoucherResponse>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                detailVoucher = response.body().getData();
+                                System.out.println(response.body().getData());
+                                name.setText(detailVoucher.getName());
+                                price.setText(detailVoucher.getValue()+" điểm");
+                                content.setText(detailVoucher.getContent());
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        } else {
+                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<VoucherResponse>> call, Throwable t) {
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");                    }
+                });
+    }
+
 }

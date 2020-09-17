@@ -131,6 +131,10 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'androidx.preference:preference:1.1.0'
     implementation "androidx.paging:paging-runtime:2.1.2"
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
+    implementation 'com.google.zxing:core:3.3.2'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.github.momodevelopment:androidsdkV2.2:1.1'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'

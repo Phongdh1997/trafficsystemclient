@@ -1,10 +1,13 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,18 +17,43 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
+import com.hcmut.admin.bktrafficsystem.model.User;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.StatusResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoPaymentResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
 import com.hcmut.admin.bktrafficsystem.ui.voucher.myvoucher.DetailMyVoucherFragment;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+
+import java.util.Calendar;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PayVoucherFragment extends Fragment implements View.OnClickListener, MapActivity.OnBackPressCallback {
     Toolbar toolbar;
     Button btnPay;
+    TextView name;
+    TextView value;
+    TextView beforePoint;
+    TextView payPoint;
+    TextView afterPoint;
+
+
+
+    AndroidExt androidExt = new AndroidExt();
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.payButton:
-                NavHostFragment.findNavController(PayVoucherFragment.this)
-                        .navigate(R.id.action_payVoucherFragment_to_PaySuccessVoucherFragment);
+                paymentVoucherRequest(getArguments().getString("idVoucher"));
                 break;
         }
 
@@ -54,10 +82,72 @@ public class PayVoucherFragment extends Fragment implements View.OnClickListener
         });
         btnPay = view.findViewById(R.id.payButton);
         btnPay.setOnClickListener(this);
+        name  = view.findViewById(R.id.txtProductName);
+        value  = view.findViewById(R.id.txtProductPrice);
+        beforePoint  = view.findViewById(R.id.pointCurrentNumber);
+        payPoint  = view.findViewById(R.id.pointPayNumber);
+        afterPoint  = view.findViewById(R.id.pointRestNumber);
+
+        getInfoPaymentVoucher(getArguments().getString("idVoucher"));
     }
 
     @Override
     public void onBackPress() {
         NavHostFragment.findNavController(PayVoucherFragment.this).popBackStack();
+    }
+    private void getInfoPaymentVoucher(String id){
+        RetrofitClient.getApiService().getInfoPaymentVoucher(SharedPrefUtils.getUser(getContext()).getAccessToken(),id)
+                .enqueue(new Callback<BaseResponse<InfoPaymentResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<InfoPaymentResponse>> call, Response<BaseResponse<InfoPaymentResponse>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                InfoPaymentResponse infoPayment = response.body().getData();
+                                name.setText(infoPayment.getName());
+                                value.setText(String.valueOf(infoPayment.getValue()));
+                                beforePoint.setText(String.valueOf(infoPayment.getBeforePoint()));
+                                payPoint.setText("-"+ infoPayment.getPayPoint());
+                                afterPoint.setText(String.valueOf(infoPayment.getAfterPoint()));
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        } else {
+                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<InfoPaymentResponse>> call, Throwable t) {
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
+                    }
+                });
+    }
+    private void paymentVoucherRequest(String id) {
+
+        RetrofitClient.getApiService().paymentVoucher(SharedPrefUtils.getUser(getContext()).getAccessToken(),id)
+                .enqueue(new Callback<BaseResponse<VoucherResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<VoucherResponse>> call, Response<BaseResponse<VoucherResponse>> response) {
+
+                        if (response.body() != null) {
+                            if (response.body().getCode() == 200) {
+                                if (response.body().getData() != null) {
+                                                    NavHostFragment.findNavController(PayVoucherFragment.this)
+                        .navigate(R.id.action_payVoucherFragment_to_PaySuccessVoucherFragment);
+
+                                } else {
+                                    androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                                }
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<VoucherResponse>> call, Throwable t) {
+
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
+                    }
+                });
     }
 }

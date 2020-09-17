@@ -3,7 +3,7 @@ package com.hcmut.admin.bktrafficsystem.repository.remote.model.response;
 import com.google.gson.annotations.SerializedName;
 
 public class UserResponse {
-    @SerializedName("id")
+    @SerializedName("_id")
     private String id;
     @SerializedName("name")
     private String name;
@@ -17,6 +17,8 @@ public class UserResponse {
     private String phoneNumber;
     @SerializedName("reputation")
     private String reputation;
+    @SerializedName("point")
+    private int point;
 
     public String getId() {
         return id;
@@ -44,5 +46,9 @@ public class UserResponse {
 
     public String getNotiToken() {
         return notiToken;
+    }
+
+    public int getPoint() {
+        return point;
     }
 }
