@@ -7,6 +7,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DealResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoPaymentResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoVoucher;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.MyVoucherResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.NearSegmentResponse;
@@ -196,4 +197,11 @@ public interface APIService {
 
     @GET("api/voucher/getreportvoucher")
     Call<BaseResponse<List<ReportResponseVoucher>>> getReportVoucher(@Header("Authorization") String Authorization);
+
+    @GET("api/voucher/getinfovoucher")
+    Call<BaseResponse<InfoVoucher>> getInfoVoucher(@Header("Authorization") String Authorization);
+
+    @POST("api/voucher/confirmqrcode")
+    @FormUrlEncoded
+    Call<BaseResponse> confirmQRCode(@Header("Authorization") String Authorization,@Field("code") String code);
 }

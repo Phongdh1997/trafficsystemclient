@@ -21,7 +21,9 @@ public class VoucherResponse {
     private String idPartner;
     @SerializedName("quantity")
     private int quantity;
-    public VoucherResponse(String id,String name,int value,String content,Date startTime,Date endTime,String idPartner,int quantity){
+    @SerializedName("image")
+    private String image;
+    public VoucherResponse(String id,String name,int value,String content,Date startTime,Date endTime,String idPartner,int quantity,String image){
         this.id=id;
         this.name=name;
         this.value=value;
@@ -30,6 +32,7 @@ public class VoucherResponse {
         this.endTime= endTime;
         this.idPartner=idPartner;
         this.quantity=quantity;
+        this.image=image;
     };
 
     public String getId() {
@@ -61,5 +64,8 @@ public class VoucherResponse {
     }
     public int getIdCustomer() {
         return quantity;
+    }
+    public String getImage() {
+        return image;
     }
 }

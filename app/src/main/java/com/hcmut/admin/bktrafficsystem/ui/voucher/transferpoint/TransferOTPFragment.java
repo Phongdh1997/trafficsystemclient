@@ -1,9 +1,12 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher.transferpoint;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,15 +73,24 @@ public class TransferOTPFragment extends Fragment implements View.OnClickListene
 
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_opt_authentication, container, false);
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         btnVerify = view.findViewById(R.id.btn_verify);
         btnVerify.setOnClickListener(this);
 
@@ -161,4 +173,5 @@ public class TransferOTPFragment extends Fragment implements View.OnClickListene
                     }
                 });
     }
+
 }

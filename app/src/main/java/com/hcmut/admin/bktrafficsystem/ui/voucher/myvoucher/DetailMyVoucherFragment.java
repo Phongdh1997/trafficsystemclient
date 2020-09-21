@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.MyVouche
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.voucher.VoucherFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -43,6 +45,7 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
     TextView status;
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     MyVoucherResponse myVoucherResponses;
+    ImageView image;
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -84,6 +87,7 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
         price = view.findViewById(R.id.txtProductPrice);
         content = view.findViewById(R.id.txtContent);
         status = view.findViewById(R.id.orderStatus);
+        image = view.findViewById(R.id.imgProductImage);
 
         getDetailMyVoucher(getArguments().getString("idOffer"));
 
@@ -114,6 +118,10 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
                                     status.setText("Voucher đã được sử dụng");
                                     btnUse.setEnabled(false);
                                 }
+                                if(myVoucherResponses.getVoucherResponse().getImage()!=null){
+                                    Picasso.get().load(myVoucherResponses.getVoucherResponse().getImage()).noFade().fit().into(image);
+                                }
+
 
 
                             } else {

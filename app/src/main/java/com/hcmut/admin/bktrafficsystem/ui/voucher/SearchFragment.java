@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -138,6 +139,7 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
 //                    searchIntent.putExtra(KEYWORD, word);
 //                    startActivity(searchIntent);
                     bundle.putString("word", word);
+                    hideSoftKeyboard(getActivity());
                     NavHostFragment.findNavController(SearchFragment.this)
                             .navigate(R.id.action_searchFragment_to_resultFragment,bundle);
                     return true;
@@ -227,6 +229,7 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
 //        intent.putExtra(KEYWORD, list.get(position));
 //        startActivity(intent);
         bundle.putString("word", list.get(position));
+        hideSoftKeyboard(getActivity());
         NavHostFragment.findNavController(SearchFragment.this)
                 .navigate(R.id.action_searchFragment_to_resultFragment,bundle);
     }
@@ -247,6 +250,7 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
 
     @Override
     public void onBackPress() {
+        hideSoftKeyboard(getActivity());
         NavHostFragment.findNavController(SearchFragment.this).popBackStack();
     }
 
@@ -257,5 +261,12 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
                 clearAll();
                 break;
         }
+    }
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

@@ -115,6 +115,13 @@
             app:exitAnim="@anim/non_anim"
             app:popEnterAnim="@anim/non_anim"
             app:popExitAnim="@anim/slide_out_bottom"/>
+        <action
+            android:id="@+id/action_voucherFragment_to_ScanQRCode"
+            app:destination="@id/scanFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
     </fragment>
     <fragment
         android:id="@+id/detailVoucherFragment"
@@ -265,11 +272,29 @@
         android:id="@+id/historyFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.history.HistoryFragment"
         android:label="HistoryFragment"
-        />
+        >
+        <action
+            android:id="@+id/action_historyFragment_to_detailDealFragment"
+            app:destination="@id/detailDealFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+        </fragment>
     <fragment
         android:id="@+id/reportFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.report.ReportFragment"
         android:label="ReportFragment"
+        />
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.scanqrcode.ScanQRCode"
+        android:label="scanFragment"
+        />
+    <fragment
+        android:id="@+id/detailDealFragment"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.history.DetailDealFragment"
+        android:label="detailDealFragment"
         />
 
 

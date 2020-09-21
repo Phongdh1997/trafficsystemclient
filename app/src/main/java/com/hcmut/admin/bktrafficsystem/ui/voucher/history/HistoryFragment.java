@@ -24,8 +24,10 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DealResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.UserResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.myvoucher.MyVoucherFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +42,26 @@ public class HistoryFragment extends Fragment implements DealAdapter.DealAdapter
     Bundle bundle = new Bundle();
     AndroidExt androidExt = new AndroidExt();
     Toolbar toolbar;
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
     @Override
     public void onClick(DealResponse deal) {
-
+        bundle.putInt("point",deal.getPoint());
+        bundle.putString("code",deal.getCode());
+        bundle.putString("type",deal.getType());
+        bundle.putString("createdAt",formatter.format(deal.getCreatedAt()));
+        if(deal.getType().compareTo("transfer point")==0){
+            if(SharedPrefUtils.getUser(getContext()).getUserId().compareTo(deal.getSender().getName())==0) {
+                bundle.putString("sender", deal.getReceive().getName());
+                bundle.putString("phone", deal.getReceive().getPhoneNumber());
+                bundle.putString("message", deal.getMessage());
+            }else{
+                bundle.putString("receive", deal.getSender().getName());
+                bundle.putString("phone", deal.getSender().getPhoneNumber());
+                bundle.putString("message", deal.getMessage());
+            }
+        }
+        NavHostFragment.findNavController(HistoryFragment.this)
+                .navigate(R.id.action_historyFragment_to_detailDealFragment,bundle);
     }
 
     @Override

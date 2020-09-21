@@ -1,11 +1,14 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher.transferpoint;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherR
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.voucher.ResultFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -47,6 +51,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirm:
+                hideSoftKeyboard(getActivity());
                 getMessageAuthentication();
                 break;
         }
@@ -56,6 +61,8 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         return inflater.inflate(R.layout.fragment_transfer, container, false);
     }
 
@@ -73,6 +80,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
         name.setText(getArguments().getString("name"));
         phone.setText(getArguments().getString("phone"));
         point.setHint("Số dư có thể chuyển: "+getArguments().getInt("point")+ " điểm");
+        Picasso.get().load(getArguments().getString("avatar")).noFade().fit().into(avatar);
 
         btnConfirm.setEnabled(false);
         toolbar = (androidx.appcompat.widget.Toolbar) view.findViewById(R.id.toolbar_voucher);
@@ -142,5 +150,12 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
                         androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");                    }
                 });
+    }
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

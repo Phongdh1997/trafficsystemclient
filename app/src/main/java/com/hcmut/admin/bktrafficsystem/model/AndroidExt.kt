@@ -134,4 +134,19 @@ class AndroidExt {
                 .setClickNo { clickNoListener.onClickNo() }
                 .show()
     }
+    fun confirmQRScan(context: Context,
+                         description: String? = "",
+                         clickYesListener: ClickDialogListener.Yes,
+                         clickNoListener: ClickDialogListener.No
+    ) {
+        MessageDialog(context, "Quét mã", description, true)
+                .setColorTitle(R.color.green)
+                .setButtonYesText("Tiếp tục")
+                .setButtonNoText("Hoàn tất")
+                .setClickYes {
+                    clickYesListener.onCLickYes()
+                }
+                .setClickNo { clickNoListener.onClickNo() }
+                .show()
+    }
 }

@@ -17,6 +17,8 @@ public class InfoPaymentResponse {
     private int payPoint;
     @SerializedName("afterPoint")
     private int afterPoint;
+    @SerializedName("image")
+    private String image;
 
 //    public InfoPaymentResponse(String id,String name,int value,String content,Date startTime,Date endTime,String idPartner,int quantity){
 //        this.id=id;
@@ -51,6 +53,9 @@ public class InfoPaymentResponse {
 
     public int getAfterPoint() {
         return afterPoint;
+    }
+    public String getImage() {
+        return image;
     }
 
 }

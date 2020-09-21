@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -30,6 +31,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherR
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.List;
@@ -49,6 +51,7 @@ public class DetailVoucherFragment extends Fragment implements MapActivity.OnBac
     private TextView price;
     private TextView content;
     private VoucherResponse detailVoucher;
+    private ImageView image;
     Bundle bundle = new Bundle();
 
     AndroidExt androidExt = new AndroidExt();
@@ -95,6 +98,7 @@ public class DetailVoucherFragment extends Fragment implements MapActivity.OnBac
         name = view.findViewById(R.id.nameOfVoucher);
         price = view.findViewById(R.id.priceOfVoucher);
         content = view.findViewById(R.id.txtDetailContent);
+        image = view.findViewById(R.id.imageOfVoucher);
         btnBuy.setOnClickListener(this);
 
         getDetailVoucher(getArguments().getString("idVoucher"));
@@ -149,6 +153,9 @@ public class DetailVoucherFragment extends Fragment implements MapActivity.OnBac
                                 name.setText(detailVoucher.getName());
                                 price.setText(detailVoucher.getValue()+" điểm");
                                 content.setText(detailVoucher.getContent());
+                                if(detailVoucher.getImage()!=null){
+                                    Picasso.get().load(detailVoucher.getImage()).noFade().fit().into(image);
+                                }
                             } else {
                                 androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
                             }

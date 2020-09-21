@@ -15,13 +15,15 @@ public class DealResponse {
     private String content;
     @SerializedName("send_id")
     private UserResponse sender;
+    @SerializedName("receive_id")
+    private UserResponse receive;
     @SerializedName("type")
     private String type;
     @SerializedName("message")
     private String message;
     @SerializedName("createdAt")
     private Date createdAt;
-    public DealResponse(String id,int point,String code,String content,UserResponse sender,String type,String message,Date createdAt){
+    public DealResponse(String id,int point,String code,String content,UserResponse sender,String type,String message,Date createdAt,UserResponse receive){
         this.id=id;
         this.point=point;
         this.code=code;
@@ -30,6 +32,7 @@ public class DealResponse {
         this.type= type;
         this.message=message;
         this.createdAt=createdAt;
+        this.receive=receive;
     };
 
     public String getId() {
@@ -62,4 +65,5 @@ public class DealResponse {
     public Date getCreatedAt() {
         return createdAt;
     }
+    public UserResponse getReceive(){return receive;}
 }

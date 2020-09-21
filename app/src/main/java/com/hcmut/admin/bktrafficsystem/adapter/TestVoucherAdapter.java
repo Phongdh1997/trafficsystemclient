@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.Voucher;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -116,8 +117,11 @@ public class TestVoucherAdapter extends RecyclerView.Adapter<TestVoucherAdapter.
         VoucherResponse voucher = listVoucher.get(position);
         holder.voucherName.setText(voucher.getName());
         holder.voucherValue.setText(voucher.getValue()+" điểm");
-        holder.imageView.setImageResource(R.drawable.voucher1);
-
+        if(voucher.getImage()==null) {
+            holder.imageView.setImageResource(R.drawable.voucher1);
+        }else{
+            Picasso.get().load(voucher.getImage()).noFade().fit().into(holder.imageView);
+        }
     }
 
 
@@ -137,6 +141,7 @@ public class TestVoucherAdapter extends RecyclerView.Adapter<TestVoucherAdapter.
         public TextView voucherName;
         public TextView voucherValue;
         public ImageView imageView;
+
 
         public ViewHolder(View itemView) {
             super(itemView);

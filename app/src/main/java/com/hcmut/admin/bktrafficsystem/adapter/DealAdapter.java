@@ -14,14 +14,16 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.Deal;
 import com.hcmut.admin.bktrafficsystem.model.MyVoucher;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DealResponse;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder> {
     private Context mContext;
     private List<DealResponse> listDeal;
     private DealResponse currentDeal;
-
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
     private DealAdapter.DealAdapterOnClickHandler clickHandler;
 
     /**
@@ -60,33 +62,38 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
         // nhận điểm
         if(currentDeal.getType().compareTo("get point")==0){
             holder.nameDeal.setText("+"+currentDeal.getPoint()+" điểm: "+ currentDeal.getContent());
-            holder.timeDeal.setText(currentDeal.getCreatedAt().toString());
+            holder.timeDeal.setText(formatter.format(currentDeal.getCreatedAt()));
             holder.imageDeal.setImageResource(R.drawable.getpoint);
         }
         //đổi điểm
         else if(currentDeal.getType().compareTo("get voucher")==0){
-            holder.nameDeal.setText("-"+currentDeal.getPoint()+" điểm: "+ currentDeal.getContent());
-            holder.timeDeal.setText(currentDeal.getCreatedAt().toString());
+            if(SharedPrefUtils.getUser(mContext).getUserId().compareTo(currentDeal.getSender().getName())==0) {
+                holder.nameDeal.setText("-" + currentDeal.getPoint() + " điểm: " + currentDeal.getContent());
+            }
+            else{
+                holder.nameDeal.setText("+" + currentDeal.getPoint() + " điểm: " + currentDeal.getContent());
+            }
+            holder.timeDeal.setText(formatter.format(currentDeal.getCreatedAt()));
             holder.imageDeal.setImageResource(R.drawable.covert);
         }
         //chuyển điểm
         else if(currentDeal.getType().compareTo("transfer point")==0){
             holder.nameDeal.setText("-"+currentDeal.getPoint()+" điểm: "+ currentDeal.getContent());
-            holder.timeDeal.setText(currentDeal.getCreatedAt().toString());
+            holder.timeDeal.setText(formatter.format(currentDeal.getCreatedAt()));
             holder.imageDeal.setImageResource(R.drawable.transfer);
 
         }
         //mua điểm
         else if(currentDeal.getType().compareTo("buy point")==0){
             holder.nameDeal.setText("+"+currentDeal.getPoint()+" điểm: "+ currentDeal.getContent());
-            holder.timeDeal.setText(currentDeal.getCreatedAt().toString());
+            holder.timeDeal.setText(formatter.format(currentDeal.getCreatedAt()));
             holder.imageDeal.setImageResource(R.drawable.wallet);
 
         }
         //sử dụng voucher
         else if(currentDeal.getType().compareTo("use voucher")==0){
             holder.nameDeal.setText( currentDeal.getContent());
-            holder.timeDeal.setText(currentDeal.getCreatedAt().toString());
+            holder.timeDeal.setText(formatter.format(currentDeal.getCreatedAt()));
             holder.imageDeal.setImageResource(R.drawable.coupon);
 
         }

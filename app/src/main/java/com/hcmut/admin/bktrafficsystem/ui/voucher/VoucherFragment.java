@@ -36,19 +36,24 @@ import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Voucher;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoVoucher;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.SliderResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
 import com.hcmut.admin.bktrafficsystem.ui.account.AccountFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
 import com.hcmut.admin.bktrafficsystem.ui.signup.SignUpActivity;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.hcmut.admin.bktrafficsystem.util.Slide;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,6 +74,9 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
     private TextView txtAllTop;
     private TextView txtAllTrending;
     private NavigationView navigationView;
+    private CircleImageView userImage;
+    private TextView userName;
+    private TextView userPoint;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -132,6 +140,13 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         txtAllTrending = view.findViewById(R.id.txtSeeAllTrending);
         navigationView = view.findViewById(R.id.nav_view);
         txtSearch = view.findViewById(R.id.txtSearch);
+        View header = navigationView.getHeaderView(0);
+        userImage = header.findViewById(R.id.userImage);
+        userName = header.findViewById(R.id.userName);
+        userPoint = header.findViewById(R.id.userPoint);
+
+
+
 
 
         txtAllTop.setOnClickListener(this);
@@ -140,6 +155,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 
         listTopVoucher = new ArrayList<>();
         listTrendVoucher = new ArrayList<>();
+        getVoucherInfo();
         getTopVoucher();
         getTrendVoucher();
 
@@ -162,7 +178,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         listViewTop.setLayoutManager(layoutManager1);
         listViewTrending.setLayoutManager(layoutManager2);
-        flipImages(Slide.getSlides());
+
 
         addControls(view);
         addEvents();
@@ -186,22 +202,23 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
     public void onBackPress() {
         NavHostFragment.findNavController(VoucherFragment.this).popBackStack();
     }
-    private void flipImages(ArrayList<Integer> images) {
+    private void flipImages(List<SliderResponse> images) {
 
-        for (int image : images) {
-            ImageView imageView = new ImageView(getContext());
-            imageView.setBackgroundResource(image);
-            imageSlider.addView(imageView);
+        for(int i=0;i<images.size();i++) {
+            ImageView image = new ImageView(getContext());
+            Picasso.get().load(images.get(i).getImage()).into(image);
+            imageSlider.addView(image);
         }
 
         imageSlider.setFlipInterval(2000);
 
-        imageSlider.setAutoStart(true);
 
+        imageSlider.setAutoStart(true);
         // Set the animation for the view that enters the screen
         imageSlider.setInAnimation(getContext(), R.anim.slide_in_right);
         // Set the animation for the view leaving th screen
         imageSlider.setOutAnimation(getContext(), R.anim.slide_out_left);
+
         imageSlider.startFlipping();
     }
     private void setUpViews() {
@@ -298,6 +315,9 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         } else if (id == R.id.nav_wishList) {
             NavHostFragment.findNavController(VoucherFragment.this)
                     .navigate(R.id.action_voucherFragment_to_HistoryFragment);
+        }else if(id == R.id.nav_scan){
+            NavHostFragment.findNavController(VoucherFragment.this)
+                    .navigate(R.id.action_voucherFragment_to_ScanQRCode);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -347,6 +367,32 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
                         androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");                    }
                 });
     }
+    private void getVoucherInfo(){
+        RetrofitClient.getApiService().getInfoVoucher(SharedPrefUtils.getUser(getContext()).getAccessToken())
+                .enqueue(new Callback<BaseResponse<InfoVoucher>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<InfoVoucher>> call, Response<BaseResponse<InfoVoucher>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getData() != null) {
+                                InfoVoucher voucherResponse = response.body().getData();
+                                userName.setText(voucherResponse.getName());
+                                userPoint.setText("Điểm: "+voucherResponse.getPoint());
+
+                                flipImages(voucherResponse.getSlider());
+
+                            } else {
+                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                            }
+                        } else {
+                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<InfoVoucher>> call, Throwable t) {
+                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");                    }
+                });
+    }
+
 
 
 }

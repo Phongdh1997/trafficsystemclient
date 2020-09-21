@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,9 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherR
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity;
 import com.hcmut.admin.bktrafficsystem.ui.voucher.myvoucher.DetailMyVoucherFragment;
+import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.List;
@@ -45,6 +48,7 @@ public class PayVoucherFragment extends Fragment implements View.OnClickListener
     TextView beforePoint;
     TextView payPoint;
     TextView afterPoint;
+    ImageView image;
 
 
 
@@ -87,6 +91,7 @@ public class PayVoucherFragment extends Fragment implements View.OnClickListener
         beforePoint  = view.findViewById(R.id.pointCurrentNumber);
         payPoint  = view.findViewById(R.id.pointPayNumber);
         afterPoint  = view.findViewById(R.id.pointRestNumber);
+        image = view.findViewById(R.id.imgProductImage);
 
         getInfoPaymentVoucher(getArguments().getString("idVoucher"));
     }
@@ -108,8 +113,16 @@ public class PayVoucherFragment extends Fragment implements View.OnClickListener
                                 beforePoint.setText(String.valueOf(infoPayment.getBeforePoint()));
                                 payPoint.setText("-"+ infoPayment.getPayPoint());
                                 afterPoint.setText(String.valueOf(infoPayment.getAfterPoint()));
+                                if(infoPayment.getImage()!=null){
+                                    Picasso.get().load(infoPayment.getImage()).noFade().fit().into(image);
+                                }
                             } else {
-                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
+                                androidExt.showNotifyDialog(getContext(), "Sô điểm không đủ để thanh toán", new ClickDialogListener.OK() {
+                                    @Override
+                                    public void onCLickOK() {
+                                        onBackPress();
+                                    }
+                                });
                             }
                         } else {
                             androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
