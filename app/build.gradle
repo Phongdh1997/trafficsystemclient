@@ -126,6 +126,9 @@ dependencies {
 
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'androidx.preference:preference:1.1.0'
+
+    // csv export
+    implementation 'com.opencsv:opencsv:4.6'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'

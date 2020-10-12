@@ -159,15 +159,13 @@ public class StatusRenderData {
             List<BitmapLineData> lineDataList = new ArrayList<>();
             List<LatLng> line;
             String color;
-            try {
-                for (StatusRenderData statusRenderData : statusRenderDataList) {
+            for (StatusRenderData statusRenderData : statusRenderDataList) {
+                try {
                     line = statusRenderData.getLatLngPolyline();
                     color = statusRenderData.getColor();
-                    if (line != null && line.size() == 2 && color != null) {
-                        lineDataList.add(new BitmapLineData(line.get(0), line.get(1), color));
-                    }
-                }
-            } catch (Exception e) {}
+                    lineDataList.add(new BitmapLineData(line.get(0), line.get(1), color));
+                } catch (Exception e) {}
+            }
             return lineDataList;
         }
         return null;
