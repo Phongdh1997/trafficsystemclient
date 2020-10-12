@@ -104,6 +104,12 @@ public class TrafficDataLoader {
         }
     }
 
+    public synchronized List<StatusRenderData> loadTrafficDataFromServer(TileCoordinates tile) {
+        LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(tile);
+        UserLocation userLocation = new UserLocation(bounds.getCenter());
+        return statusRepositoryService.loadStatusRenderData(userLocation, getTileRadius(tile));
+    }
+
     public List<StatusRenderDataEntity> loadDataFromLocal(TileCoordinates tile) {
         return roomDatabaseService.getTrafficStatus(MyLatLngBoundsUtil.tileToLatLngBound(tile));
     }
