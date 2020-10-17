@@ -26,16 +26,10 @@ public class TrafficDataLoader {
     private StatusRepositoryService statusRepositoryService = new StatusRemoteRepository();
     private RoomDatabaseService roomDatabaseService;
     private LoadedTileManager loadedTileManager;
-    private Map<TileCoordinates, TileLoadFinishCallback> tileLoadFinishListeners = new HashMap<>();
-    private DataLoadingState dataLoadingState;
 
     private TrafficDataLoader(Context context) {
         roomDatabaseService = new RoomDatabaseImpl(context);
         loadedTileManager = LoadedTileManager.getInstance();
-    }
-
-    public void setDataLoadingState(DataLoadingState dataLoadingState) {
-        this.dataLoadingState = dataLoadingState;
     }
 
     private static TrafficDataLoader trafficDataLoader;
@@ -46,59 +40,62 @@ public class TrafficDataLoader {
         return trafficDataLoader;
     }
 
-    public void addTileLoadFinishListener(TileCoordinates tile, TileLoadFinishCallback callback) {
-        if (!tileLoadFinishListeners.containsKey(tile)) {
-            tileLoadFinishListeners.put(tile, callback);
-        }
-    }
-
     /**
      *
-     * @param centerTile: tile zoom level 15
+     * @param centerTile
      */
     public void loadPaddingTrafficData(TileCoordinates centerTile) {
         centerTile = MyLatLngBoundsUtil.convertTile(centerTile, LOAD_TILE_LEVEL);
         List<TileCoordinates> tileList = GroundOverlayMatrix.generateMatrixItems(centerTile, 5, false);
         for (final TileCoordinates tile : tileList) {
-            RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-                @Override
-                public void run() {
-                    loadTrafficDataFromServerAsync(tile, false);
-                }
-            });
+            loadTrafficDataFromServerAsync(tile);
         }
     }
 
-    public synchronized void loadTrafficDataFromServerAsync(TileCoordinates tile, final boolean isTrackState) {
-        final TileCoordinates loadTile = MyLatLngBoundsUtil.convertTile(tile, LOAD_TILE_LEVEL);
-        if (isTrackState && loadedTileManager.isLoadingOrNotLoad(loadTile)) {
-            dataLoadingState.putLoadingTile(loadTile);
+    /**
+     * Load data from server if not exist,
+     * Else load data from local
+     * @param renderTile
+     * @return
+     */
+    public synchronized List<StatusRenderDataEntity> loadTrafficDataFromServer(TileCoordinates renderTile) {
+        final TileCoordinates loadingTile = MyLatLngBoundsUtil.convertTile(renderTile, LOAD_TILE_LEVEL);
+        if (loadingTile == null) {
+            return null;
         }
-        if (loadedTileManager.isNotLoaded(loadTile)) {
-            loadedTileManager.setLoadingTile(loadTile);
+        if (loadedTileManager.isNotLoaded(loadingTile)) {
+            loadedTileManager.setLoadingTile(loadingTile);
+            LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(loadingTile);
+            UserLocation userLocation = new UserLocation(bounds.getCenter());
+            List<StatusRenderData> dataList = statusRepositoryService.loadStatusRenderData(
+                    userLocation, getTileRadius(loadingTile));
+            List<StatusRenderDataEntity> dataEntities = StatusRenderDataEntity.parseStatusRenderDataEntity(dataList);
+            roomDatabaseService.insertTrafficStatus(dataEntities);
+            loadedTileManager.setLoadedTile(loadingTile);
+            Log.e("tile loaded", loadingTile.toString());
+            return dataEntities;
+        }
+        return loadDataFromLocal(renderTile);
+    }
+
+    public synchronized void loadTrafficDataFromServerAsync(TileCoordinates tile) {
+        final TileCoordinates loadingTile = MyLatLngBoundsUtil.convertTile(tile, LOAD_TILE_LEVEL);
+        if (loadingTile == null) {
+            return;
+        }
+        if (loadedTileManager.isNotLoaded(loadingTile)) {
+            loadedTileManager.setLoadingTile(loadingTile);
             RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
                 @Override
                 public void run() {
-                    LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(loadTile);
+                    LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(loadingTile);
                     UserLocation userLocation = new UserLocation(bounds.getCenter());
                     List<StatusRenderData> dataList = statusRepositoryService
-                            .loadStatusRenderData(userLocation, getTileRadius(loadTile));
-                    if (dataList != null) {
-                        loadedTileManager.setLoadedTile(loadTile);
-                        List<StatusRenderDataEntity> entities = StatusRenderDataEntity.parseStatusRenderDataEntity(dataList);
-                        roomDatabaseService.insertTrafficStatus(entities);
-                        TileLoadFinishCallback callback = tileLoadFinishListeners.get(loadTile);
-                        if (callback != null) {
-                            callback.onSuccess(entities);
-                            tileLoadFinishListeners.remove(loadTile);
-                        }
-                    } else {
-                        loadedTileManager.setLoadFailTile(loadTile);
-                    }
-                    if (dataLoadingState != null) {
-                        dataLoadingState.removeLoadingTile(loadTile);
-                    }
-                    Log.e("tile status", loadTile.toString() + "loaded, " + userLocation.toString());
+                            .loadStatusRenderData(userLocation, getTileRadius(loadingTile));
+                    roomDatabaseService.insertTrafficStatus(
+                            StatusRenderDataEntity.parseStatusRenderDataEntity(dataList));
+                    loadedTileManager.setLoadedTile(loadingTile);
+                    Log.e("tile status", loadingTile.toString() + "loaded from server, " + userLocation.toString());
                 }
             });
         }
@@ -109,7 +106,7 @@ public class TrafficDataLoader {
     }
 
     public boolean isDataNotLoaded(TileCoordinates tile) {
-        return loadedTileManager.isNotLoaded(tile);
+        return loadedTileManager.isNotLoaded(MyLatLngBoundsUtil.convertTile(tile, LOAD_TILE_LEVEL));
     }
 
     /**

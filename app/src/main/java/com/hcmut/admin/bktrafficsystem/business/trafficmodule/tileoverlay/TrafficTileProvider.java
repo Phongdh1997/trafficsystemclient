@@ -25,18 +25,27 @@ public class TrafficTileProvider implements TileProvider {
         trafficDataLoader = TrafficDataLoader.getInstance(context);
     }
 
-    public void setDataLoadingState(DataLoadingState dataLoadingState) {
-        trafficDataLoader.setDataLoadingState(dataLoadingState);
-    }
-
     @Override
     public Tile getTile(int x, int y, int z) {
         if (z < 15 || z > MAX_ZOOM_RENDER) return NO_TILE;
         try {
             TileCoordinates renderTile = TileCoordinates.getTileCoordinates(x, y, z);
-            trafficDataLoader.loadTrafficDataFromServerAsync(renderTile, true);
-            return generateTile(renderTile);
+            return generateTileFromRemoteData(renderTile);
         } catch (Exception e) {
+        }
+        return null;
+    }
+
+    private Tile generateTileFromRemoteData(TileCoordinates renderTile) {
+        int scale = getScaleByZoom(renderTile);
+        Bitmap bitmap = trafficBitmap.createTrafficBitmap(renderTile,
+                trafficDataLoader.loadTrafficDataFromServer(renderTile), scale, null);
+        if (bitmap != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            bitmap.recycle();
+            return new Tile(TrafficBitmap.mTileSize * scale, TrafficBitmap.mTileSize * scale, byteArray);
         }
         return null;
     }
