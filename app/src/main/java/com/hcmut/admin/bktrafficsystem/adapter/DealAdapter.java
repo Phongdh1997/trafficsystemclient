@@ -67,7 +67,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
         }
         //đổi điểm
         else if(currentDeal.getType().compareTo("get voucher")==0){
-            if(SharedPrefUtils.getUser(mContext).getUserId().compareTo(currentDeal.getSender().getName())==0) {
+            if(SharedPrefUtils.getUser(mContext).getUserId().compareTo(currentDeal.getSender().getId())==0) {
                 holder.nameDeal.setText("-" + currentDeal.getPoint() + " điểm: " + currentDeal.getContent());
             }
             else{

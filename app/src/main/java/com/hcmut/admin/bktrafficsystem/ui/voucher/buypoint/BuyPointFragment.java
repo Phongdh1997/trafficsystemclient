@@ -43,7 +43,7 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
     private String amount = "10000";
     private String fee = "0";
     int environment = 0;//developer default
-    private String merchantName = "MoMo";
+    private String merchantName = "MoMoTest";
     private String merchantCode = "MOMOIQA420180417";
     private String merchantNameLabel = "Nhà cung cấp";
     private String description = "Thanh toán dịch vụ ABC";

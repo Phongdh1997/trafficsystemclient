@@ -119,9 +119,13 @@ public class ResultFragment extends Fragment implements  MapActivity.OnBackPress
                             if (response.body().getData() != null) {
 
                                 List<VoucherResponse> voucherResponse = response.body().getData();
+
                                 if(voucherResponse.size()!=0) {
+                                    System.out.println(voucherResponse.get(0).getName());
                                     listSearch.clear();
                                     listSearch.addAll(voucherResponse);
+                                    searchAdapter.notifyDataSetChanged();
+
                                 }else{
                                     Toast.makeText(getContext(), "No Result", Toast.LENGTH_SHORT).show();
                                 }

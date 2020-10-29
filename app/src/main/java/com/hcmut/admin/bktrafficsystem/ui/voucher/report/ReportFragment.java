@@ -94,6 +94,7 @@ public class ReportFragment extends Fragment implements MapActivity.OnBackPressC
                                 barEntriesIn = new ArrayList<>();
                                 barEntriesOut = new ArrayList<>();
                                 for(int i=0;i<responseVouchers.size();i++){
+                                    System.out.println(responseVouchers.get(i).getDate());
                                     days[i]=formatter.format(responseVouchers.get(i).getDate());
                                     System.out.println(responseVouchers.get(i).getPointOut());
 
