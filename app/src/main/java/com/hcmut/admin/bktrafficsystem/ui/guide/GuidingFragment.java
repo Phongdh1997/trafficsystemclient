@@ -32,6 +32,9 @@ public class GuidingFragment extends Fragment implements MapActivity.OnBackPress
 
     private ImageView imgBack;
     private ConstraintLayout clSearchWayGuide;
+    private ConstraintLayout clWarningStatusGuide;
+    private ConstraintLayout clReportStatusGuide;
+    private ConstraintLayout clSettingGuide;
 
     public GuidingFragment() {
         // Required empty public constructor
@@ -89,10 +92,25 @@ public class GuidingFragment extends Fragment implements MapActivity.OnBackPress
         clSearchWayGuide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(GuidingContentFragment.GUIDING_FEATURE_TYPE, GuidingContentFragment.SEARCH_DIRECTION);
-                NavHostFragment.findNavController(GuidingFragment.this)
-                        .navigate(R.id.action_guidingFragment_to_guidingContentFragment, bundle);
+                createGuideNavigate(GuidingContentFragment.SEARCH_DIRECTION);
+            }
+        });
+        clWarningStatusGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createGuideNavigate(GuidingContentFragment.WARNING_STATUS);
+            }
+        });
+        clReportStatusGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createGuideNavigate(GuidingContentFragment.REPORT_STATUS);
+            }
+        });
+        clSettingGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createGuideNavigate(GuidingContentFragment.ACCOUNG_SETTING);
             }
         });
     }
@@ -100,6 +118,16 @@ public class GuidingFragment extends Fragment implements MapActivity.OnBackPress
     private void addControls(View view) {
         imgBack = view.findViewById(R.id.imgBack);
         clSearchWayGuide = view.findViewById(R.id.clSearchWayGuide);
+        clWarningStatusGuide = view.findViewById(R.id.clWarningStatusGuide);
+        clReportStatusGuide = view.findViewById(R.id.clReportGuide);
+        clSettingGuide = view.findViewById(R.id.clSettingGuide);
+    }
+
+    private void createGuideNavigate(final int featureId){
+        Bundle bundle = new Bundle();
+        bundle.putInt(GuidingContentFragment.GUIDING_FEATURE_TYPE, featureId);
+        NavHostFragment.findNavController(GuidingFragment.this)
+                .navigate(R.id.action_guidingFragment_to_guidingContentFragment, bundle);
     }
 
     @Override

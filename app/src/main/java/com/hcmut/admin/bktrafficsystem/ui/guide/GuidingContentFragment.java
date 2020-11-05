@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +29,13 @@ public class GuidingContentFragment extends Fragment implements MapActivity.OnBa
 
     public static final String GUIDING_FEATURE_TYPE = "guiding_feature_type";
     public static final int SEARCH_DIRECTION = 1;
+    public static final int WARNING_STATUS = 2;
+    public static final int REPORT_STATUS = 3;
+    public static final int ACCOUNG_SETTING = 4;
+
+    private ImageView imgBack;
+    private TextView txtTitle;
+    private TextView txtContent;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -73,11 +82,49 @@ public class GuidingContentFragment extends Fragment implements MapActivity.OnBa
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        addControls(view);
+
+        addEvents();
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             int guidingType = bundle.getInt(GUIDING_FEATURE_TYPE, 0);
             Log.e("guiding type", "" + guidingType);
+            switch (guidingType){
+                case SEARCH_DIRECTION:
+                    createContent(R.string.searchWayTitle,R.string.searchWay);
+                    break;
+                case WARNING_STATUS:
+                    createContent(R.string.warningStatusTitle,R.string.warningStatusContent);
+                    break;
+                case REPORT_STATUS:
+                    createContent(R.string.reportTitle,R.string.reportContent);
+                    break;
+                case ACCOUNG_SETTING:
+                    createContent(R.string.accountSettingTitle,R.string.accountSettingContent);
+                    break;
+            }
         }
+    }
+
+    private void addEvents() {
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(GuidingContentFragment.this).popBackStack();
+            }
+        });
+    }
+
+    private void createContent(final int title, final int conTent){
+        txtTitle.setText(title);
+        txtContent.setText(conTent);
+    }
+
+    private void addControls(View view) {
+        imgBack = view.findViewById(R.id.imgBack);
+        txtTitle = view.findViewById(R.id.txtSettingTitle);
+        txtContent = view.findViewById(R.id.txtContentGuide);
     }
 
     @Override
