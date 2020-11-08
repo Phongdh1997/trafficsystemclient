@@ -44,7 +44,7 @@ public interface APIService {
      * get traffic status by radius in meters
      */
     @GET("/api/traffic-status/get-status")
-    Call<StatusResponse<List<StatusRenderData>>> getTrafficStatus(@Query("lat") Double lat, @Query("lng") Double lng, @Query("radius_in_meter") int radiusInMeters);
+    Call<StatusResponse<List<StatusRenderData>>> getTrafficStatus(@Query("lat") Double lat, @Query("lng") Double lng, @Query("radius_in_meter") int radiusInMeters, @Query("level") int level);
 
     /**
      * get traffic status by radius in meters

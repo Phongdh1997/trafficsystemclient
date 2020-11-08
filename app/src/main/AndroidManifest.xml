@@ -36,27 +36,19 @@
 
         <activity
             android:name="com.hcmut.admin.bktrafficsystem.ui.signin.SignInActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
 
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.map.MapActivity"
             android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
 
         <activity android:name=".ui.reportdetail.traffic.photo.PreViewPhotoActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
 
-        <activity android:name="com.hcmut.admin.bktrafficsystem.ui.rating.detailReport.DetailReportActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="detail" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.signup.SignUpActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.question.QuestionActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity android:name="com.hcmut.admin.bktrafficsystem.ui.question.QuestionDetailActivity" />
 

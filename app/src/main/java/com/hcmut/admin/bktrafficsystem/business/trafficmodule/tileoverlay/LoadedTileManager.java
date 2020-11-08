@@ -26,13 +26,35 @@ public class LoadedTileManager {
         loadedTiles.clear();
     }
 
-    public synchronized boolean isNotLoaded (TileCoordinates tile) {
+    public boolean isNotLoaded (TileCoordinates tile) {
         if (tile != null) {
             String tileState = loadedTiles.get(tile);
             if (tileState != null) {
                 // TODO: schedule to reload 'fail tile'
                 //return tileState.equals(LOAD_FAIL_STATE);
                 return false;
+            }
+        }
+        return true;
+    }
+
+    public synchronized boolean isLoaded (TileCoordinates tile) {
+        if (tile != null) {
+            String tileState = loadedTiles.get(tile);
+            if (tileState != null) {
+                // TODO: schedule to reload 'fail tile'
+                return tileState.equals(LOADED_STATE);
+            }
+        }
+        return true;
+    }
+
+    public synchronized boolean isLoading (TileCoordinates tile) {
+        if (tile != null) {
+            String tileState = loadedTiles.get(tile);
+            if (tileState != null) {
+                // TODO: schedule to reload 'fail tile'
+                return tileState.equals(LOADING_STATE);
             }
         }
         return true;

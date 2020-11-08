@@ -172,9 +172,21 @@ public class TrafficBitmap {
             case 16:
                 return 0.0002f; //ok
             case 15:
-                return 0.0003f; //0k
+            case 14:
+                return 0.0005f;
+            case 13:
+                return 0.0015f;
+            case 12:
+                return 0.003f;
+            case 11:
+                return 0.004f;
+            case 10:
+                return 0.0048f;
+            case 9:
+            case 8:
+                return 0.0058f;
             default:
-                return 0f;
+                return 0.0022f;
         }
     }
 
