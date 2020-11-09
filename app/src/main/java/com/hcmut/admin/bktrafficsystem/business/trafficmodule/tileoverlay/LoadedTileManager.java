@@ -46,7 +46,7 @@ public class LoadedTileManager {
                 return tileState.equals(LOADED_STATE);
             }
         }
-        return true;
+        return false;
     }
 
     public synchronized boolean isLoading (TileCoordinates tile) {

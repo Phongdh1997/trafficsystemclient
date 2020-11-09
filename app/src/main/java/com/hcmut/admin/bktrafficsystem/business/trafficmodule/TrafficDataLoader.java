@@ -62,6 +62,18 @@ public class TrafficDataLoader {
             Log.e("tile loaded", loadingTile.toString());
             return dataEntities;
         }
+
+        // wait loading data from server
+        for (int i = 0; i < 10; i++) {
+            if (loadedTileManager.isLoaded(loadingTile)) {
+                break;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         return loadDataFromLocal(renderTile);
     }
 
@@ -83,6 +95,18 @@ public class TrafficDataLoader {
             loadedTileManager.setLoadedTile(loadingTile);
             Log.e("tile loaded", loadingTile.toString());
             return dataEntities;
+        }
+
+        // wait loading data from server
+        for (int i = 0; i < 10; i++) {
+            if (loadedTileManager.isLoaded(loadingTile)) {
+                break;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return roomDatabaseService.getTrafficStatus(TileCoordinates.getHCMCityLatLngBounds(), getStreetTypeName(1));
     }
