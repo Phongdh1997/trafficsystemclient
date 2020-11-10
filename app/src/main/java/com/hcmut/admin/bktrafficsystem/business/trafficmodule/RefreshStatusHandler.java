@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.business.trafficmodule;
 
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TilerOverlayRender;
+import android.util.Log;
+
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TilerOverlayRenderModule;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,13 +14,13 @@ public class RefreshStatusHandler {
     private boolean trafficEnable = true;
     private boolean isTimerRunning = false;
     private Timer statusRenderTimer;
-    private TilerOverlayRender overlayRender;
+    private TilerOverlayRenderModule overlayRender;
 
     public RefreshStatusHandler() {
 
     }
 
-    public void setOverlayRender (TilerOverlayRender overlayRender) {
+    public void setOverlayRender (TilerOverlayRenderModule overlayRender) {
         this.overlayRender = overlayRender;
     }
 
@@ -33,6 +35,7 @@ public class RefreshStatusHandler {
             @Override
             public void run() {
                 if (trafficEnable && overlayRender != null) {
+                    Log.e("refresh", "render");
                     overlayRender.notifyDataChange();
                 }
             }

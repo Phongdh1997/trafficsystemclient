@@ -33,11 +33,11 @@ public class StatusRemoteRepository implements StatusRepositoryService {
     }
 
     @Override
-    public List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, int radiusInMeters) {
+    public List<StatusRenderData> loadStatusRenderData(UserLocation userLocation, int radiusInMeters, int level) {
         if (userLocation != null) {
             try {
                 Response<StatusResponse<List<StatusRenderData>>> response = apiService
-                        .getTrafficStatus(userLocation.getLatitude(), userLocation.getLongitude(), radiusInMeters)
+                        .getTrafficStatus(userLocation.getLatitude(), userLocation.getLongitude(), radiusInMeters, level)
                         .execute();
                 return response.body().getData();
             } catch (Exception e) {

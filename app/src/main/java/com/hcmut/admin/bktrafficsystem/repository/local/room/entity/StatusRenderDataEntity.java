@@ -32,6 +32,9 @@ public class StatusRenderDataEntity {
     @ColumnInfo(name = "endLng")
     public double endLng;
 
+    @ColumnInfo(name = "streetType")
+    public String streetType;
+
     public LatLng getStartLatlng () {
         return new LatLng(startLat, startLng);
     }
@@ -72,6 +75,7 @@ public class StatusRenderDataEntity {
                 entity.startLng = coord.get(0).get(0);
                 entity.endLat = coord.get(1).get(1);
                 entity.endLng = coord.get(1).get(0);
+                entity.streetType = data.getStreet().type;
                 entities.add(entity);
             } catch (Exception e) {
             }
