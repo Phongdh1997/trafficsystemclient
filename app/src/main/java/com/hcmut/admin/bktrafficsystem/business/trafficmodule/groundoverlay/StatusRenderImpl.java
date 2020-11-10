@@ -1,14 +1,14 @@
-package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay;
 
 import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 
-public class MatrixStatusRenderImpl extends StatusRender {
+public class StatusRenderImpl extends StatusRender {
     private GroundOverlayMatrix groundOverlayMatrix;
 
-    public MatrixStatusRenderImpl(GoogleMap googleMap, Context context) {
+    public StatusRenderImpl(GoogleMap googleMap, Context context) {
         super();
         groundOverlayMatrix = new GroundOverlayMatrix(googleMap, context);
     }

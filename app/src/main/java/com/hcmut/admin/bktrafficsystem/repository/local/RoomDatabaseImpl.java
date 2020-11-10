@@ -31,6 +31,16 @@ public class RoomDatabaseImpl implements RoomDatabaseService {
     }
 
     @Override
+    public List<StatusRenderDataEntity> getTrafficStatus(LatLngBounds bounds, String streetType) {
+        return statusRenderDataDAO.getStatusByBoundsAndStreetType(
+                bounds.northeast.latitude,
+                bounds.northeast.longitude,
+                bounds.southwest.latitude,
+                bounds.southwest.longitude,
+                streetType);
+    }
+
+    @Override
     public List<StatusRenderDataEntity> getTrafficStatus(LatLngBounds bounds) {
         return statusRenderDataDAO.getStatusByBounds(
                 bounds.northeast.latitude,

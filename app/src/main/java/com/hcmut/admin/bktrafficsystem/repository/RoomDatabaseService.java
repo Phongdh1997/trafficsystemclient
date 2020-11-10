@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface RoomDatabaseService {
     void insertTrafficStatus(List<StatusRenderDataEntity> datas);
+    List<StatusRenderDataEntity> getTrafficStatus(LatLngBounds bounds, String streetType);
     List<StatusRenderDataEntity> getTrafficStatus(LatLngBounds bounds);
     List<StatusRenderDataEntity> getTrafficStatus();
     void deleteAll();
