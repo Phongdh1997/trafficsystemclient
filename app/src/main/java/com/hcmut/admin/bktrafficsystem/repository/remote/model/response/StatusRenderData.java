@@ -37,6 +37,9 @@ public class StatusRenderData {
     @SerializedName("createdAt")
     @Expose
     private Date createdAt;
+    @SerializedName("street")
+    @Expose
+    private Street street;
 
     @NonNull
     @Override
@@ -78,6 +81,14 @@ public class StatusRenderData {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public void setStreet(Street street) {
+        this.street = street;
+    }
+
+    public Street getStreet() {
+        return street;
     }
 
     public void setCreatedAt(Date createdAt) {
@@ -240,6 +251,18 @@ public class StatusRenderData {
             } catch (Exception e) {
             }
             return "";
+        }
+    }
+
+    public static class Street {
+        @SerializedName("type")
+        @Expose
+        public String type;
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "streetType: " + type;
         }
     }
 

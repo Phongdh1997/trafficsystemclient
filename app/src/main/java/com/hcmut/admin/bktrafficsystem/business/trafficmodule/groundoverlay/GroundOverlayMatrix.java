@@ -7,6 +7,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficDataLoader;
 import com.hcmut.admin.bktrafficsystem.repository.local.room.entity.StatusRenderDataEntity;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,15 +77,14 @@ public class GroundOverlayMatrix {
      * @param tile
      */
     private void renderTile(final TileCoordinates tile) {
-        if (!render(tile)) {
-            trafficDataLoader.addTileLoadFinishListener(tile,
-                    new TrafficDataLoader.TileLoadFinishCallback() {
-                        @Override
-                        public void onSuccess(List<StatusRenderDataEntity> entities) {
-                            tileRenderHandler.render(tile, entities);
-                        }
-                    });
-        }
+        RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!render(tile)) {
+                    tileRenderHandler.render(tile, trafficDataLoader.loadTrafficDataFromServer(tile));
+                }
+            }
+        });
     }
 
     // load data from database

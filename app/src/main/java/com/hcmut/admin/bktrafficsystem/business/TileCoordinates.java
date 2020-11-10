@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.GroundOverlayMatrix;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.StatusRender;
 import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
@@ -12,6 +13,8 @@ import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class TileCoordinates {
+    public static int HCM_CITY_RADIUS = 28000;
+
     public final int x;
     public final int y;
     public final int z;
@@ -22,6 +25,25 @@ public class TileCoordinates {
         this.z = z;
     }
 
+    public static LatLngBounds getHCMCityLatLngBounds() {
+        return new LatLngBounds(new LatLng(10.661345, 106.555800), new LatLng(10.911957, 106.821473));
+    }
+
+    public static LatLng getHCMCityCenterPoint() {
+        LatLngBounds bounds = getHCMCityLatLngBounds();
+        return new LatLng(bounds.northeast.latitude - Math.abs(bounds.northeast.latitude - bounds.southwest.latitude) / 2,
+                bounds.northeast.longitude - Math.abs(bounds.northeast.longitude - bounds.southwest.longitude) / 2);
+    }
+
+    public static TileCoordinates getHCMCityTileCoordinates() {
+        try {
+            return TileCoordinates.getTileCoordinates(10, 10, 10);
+        } catch (TileCoordinatesNotValid tileCoordinatesNotValid) {
+            tileCoordinatesNotValid.printStackTrace();
+        }
+        return null;
+    }
+
     public static TileCoordinates getTileCoordinates(int x, int y, int z) throws TileCoordinatesNotValid {
         double maxHeight = Math.pow(2, z) - 1;
         if (x < 0 || y < 0 || x > maxHeight || y > maxHeight) {
@@ -30,20 +52,19 @@ public class TileCoordinates {
         return new TileCoordinates(x, y, z);
     }
 
-    public boolean isOutsideOfMatrix (TileCoordinates centerTile) {
+    public boolean isOutsideOfMatrix(TileCoordinates centerTile) {
         return !isInsideOfMatrix(centerTile);
     }
 
-    public boolean isInsideOfMatrix (TileCoordinates centerTile) {
+    public boolean isInsideOfMatrix(TileCoordinates centerTile) {
         return getNearLevel(centerTile) < (GroundOverlayMatrix.MATRIX_WIDTH / 2 + 1);
     }
 
     /**
-     *
      * @param googleMap
      * @return
      */
-    public static TileCoordinates getCenterTile (@NotNull GoogleMap googleMap) {
+    public static TileCoordinates getCenterTile(@NotNull GoogleMap googleMap) {
         try {
             LatLng target = googleMap.getCameraPosition().target;
             return MyLatLngBoundsUtil.getTileNumber(
@@ -57,11 +78,10 @@ public class TileCoordinates {
     }
 
     /**
-     *
      * @param tile
-     * @return  how far does this tile is to the given tile
+     * @return how far does this tile is to the given tile
      */
-    public int getNearLevel (@NotNull TileCoordinates tile) {
+    public int getNearLevel(@NotNull TileCoordinates tile) {
         if (x == tile.x) {
             return Math.abs(y - tile.y);
         } else {
@@ -75,10 +95,11 @@ public class TileCoordinates {
      * HIGH:        Tile is near centerTile 2 level
      * MEDIUM:      Tile is near centerTile 3 level
      * LOW: everything else
+     *
      * @param centerTile
      * @return
      */
-    public Priority getTilePriority (TileCoordinates centerTile) {
+    public Priority getTilePriority(TileCoordinates centerTile) {
         switch (getNearLevel(centerTile)) {
             case 0:
             case 1:

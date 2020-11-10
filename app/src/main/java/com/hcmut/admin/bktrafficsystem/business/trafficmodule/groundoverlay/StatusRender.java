@@ -36,17 +36,13 @@ public abstract class StatusRender {
 
     private synchronized TileCoordinates getCenterRenderTile (LatLng centerPoint) {
         try {
-            TileCoordinates currentTile = MyLatLngBoundsUtil.getTileNumber(
-                    centerPoint.latitude,
-                    centerPoint.longitude,
-                    TILE_ZOOM_LEVEL);
+            TileCoordinates currentTile = MyLatLngBoundsUtil
+                    .getTileNumber(centerPoint.latitude, centerPoint.longitude, TILE_ZOOM_LEVEL);
             if (lastCenterTile == null) {
                 lastCenterTile = currentTile;
                 return currentTile;
             }
-            Log.e("level", "" + currentTile.getNearLevel(lastCenterTile));
             if (currentTile.getNearLevel(lastCenterTile) > NEAR_LEVEL_TO_LOAD) {  // move to other tile
-                Log.e("move", "move to other tile");
                 lastCenterTile = currentTile;
                 return currentTile;
             } else {

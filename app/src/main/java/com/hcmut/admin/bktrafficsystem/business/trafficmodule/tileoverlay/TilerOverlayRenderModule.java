@@ -14,29 +14,18 @@ public class TilerOverlayRenderModule {
     private TileOverlay statusTileOverlay;
     private TrafficTileProvider trafficTileProvider;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
-    private DataLoadingState dataLoadingState;
 
     public TilerOverlayRenderModule(GoogleMap map, Context context) {
         trafficTileProvider = new TrafficTileProvider(context);
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(trafficTileProvider));
-
-        dataLoadingState = new DataLoadingState(new DataLoadingState.TileOverlayClearCallback() {
-            @Override
-            public void onClearTileCache() {
-                clearTileCache();
-            }
-        });
-        trafficTileProvider.setDataLoadingState(dataLoadingState);
     }
 
     /**
      * clear Tile Cache, current data source will be displayed
      */
     public synchronized void notifyDataChange() {
-        Log.e("test", "refresh");
         clearTileCache();
-        dataLoadingState.clear();
     }
 
     private void clearTileCache() {

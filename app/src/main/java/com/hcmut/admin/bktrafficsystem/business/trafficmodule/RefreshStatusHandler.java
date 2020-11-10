@@ -1,5 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.business.trafficmodule;
 
+import android.util.Log;
+
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TilerOverlayRenderModule;
 
 import java.util.Timer;
@@ -33,6 +35,7 @@ public class RefreshStatusHandler {
             @Override
             public void run() {
                 if (trafficEnable && overlayRender != null) {
+                    Log.e("refresh", "render");
                     overlayRender.notifyDataChange();
                 }
             }

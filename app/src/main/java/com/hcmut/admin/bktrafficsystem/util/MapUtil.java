@@ -9,11 +9,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.RoadsApi;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.SnappedPoint;
+import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.Cell;
 import com.hcmut.admin.bktrafficsystem.model.PlaceInfo;
@@ -260,5 +262,19 @@ public class MapUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Check if @tile is out @bounds or not
+     * @param tile
+     * @param bounds
+     * @return: true if @tile is out @bounds, else return false
+     */
+    public static boolean IsOutLatLngBounds(TileCoordinates tile, LatLngBounds bounds) {
+        LatLngBounds tileBounds = MyLatLngBoundsUtil.tileToLatLngBound(tile);
+        return tileBounds.southwest.latitude > bounds.northeast.latitude ||
+                tileBounds.northeast.latitude < bounds.southwest.latitude ||
+                tileBounds.southwest.longitude > bounds.northeast.longitude ||
+                tileBounds.northeast.longitude < bounds.southwest.longitude;
     }
 }
