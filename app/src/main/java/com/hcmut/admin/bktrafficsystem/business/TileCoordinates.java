@@ -31,8 +31,8 @@ public class TileCoordinates {
 
     public static LatLng getHCMCityCenterPoint() {
         LatLngBounds bounds = getHCMCityLatLngBounds();
-        return new LatLng(bounds.northeast.latitude + Math.abs(bounds.northeast.latitude - bounds.southwest.latitude) / 2,
-                bounds.northeast.longitude + Math.abs(bounds.northeast.longitude - bounds.southwest.longitude) / 2);
+        return new LatLng(bounds.northeast.latitude - Math.abs(bounds.northeast.latitude - bounds.southwest.latitude) / 2,
+                bounds.northeast.longitude - Math.abs(bounds.northeast.longitude - bounds.southwest.longitude) / 2);
     }
 
     public static TileCoordinates getHCMCityTileCoordinates() {

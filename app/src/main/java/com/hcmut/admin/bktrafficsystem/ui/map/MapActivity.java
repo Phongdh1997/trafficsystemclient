@@ -176,7 +176,7 @@ public class MapActivity extends AppCompatActivity implements
         onMapReadyListeners.clear();
         trafficRenderModule = new TrafficRenderModule(getApplicationContext(), mMap, mapFragment);
         trafficRenderModule.startStatusRenderTimer();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 13));
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {

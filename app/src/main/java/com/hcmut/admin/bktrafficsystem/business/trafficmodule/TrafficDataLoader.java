@@ -50,7 +50,14 @@ public class TrafficDataLoader {
         if (loadingTile == null) {
             return null;
         }
-        if (loadedTileManager.isNotLoaded(loadingTile)) {
+        final boolean isNotLoaded;
+        synchronized (this) {
+            isNotLoaded = loadedTileManager.isNotLoaded(loadingTile);
+            if (isNotLoaded) {
+                loadedTileManager.setLoadingTile(loadingTile);
+            }
+        }
+        if (isNotLoaded) {
             loadedTileManager.setLoadingTile(loadingTile);
             LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(loadingTile);
             UserLocation userLocation = new UserLocation(bounds.getCenter());
@@ -81,13 +88,19 @@ public class TrafficDataLoader {
      * Load data for one large area
      * @return
      */
-    public List<StatusRenderDataEntity> loadTrafficDataForHCMCityFromServer() {
+    public List<StatusRenderDataEntity> loadTrafficDataForHCMCityFromServer(TileCoordinates renderTile) {
         TileCoordinates loadingTile = TileCoordinates.getHCMCityTileCoordinates();
         if (loadingTile == null) {
             return null;
         }
-        if (loadedTileManager.isNotLoaded(loadingTile)) {
-            loadedTileManager.setLoadingTile(loadingTile);
+        final boolean isNotLoaded;
+        synchronized (this) {
+            isNotLoaded = loadedTileManager.isNotLoaded(loadingTile);
+            if (isNotLoaded) {
+                loadedTileManager.setLoadingTile(loadingTile);
+            }
+        }
+        if (isNotLoaded) {
             List<StatusRenderData> dataList = statusRepositoryService.loadStatusRenderData(
                     new UserLocation(TileCoordinates.getHCMCityCenterPoint()), TileCoordinates.HCM_CITY_RADIUS, 1);
             List<StatusRenderDataEntity> dataEntities = StatusRenderDataEntity.parseStatusRenderDataEntity(dataList);
@@ -108,30 +121,7 @@ public class TrafficDataLoader {
                 e.printStackTrace();
             }
         }
-        return roomDatabaseService.getTrafficStatus(TileCoordinates.getHCMCityLatLngBounds(), getStreetTypeName(1));
-    }
-
-    public void loadTrafficDataFromServerAsync(TileCoordinates tile) {
-        final TileCoordinates loadingTile = MyLatLngBoundsUtil.convertTile(tile, getLoadTileZoomLevel(tile));
-        if (loadingTile == null) {
-            return;
-        }
-        if (loadedTileManager.isNotLoaded(loadingTile)) {
-            loadedTileManager.setLoadingTile(loadingTile);
-            RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LatLngBounds bounds = MyLatLngBoundsUtil.tileToLatLngBound(loadingTile);
-                    UserLocation userLocation = new UserLocation(bounds.getCenter());
-                    List<StatusRenderData> dataList = statusRepositoryService
-                            .loadStatusRenderData(userLocation, getTileRadius(loadingTile), getStreetLevel(loadingTile));
-                    roomDatabaseService.insertTrafficStatus(
-                            StatusRenderDataEntity.parseStatusRenderDataEntity(dataList));
-                    loadedTileManager.setLoadedTile(loadingTile);
-                    Log.e("tile status", loadingTile.toString() + "loaded from server, " + userLocation.toString());
-                }
-            });
-        }
+        return roomDatabaseService.getTrafficStatus(MyLatLngBoundsUtil.tileToLatLngBound(renderTile), getStreetTypeName(1));
     }
 
     public List<StatusRenderDataEntity> loadDataFromLocal(TileCoordinates tile) {
