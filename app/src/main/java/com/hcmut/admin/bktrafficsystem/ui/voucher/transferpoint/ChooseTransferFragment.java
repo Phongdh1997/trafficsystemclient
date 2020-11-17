@@ -92,6 +92,15 @@ public class ChooseTransferFragment extends Fragment implements View.OnClickList
     public void onBackPress() {
         NavHostFragment.findNavController(ChooseTransferFragment.this).popBackStack();
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void setButtonChange(){
         txtChoose.addTextChangedListener(new TextWatcher() {
             @Override
@@ -125,7 +134,9 @@ public class ChooseTransferFragment extends Fragment implements View.OnClickList
                     public void onResponse(Call<BaseResponse<UserResponse>> call, Response<BaseResponse<UserResponse>> response) {
 
                         if (response.body() != null) {
+                            System.out.println(response.body());
                             if (response.body().getCode() == 200) {
+
                                 if (response.body().getData() != null) {
                                     UserResponse userResponse = response.body().getData();
                                     bundle.putString("id",userResponse.getId());

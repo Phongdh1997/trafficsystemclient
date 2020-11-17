@@ -90,7 +90,15 @@ public class ScanQRCode extends Fragment implements BarcodeReader.BarcodeReaderL
     public void onScannedMultiple(List<Barcode> barcodes) {
 
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
 

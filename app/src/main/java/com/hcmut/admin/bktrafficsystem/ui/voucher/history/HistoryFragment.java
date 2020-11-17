@@ -69,7 +69,15 @@ public class HistoryFragment extends Fragment implements DealAdapter.DealAdapter
         NavHostFragment.findNavController(HistoryFragment.this).popBackStack();
 
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -104,7 +104,15 @@ public class ResultFragment extends Fragment implements  MapActivity.OnBackPress
       listOfSearchedList.setAdapter(searchAdapter);
       getSearchVoucher(word);
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onBackPress() {
         NavHostFragment.findNavController(ResultFragment.this).popBackStack();

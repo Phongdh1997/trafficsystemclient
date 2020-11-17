@@ -41,7 +41,15 @@ public class QRVoucherFragment  extends Fragment implements View.OnClickListener
         return inflater.inflate(R.layout.fragment_qrcode, container, false);
 
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

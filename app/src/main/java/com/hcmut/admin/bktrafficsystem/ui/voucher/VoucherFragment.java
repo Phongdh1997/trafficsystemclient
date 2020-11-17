@@ -143,7 +143,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         View header = navigationView.getHeaderView(0);
         userImage = header.findViewById(R.id.userImage);
         userName = header.findViewById(R.id.userName);
-        userPoint = header.findViewById(R.id.userPoint);
+        userPoint = view.findViewById(R.id.toolbarPoint);
 
 
 
@@ -156,14 +156,8 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         listTopVoucher = new ArrayList<>();
         listTrendVoucher = new ArrayList<>();
         getVoucherInfo();
-        getTopVoucher();
-        getTrendVoucher();
-
-//        listVoucher.add(new VoucherResponse("1", "Giảm giá 1", 500,"sfsdf", new Date(),new Date(),"sdfsd",10));
-//        listVoucher.add(new Voucher(2, "Giảm giá 2", 600,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-//        listVoucher.add(new Voucher(3, "Giảm giá 3", 700,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-//        listVoucher.add(new Voucher(4, "Giảm giá 4", 800,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-//        listVoucher.add(new Voucher(5, "Giảm giá 5", 900,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
+//        getTopVoucher();
+//        getTrendVoucher();
 
         setUpViews();
         topAdapter = new TestVoucherAdapter(listTopVoucher,getContext(),VoucherFragment.this);
@@ -194,6 +188,16 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void addEvents() {
         // TODO: implement voucher feature here
     }
@@ -203,11 +207,16 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         NavHostFragment.findNavController(VoucherFragment.this).popBackStack();
     }
     private void flipImages(List<SliderResponse> images) {
-
+        System.out.println(images);
         for(int i=0;i<images.size();i++) {
             ImageView image = new ImageView(getContext());
             Picasso.get().load(images.get(i).getImage()).into(image);
             imageSlider.addView(image);
+        }
+        if(images.size()==0){
+            ImageView imageView = new ImageView(getContext());
+            imageView.setBackgroundResource(R.drawable.slide_default);
+            imageSlider.addView(imageView);
         }
 
         imageSlider.setFlipInterval(2000);
@@ -231,36 +240,6 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 
         navigationView.setNavigationItemSelectedListener(this);
 
-//        binding.navView.setNavigationItemSelectedListener(this);
-//
-//        View headerContainer = binding.navView.getHeaderView(0);
-//        circleImageView = headerContainer.findViewById(R.id.profile_image);
-//        circleImageView.setOnClickListener(this);
-//        TextView userName = headerContainer.findViewById(R.id.nameOfUser);
-//        userName.setText(LoginUtils.getInstance(this).getUserInfo().getName());
-//        TextView userEmail = headerContainer.findViewById(R.id.emailOfUser);
-//        userEmail.setText(LoginUtils.getInstance(this).getUserInfo().getEmail());
-//
-//        binding.included.content.listOfMobiles.setHasFixedSize(true);
-//        binding.included.content.listOfMobiles.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-//        binding.included.content.listOfMobiles.setItemAnimator(null);
-//
-//        binding.included.content.listOfLaptops.setHasFixedSize(true);
-//        binding.included.content.listOfLaptops.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-//        binding.included.content.listOfLaptops.setItemAnimator(null);
-//
-//        binding.included.content.historyList.setHasFixedSize(true);
-//        binding.included.content.historyList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-//        binding.included.content.historyList.setItemAnimator(null);
-//
-
-
-
-//        historyAdapter = new ProductAdapter(this, this);
-//
-//        if (historyIsDeleted) {
-//            binding.included.content.textViewHistory.setVisibility(View.GONE);
-//        }
     }
 
 
@@ -294,7 +273,6 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 
     }
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -322,51 +300,6 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private void getTopVoucher(){
-        RetrofitClient.getApiService().getTopVoucher()
-                .enqueue(new Callback<BaseResponse<List<VoucherResponse>>>() {
-                    @Override
-                    public void onResponse(Call<BaseResponse<List<VoucherResponse>>> call, Response<BaseResponse<List<VoucherResponse>>> response) {
-                        if (response.body() != null) {
-                            if (response.body().getData() != null) {
-                                List<VoucherResponse> voucherResponse = response.body().getData();
-                                listTopVoucher.clear();
-                                listTopVoucher.addAll(voucherResponse);
-                            } else {
-                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
-                            }
-                        } else {
-                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<BaseResponse<List<VoucherResponse>>> call, Throwable t) {
-                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
-                    }
-                });
-    }
-    private void getTrendVoucher(){
-        RetrofitClient.getApiService().getTrendVoucher()
-                .enqueue(new Callback<BaseResponse<List<VoucherResponse>>>() {
-                    @Override
-                    public void onResponse(Call<BaseResponse<List<VoucherResponse>>> call, Response<BaseResponse<List<VoucherResponse>>> response) {
-                        if (response.body() != null) {
-                            if (response.body().getData() != null) {
-                                List<VoucherResponse> voucherResponse = response.body().getData();
-                                listTrendVoucher.clear();
-                                listTrendVoucher.addAll(voucherResponse);
-                            } else {
-                                androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
-                            }
-                        } else {
-                            androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<BaseResponse<List<VoucherResponse>>> call, Throwable t) {
-                        androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");                    }
-                });
-    }
     private void getVoucherInfo(){
         RetrofitClient.getApiService().getInfoVoucher(SharedPrefUtils.getUser(getContext()).getAccessToken())
                 .enqueue(new Callback<BaseResponse<InfoVoucher>>() {
@@ -374,11 +307,26 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
                     public void onResponse(Call<BaseResponse<InfoVoucher>> call, Response<BaseResponse<InfoVoucher>> response) {
                         if (response.body() != null) {
                             if (response.body().getData() != null) {
+                                try {
+
+
                                 InfoVoucher voucherResponse = response.body().getData();
                                 userName.setText(voucherResponse.getName());
                                 userPoint.setText("Điểm: "+voucherResponse.getPoint());
+                                SharedPrefUtils.getUser(getContext()).setPoint(voucherResponse.getPoint());
+
+                                Picasso.get().load(SharedPrefUtils.getUser(getContext()).getImgUrl()).noFade().fit().into(userImage);
 
                                 flipImages(voucherResponse.getSlider());
+
+
+                                listTrendVoucher.clear();
+                                listTrendVoucher.addAll(voucherResponse.getListTrend());
+                                listTopVoucher.clear();
+                                listTopVoucher.addAll(voucherResponse.getListTop());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
                             } else {
                                 androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
@@ -396,3 +344,4 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 
 
 }
+

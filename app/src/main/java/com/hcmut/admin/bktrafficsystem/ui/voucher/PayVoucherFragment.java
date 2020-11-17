@@ -95,7 +95,15 @@ public class PayVoucherFragment extends Fragment implements View.OnClickListener
 
         getInfoPaymentVoucher(getArguments().getString("idVoucher"));
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onBackPress() {
         NavHostFragment.findNavController(PayVoucherFragment.this).popBackStack();
@@ -117,7 +125,7 @@ public class PayVoucherFragment extends Fragment implements View.OnClickListener
                                     Picasso.get().load(infoPayment.getImage()).noFade().fit().into(image);
                                 }
                             } else {
-                                androidExt.showNotifyDialog(getContext(), "Sô điểm không đủ để thanh toán", new ClickDialogListener.OK() {
+                                androidExt.showNotifyDialog(getContext(), "Sô điểm không đủ để thanh toán hoặc số lượng voucher đã hết", new ClickDialogListener.OK() {
                                     @Override
                                     public void onCLickOK() {
                                         onBackPress();

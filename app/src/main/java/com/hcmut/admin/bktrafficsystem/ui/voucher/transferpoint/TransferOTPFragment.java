@@ -125,6 +125,15 @@ public class TransferOTPFragment extends Fragment implements View.OnClickListene
     public void onBackPress() {
         NavHostFragment.findNavController(TransferOTPFragment.this).popBackStack();
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void getMessageAuthentication(){
         RetrofitClient.getApiService().getMessageAuthentication(SharedPrefUtils.getUser(getContext()).getAccessToken())
                 .enqueue(new Callback<BaseResponse>() {

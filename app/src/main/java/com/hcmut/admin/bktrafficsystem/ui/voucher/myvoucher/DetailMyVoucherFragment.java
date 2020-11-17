@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher.myvoucher;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,6 +98,15 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
     public void onBackPress() {
         NavHostFragment.findNavController(DetailMyVoucherFragment.this).popBackStack();
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void getDetailMyVoucher(String id){
         RetrofitClient.getApiService().getDetailMyVoucher(SharedPrefUtils.getUser(getContext()).getAccessToken(),id)
                 .enqueue(new Callback<BaseResponse<MyVoucherResponse>>() {
@@ -117,6 +127,7 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
                                 else{
                                     status.setText("Voucher đã được sử dụng");
                                     btnUse.setEnabled(false);
+                                    btnUse.setBackgroundColor(Color.GRAY);
                                 }
                                 if(myVoucherResponses.getVoucherResponse().getImage()!=null){
                                     Picasso.get().load(myVoucherResponses.getVoucherResponse().getImage()).noFade().fit().into(image);

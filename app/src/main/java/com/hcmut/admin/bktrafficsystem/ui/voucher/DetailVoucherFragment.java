@@ -108,7 +108,15 @@ public class DetailVoucherFragment extends Fragment implements MapActivity.OnBac
     public void onBackPress() {
         NavHostFragment.findNavController(DetailVoucherFragment.this).popBackStack();
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void getProductDetails() {
         // Receive the product object
 //        product = getIntent().getParcelableExtra(PRODUCT);

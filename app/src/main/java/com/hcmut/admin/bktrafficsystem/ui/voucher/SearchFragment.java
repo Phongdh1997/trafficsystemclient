@@ -223,6 +223,16 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        Intent intent = new Intent(getContext(), ResultActivity.class);
 //        // Send KEYWORD to ResultActivity

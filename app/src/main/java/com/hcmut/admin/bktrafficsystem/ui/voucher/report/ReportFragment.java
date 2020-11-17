@@ -82,7 +82,15 @@ public class ReportFragment extends Fragment implements MapActivity.OnBackPressC
         getReportVoucher();
 
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void getReportVoucher(){
         RetrofitClient.getApiService().getReportVoucher(SharedPrefUtils.getUser(getContext()).getAccessToken())
                 .enqueue(new Callback<BaseResponse<List<ReportResponseVoucher>>>() {

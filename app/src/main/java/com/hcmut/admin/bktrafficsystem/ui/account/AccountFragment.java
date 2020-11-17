@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.account;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.glide.GlideApp;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.VoucherFragment;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 /**
@@ -141,6 +143,8 @@ public class AccountFragment extends Fragment {
             public void onClick(View view) {
                 NavHostFragment.findNavController(AccountFragment.this)
                         .navigate(R.id.action_accountFragment_to_voucherFragment);
+//                Intent intent = new Intent(getContext(), VoucherFragment.class);
+//                startActivity(intent);
             }
         });
         try {

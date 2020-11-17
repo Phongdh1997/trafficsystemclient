@@ -111,6 +111,16 @@ public class MyVoucherFragment extends Fragment implements MyVoucherAdapter.Orde
     public void onBackPress() {
         NavHostFragment.findNavController(MyVoucherFragment.this).popBackStack();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void getMyVoucher(){
         RetrofitClient.getApiService().getMyVoucher(SharedPrefUtils.getUser(getContext()).getAccessToken())
                 .enqueue(new Callback<BaseResponse<List<MyVoucherResponse>>>() {

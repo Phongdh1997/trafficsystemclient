@@ -163,4 +163,14 @@ public class DetailDealFragment  extends Fragment implements MapActivity.OnBackP
         return inflater.inflate(R.layout.fragment_detail_deal, container, false);
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

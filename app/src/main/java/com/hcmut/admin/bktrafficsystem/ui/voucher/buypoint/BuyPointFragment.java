@@ -86,7 +86,15 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
     public void onBackPress() {
         NavHostFragment.findNavController(BuyPointFragment.this).popBackStack();
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

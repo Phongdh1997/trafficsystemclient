@@ -79,7 +79,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
         content = view.findViewById(R.id.contentTransfer);
         name.setText(getArguments().getString("name"));
         phone.setText(getArguments().getString("phone"));
-        point.setHint("Số dư có thể chuyển: "+getArguments().getInt("point")+ " điểm");
+        point.setHint("Số dư có thể chuyển: "+SharedPrefUtils.getUser(getContext()).getPoint()+ " điểm");
         Picasso.get().load(getArguments().getString("avatar")).noFade().fit().into(avatar);
 
         btnConfirm.setEnabled(false);
@@ -102,6 +102,15 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
     public void onBackPress() {
         NavHostFragment.findNavController(TransferPointFragment.this).popBackStack();
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void setButtonChange(){
         numberPoint.addTextChangedListener(new TextWatcher() {
             @Override
@@ -116,7 +125,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editable.toString().length()>0){
+                if(editable.toString().length()>0 && Integer.parseInt(editable.toString())<=SharedPrefUtils.getUser(getContext()).getPoint() && Integer.parseInt(editable.toString())>0){
                     btnConfirm.setEnabled(true);
                 }
                 else{

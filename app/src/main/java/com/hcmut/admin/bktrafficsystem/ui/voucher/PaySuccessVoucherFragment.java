@@ -44,6 +44,14 @@ public class PaySuccessVoucherFragment extends Fragment implements  View.OnClick
         btnReturn.setOnClickListener(this);
 
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ((MapActivity) getContext()).hideBottomNav();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
