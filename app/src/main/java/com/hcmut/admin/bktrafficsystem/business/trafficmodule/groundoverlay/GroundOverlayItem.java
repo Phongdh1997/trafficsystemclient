@@ -1,4 +1,4 @@
-package com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender;
+package com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -14,7 +14,7 @@ import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-public class GroundOverlayMatrixItem {
+public class GroundOverlayItem {
     public static final String LOADED_OVERLAY = "LOADED_OVERLAY";
     public static final String LOADING_OVERLAY = "LOADING_OVERLAY";
     public static final String INIT_OVERLAY = "INIT_OVERLAY";
@@ -24,7 +24,7 @@ public class GroundOverlayMatrixItem {
     private String state = INIT_OVERLAY;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public GroundOverlayMatrixItem () {}
+    public GroundOverlayItem() {}
 
     public void invalidate (@NotNull Bitmap bitmap, @NotNull TileCoordinates target, @NotNull final GoogleMap googleMap) {
         if (!state.equals(LOADED_OVERLAY)) {
@@ -41,7 +41,7 @@ public class GroundOverlayMatrixItem {
         }
     }
 
-    public void invalidate (@NotNull final Bitmap bitmap, @NotNull final TileCoordinates tileCoordinates, @NotNull final GroundOverlayMatrixItem idleMatrixItem) {
+    public void invalidate (@NotNull final Bitmap bitmap, @NotNull final TileCoordinates tileCoordinates, @NotNull final GroundOverlayItem idleMatrixItem) {
         if (!state.equals(LOADED_OVERLAY)) {
             final GroundOverlay idleOverlay = idleMatrixItem.getGroundOverlay();
             final BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);

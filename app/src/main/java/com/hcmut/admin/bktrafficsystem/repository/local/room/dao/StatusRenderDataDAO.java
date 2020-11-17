@@ -17,6 +17,11 @@ public interface StatusRenderDataDAO {
         "((:top > endLat AND endLat > :bot) AND (:left < endLng AND endLng < :right))")
     List<StatusRenderDataEntity> getStatusByBounds(double top, double right, double bot, double left);
 
+    @Query("SELECT * FROM status_render_data WHERE (streetType = :streetType) AND" +
+            "(((:top > startLat AND startLat > :bot) AND (:left < startLng AND startLng < :right)) OR " +
+            "((:top > endLat AND endLat > :bot) AND (:left < endLng AND endLng < :right)))")
+    List<StatusRenderDataEntity> getStatusByBoundsAndStreetType(double top, double right, double bot, double left, String streetType);
+
     @Query("SELECT * FROM status_render_data")
     List<StatusRenderDataEntity> getStatus();
 

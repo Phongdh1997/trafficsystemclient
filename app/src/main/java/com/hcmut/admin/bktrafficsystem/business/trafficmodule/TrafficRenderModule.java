@@ -7,10 +7,9 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.hcmut.admin.bktrafficsystem.business.GoogleMapMemoryManager;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.RefreshStatusHandler;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.MatrixStatusRenderImpl;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.statusrender.StatusRender;
-import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TilerOverlayRender;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.StatusRenderImpl;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.StatusRender;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay.TilerOverlayRenderModule;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,17 +20,17 @@ public class TrafficRenderModule {
      * external view
      */
     private GoogleMap gmaps;
-    private TilerOverlayRender tilerOverlayRender;
+    private TilerOverlayRenderModule tilerOverlayRenderModule;
     private GoogleMapMemoryManager mapMemoryManager;
     private RefreshStatusHandler refreshStatusHandler;
     private StatusRender statusRender;
 
     public TrafficRenderModule(Context context, @NonNull GoogleMap map, @NotNull SupportMapFragment mapFragment) {
         this.gmaps = map;
-        tilerOverlayRender = new TilerOverlayRender(gmaps, context);
+        tilerOverlayRenderModule = new TilerOverlayRenderModule(gmaps, context);
         mapMemoryManager = new GoogleMapMemoryManager(mapFragment);
         refreshStatusHandler = new RefreshStatusHandler();
-        statusRender = new MatrixStatusRenderImpl(gmaps, context);
+        statusRender = new StatusRenderImpl(gmaps, context);
         gmaps.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
@@ -39,7 +38,7 @@ public class TrafficRenderModule {
                 statusRender.onCameraMoving(gmaps);
             }
         });
-        refreshStatusHandler.setOverlayRender(tilerOverlayRender);
+        refreshStatusHandler.setOverlayRender(tilerOverlayRenderModule);
     }
 
     /**
