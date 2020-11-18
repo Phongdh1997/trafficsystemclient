@@ -1,22 +1,22 @@
 apply plugin: 'com.android.application'
 
 ext {
-    vName = "2.0.0"
+    vName = "2.0.2"
     packageName = 'com.hcmut.admin.bktrafficsystem'
     appicationName = 'Utraffic'
 }
 
 android {
-    compileSdkVersion 28
     dataBinding {
         enabled = true
     }
+    compileSdkVersion 29
     defaultConfig {
         multiDexEnabled true
         applicationId "com.hcmut.admin.bktrafficsystem"
         minSdkVersion 23
-        targetSdkVersion 28
-        versionCode 12
+        targetSdkVersion 29
+        versionCode 15
         versionName vName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
