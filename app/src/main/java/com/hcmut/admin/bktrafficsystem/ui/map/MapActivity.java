@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.ui.map;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -147,6 +149,14 @@ public class MapActivity extends AppCompatActivity implements
         if (gpsCollectionSwithValue) {
             GPSForegroundServiceHandler.initLocationService(this);
         }
+
+        AppForegroundService.toggleReportNoti(PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swNotifyAroundRef), true), getApplicationContext());
+
+        AppForegroundService.toggleDirectionNoti(PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swNotifyMoveRef), true), getApplicationContext());
 
         flFragment = findViewById(R.id.flFragment);
         bottomNavigation = findViewById(R.id.bottomNavigation);

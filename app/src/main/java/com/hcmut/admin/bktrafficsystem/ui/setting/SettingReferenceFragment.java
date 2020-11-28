@@ -2,6 +2,7 @@ package com.hcmut.admin.bktrafficsystem.ui.setting;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreference;
 
 import com.hcmut.admin.bktrafficsystem.R;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
 
@@ -31,7 +33,7 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         final Context activity = view.getContext();
@@ -64,7 +66,7 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
             swNotifyAroundRef.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-
+                    AppForegroundService.toggleReportNoti("true".equals(newValue.toString()), view.getContext());
                     return true;
                 }
             });
@@ -73,7 +75,7 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
             swNotifyMoveRef.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-
+                    AppForegroundService.toggleDirectionNoti("true".equals(newValue.toString()), view.getContext());
                     return true;
                 }
             });
