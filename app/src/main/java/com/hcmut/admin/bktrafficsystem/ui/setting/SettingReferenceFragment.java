@@ -15,6 +15,8 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
+import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
+import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 public class SettingReferenceFragment extends PreferenceFragmentCompat {
     SwitchPreference swGpsCollectionRef;
@@ -42,11 +44,15 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
                 swGpsCollectionRef.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        MapActivity mapActivity = (MapActivity) activity;
                         if ("true".equals(newValue.toString())) {
-                            GPSForegroundServiceHandler.initLocationService((MapActivity) activity);
-                        } else {
-                            GPSForegroundServiceHandler.stopLocationService(getContext());
+                            if (MapUtil.checkGPSTurnOn(mapActivity, MapActivity.androidExt)) {
+                                GPSForegroundServiceHandler.initLocationService(mapActivity);
+                                return true;
+                            }
+                            return false;
                         }
+                        GPSForegroundServiceHandler.stopLocationService(getContext());
                         return true;
                     }
                 });
