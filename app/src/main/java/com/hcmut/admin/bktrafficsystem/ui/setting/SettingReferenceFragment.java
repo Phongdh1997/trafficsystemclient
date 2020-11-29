@@ -34,6 +34,11 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
         swNotifyMoveRef = findPreference(getResources().getString(R.string.swNotifyMoveRef));
     }
 
+    private void setEnableNotificationOption(boolean value) {
+        swNotifyAroundRef.setEnabled(value);
+        swNotifyMoveRef.setEnabled(value);
+    }
+
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -48,11 +53,13 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
                         if ("true".equals(newValue.toString())) {
                             if (MapUtil.checkGPSTurnOn(mapActivity, MapActivity.androidExt)) {
                                 GPSForegroundServiceHandler.initLocationService(mapActivity);
+                                setEnableNotificationOption(true);
                                 return true;
                             }
                             return false;
                         }
                         GPSForegroundServiceHandler.stopLocationService(getContext());
+                        setEnableNotificationOption(false);
                         return true;
                     }
                 });
@@ -85,6 +92,10 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
                     return true;
                 }
             });
+        }
+
+        if (swGpsCollectionRef != null && !swGpsCollectionRef.isChecked()) {
+            setEnableNotificationOption(false);
         }
     }
 }
