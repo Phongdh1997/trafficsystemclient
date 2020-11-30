@@ -313,6 +313,7 @@ public class MapActivity extends AppCompatActivity implements
         clearActivity();
         mMap = null;
         androidExt = null;
+        AppForegroundService.path_id = null;
         super.onDestroy();
     }
 

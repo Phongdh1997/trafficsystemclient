@@ -34,6 +34,7 @@ public class AppForegroundService extends Service {
     }
 
     public static boolean isUpdateCurrentLocation() {
+        Log.e("path_id", "" + path_id);
         return ((path_id != null) && isDireactionNotiOn) || isReportNotiOn;
     }
 
