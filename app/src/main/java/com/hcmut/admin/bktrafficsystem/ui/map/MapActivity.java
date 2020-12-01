@@ -36,6 +36,7 @@ import com.google.android.libraries.places.api.Places;
 import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
+import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficRenderModule;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
@@ -44,6 +45,7 @@ import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
 import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.stepstone.apprating.listener.RatingDialogListener;
 import org.jetbrains.annotations.NotNull;
@@ -201,7 +203,13 @@ public class MapActivity extends AppCompatActivity implements
         onMapReadyListeners.clear();
         trafficRenderModule = new TrafficRenderModule(getApplicationContext(), mMap, mapFragment);
         trafficRenderModule.startStatusRenderTimer();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 13));
+        UserLocation latestLocation = SharedPrefUtils.getLatestLocation(getApplicationContext());
+        if (latestLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(latestLocation.getLatitude(), latestLocation.getLongitude()), 13));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 13));
+        }
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -314,6 +322,9 @@ public class MapActivity extends AppCompatActivity implements
         mMap = null;
         androidExt = null;
         AppForegroundService.path_id = null;
+        SharedPrefUtils.saveLatestLocation(
+                getApplicationContext(),
+                LocationCollectionManager.getInstance(getApplicationContext()).getLastUserLocation());
         super.onDestroy();
     }
 
