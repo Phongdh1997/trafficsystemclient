@@ -13,6 +13,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.Coord;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 import java.util.List;
@@ -51,7 +52,9 @@ public class SearchDirectionHandler {
                         Log.e("fad", response.toString());
                         progressDialog.dismiss();
                         try {
-                            List<Coord> directs = response.body().getData().get(0).getCoords();
+                            DirectRespose directRespose = response.body().getData().get(0);
+                            List<Coord> directs = directRespose.getCoords();
+                            AppForegroundService.path_id = directRespose.getPathId();
                             if (directs.size() > 1) {
                                 listener.onSuccess(directs);
                                 return;

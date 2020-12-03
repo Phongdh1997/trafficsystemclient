@@ -12,11 +12,13 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.business.SleepWakeupLocationService;
 import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.repository.remote.API.APIService;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import retrofit2.Call;
@@ -61,7 +63,7 @@ public class LocationCollectionManager {
         return lastUserLocation;
     }
 
-    public void getCurrentLocation (OnSuccessListener<Location> onSuccessListener) {
+    public void getCurrentLocation(OnSuccessListener<Location> onSuccessListener) {
         fusedLocationProviderClient.getLastLocation()
                 .addOnSuccessListener(onSuccessListener);
     }
@@ -102,14 +104,15 @@ public class LocationCollectionManager {
         if (lastUserLocation == null) return;
         String accessAuth = MapActivity.currentUser.getAccessToken();
         ReportRequest reportRequest = new ReportRequest(lastUserLocation, currUserLocation);
-        apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<Object>() {
+        reportRequest.checkUpdateCurrentLocation(context);
+        apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<BaseResponse<ReportResponse>>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
+            public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
                 Log.e("post GPS report", response.toString());
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+            public void onFailure(Call<BaseResponse<ReportResponse>> call, Throwable t) {
                 Log.e("post GPS report", "fail");
             }
         });
@@ -118,5 +121,38 @@ public class LocationCollectionManager {
     public boolean isGPSEnabled() {
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    /**
+     * query to stop notification to server
+     */
+    public void stopNotification() {
+        getCurrentLocation(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location == null && lastUserLocation == null) {
+                    return;
+                }
+                UserLocation userLocation;
+                if (location != null) {
+                    userLocation = new UserLocation(location);
+                } else {
+                    userLocation = lastUserLocation;
+                }
+                String accessAuth = MapActivity.currentUser.getAccessToken();
+                ReportRequest reportRequest = ReportRequest.getStopNotificationModel(userLocation, context);
+                apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<BaseResponse<ReportResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
+                        Log.e("post GPS report", response.toString());
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<ReportResponse>> call, Throwable t) {
+                        Log.e("post GPS report", "fail");
+                    }
+                });
+            }
+        });
     }
 }

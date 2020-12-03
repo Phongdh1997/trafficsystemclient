@@ -2,6 +2,7 @@ package com.hcmut.admin.bktrafficsystem.business;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -20,11 +21,24 @@ public class GPSForegroundServiceHandler {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 888;
     public static final int MUTILE_PERMISSION_REQUEST = 777;
+    public static final int LOCATION_PERMISSION_REQUEST = 666;
     private static final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
 
+    private static final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
+
     public GPSForegroundServiceHandler() {
+    }
+
+    public static boolean requireLocationPermission(Activity activity) {
+        // check Location permission
+        if (!hasPermisson(activity, locationPermissions)) {
+            ActivityCompat.requestPermissions(activity, locationPermissions, LOCATION_PERMISSION_REQUEST);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -48,6 +62,13 @@ public class GPSForegroundServiceHandler {
         } else {
             startLocationService(activity.getApplicationContext());
         }
+    }
+
+    public static boolean handleLocationPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            return (grantResults.length > 1) && (grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED);
+        }
+        return false;
     }
 
     public static boolean handleAppForgroundPermission(MapActivity activity, int requestCode, String[] permissions, int[] grantResults) {

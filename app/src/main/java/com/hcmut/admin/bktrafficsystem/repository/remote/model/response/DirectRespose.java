@@ -16,6 +16,10 @@ public class DirectRespose {
         return pathId;
     }
 
+    public void setPathId(String pathId) {
+        this.pathId = pathId;
+    }
+
     public int getDistance() {
         return distance;
     }

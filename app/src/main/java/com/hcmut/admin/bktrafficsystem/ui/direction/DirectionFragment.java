@@ -28,6 +28,7 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.MarkerCreating;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.Coord;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
@@ -238,6 +239,7 @@ public class DirectionFragment extends Fragment
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AppForegroundService.path_id = null;
                 removeMarker();
                 removeDirect();
                 NavHostFragment.findNavController(DirectionFragment.this).popBackStack();

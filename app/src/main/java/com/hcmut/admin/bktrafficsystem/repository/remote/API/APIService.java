@@ -20,7 +20,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -64,8 +63,8 @@ public interface APIService {
                                                          @Body ReportRequest reportRequest);
 
     @POST("api/report/segment/here")
-    Call<Object> postGPSTrafficReport(@Header("Authorization") String Authorization,
-                                      @Body ReportRequest reportRequest);
+    Call<BaseResponse<ReportResponse>> postGPSTrafficReport(@Header("Authorization") String Authorization,
+                                                            @Body ReportRequest reportRequest);
 
     @Headers("Content-Type: application/json")
     @POST("api/evaluation/add")
@@ -123,12 +122,12 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("api/notification/update-current-location")
-    Call<BaseResponse<PatchNotiResponse>> patchUserNoti(@Header("Authorization") String Authorization,
-                                                        @Field("token") String notiToken,
-                                                        @Field("lat") Double currentLat,
-                                                        @Field("lng") Double currentLng,
-                                                        @Field("active") String active,
-                                                        @Nullable @Field("path_id") String pathId);
+    Call<BaseResponse<PatchNotiResponse>> updateCurrentLocation(@Header("Authorization") String Authorization,
+                                                                @Field("token") String notiToken,
+                                                                @Field("lat") Double currentLat,
+                                                                @Field("lng") Double currentLng,
+                                                                @Field("active") String active,
+                                                                @Nullable @Field("path_id") String pathId);
 
     @GET("api/segment/direct")
     Call<BaseResponse<List<DirectRespose>>> getFindDirect(@Query("slat") double slat,
