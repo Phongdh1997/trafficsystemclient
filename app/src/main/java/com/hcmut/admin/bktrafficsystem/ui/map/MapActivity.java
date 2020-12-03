@@ -45,6 +45,7 @@ import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
 import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -70,7 +71,7 @@ public class MapActivity extends AppCompatActivity implements
 
     public static User currentUser;
     public static GoogleMap mMap;
-    public static AndroidExt androidExt = new AndroidExt();
+    public static AndroidExt androidExt;
     private Date pressTime;
     private TrafficRenderModule trafficRenderModule;
 
@@ -124,9 +125,12 @@ public class MapActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_map);
         myapp = (MyApplication) this.getApplicationContext();
         currentUser = SharedPrefUtils.getUser(MapActivity.this);
+        androidExt = new AndroidExt();
 
-        addCotrols();
-        addEvents();
+        if (GPSForegroundServiceHandler.requireLocationPermission(this)) {
+            addCotrols();
+            addEvents();
+        }
     }
 
     private void addCotrols() {
@@ -427,22 +431,39 @@ public class MapActivity extends AppCompatActivity implements
         switch (requestCode) {
             case GPSForegroundServiceHandler.MUTILE_PERMISSION_REQUEST:
                 GPSForegroundServiceHandler.handleAppForgroundPermission(MapActivity.this, requestCode, permissions, grantResults);
-                return;
+                break;
             case CallPhone.CALL_PHONE_CODE:
                 boolean isHavePermission = CallPhone.handleCallPhonePermission(grantResults);
                 if (isHavePermission) {
                     CallPhone.makeAPhoneCall(MapActivity.this);
                 }
-                return;
+                break;
             case PhotoUploader.IMAGE_PERMISSION_CODE:
                 Objects.requireNonNull(photoUploader).onRequestPermissionsResult(
                         requestCode,
                         permissions,
                         grantResults,
                         MapActivity.this);
-                return;
+                break;
+            case GPSForegroundServiceHandler.LOCATION_PERMISSION_REQUEST:
+                if (!GPSForegroundServiceHandler.handleLocationPermissionResult(requestCode, permissions, grantResults)) {
+                    androidExt.showNotifyDialog(
+                            MapActivity.this,
+                            "Ứng dụng sẽ tắt do không được cấp quyền truy cập vị trí, vui lòng thử lại!",
+                            new ClickDialogListener.OK() {
+                                @Override
+                                public void onCLickOK() {
+                                    MapActivity.this.finishAndRemoveTask();
+                                }
+                            });
+                } else {
+                    addCotrols();
+                    addEvents();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
