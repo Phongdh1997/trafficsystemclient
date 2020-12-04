@@ -38,6 +38,13 @@
             app:exitAnim="@anim/non_anim"
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/non_anim"/>
+        <action
+            android:id="@+id/action_accountFragment_to_userFeedback"
+            app:destination="@id/userFeedback"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/non_anim"/>
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -81,4 +88,9 @@
         android:id="@+id/guidingContentFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.guide.GuidingContentFragment"
         android:label="GuidingContentFragment" />
+    <fragment
+        android:id="@+id/userFeedback"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.userfeedback.UserFeedback"
+        android:label="fragment_user_feedback"
+        tools:layout="@layout/fragment_user_feedback" />
 </navigation>
