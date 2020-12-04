@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.repository.remote.API;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.RatingBody;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.AppVersionResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.NearSegmentResponse;
@@ -30,9 +31,16 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIService {
+    /**
+     *
+     */
+    @GET("/api/app-version/{id}")
+    Call<BaseResponse<AppVersionResponse>> getCurrentAppVersionInfo(@Path("id") String id);
+
     /**
      *
      */

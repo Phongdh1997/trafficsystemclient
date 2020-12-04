@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.map;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -37,6 +38,7 @@ import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
 import com.hcmut.admin.bktrafficsystem.business.UserLocation;
+import com.hcmut.admin.bktrafficsystem.business.VersionUpdater;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficRenderModule;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
@@ -127,6 +129,7 @@ public class MapActivity extends AppCompatActivity implements
         currentUser = SharedPrefUtils.getUser(MapActivity.this);
         androidExt = new AndroidExt();
 
+        VersionUpdater.checkNewVersion(this);
         if (GPSForegroundServiceHandler.requireLocationPermission(this)) {
             addCotrols();
             addEvents();
@@ -195,6 +198,7 @@ public class MapActivity extends AppCompatActivity implements
         });
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
