@@ -67,7 +67,15 @@ public class LocationCollectionManager {
     @SuppressLint("MissingPermission")
     public void getCurrentLocation(OnSuccessListener<Location> onSuccessListener) {
         fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(onSuccessListener);
+                .addOnSuccessListener(onSuccessListener)
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            lastUserLocation = new UserLocation(location.getLatitude(), location.getLongitude());
+                        }
+                    }
+                });
     }
 
     @SuppressLint("MissingPermission")

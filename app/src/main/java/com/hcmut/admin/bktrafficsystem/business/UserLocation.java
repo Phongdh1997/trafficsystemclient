@@ -56,6 +56,13 @@ public class UserLocation {
         this.timestamp = Calendar.getInstance().getTime();
     }
 
+    public static LatLng parseLatLng(UserLocation userLocation) {
+        if (userLocation == null) {
+            return null;
+        }
+        return new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+    }
+
     /**
      *
      * @param destLocation

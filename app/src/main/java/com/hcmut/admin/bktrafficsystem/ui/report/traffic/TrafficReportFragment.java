@@ -3,6 +3,7 @@ package com.hcmut.admin.bktrafficsystem.ui.report.traffic;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,6 +34,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
 import com.hcmut.admin.bktrafficsystem.business.TrafficReportPhotoUploader;
+import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.business.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
@@ -65,6 +69,7 @@ public class TrafficReportFragment extends Fragment implements
     private String mParam2;
 
     public static final int MAX_PHOTO_TOTAL = 4;
+    public static final double REPORT_RADIUS_LIMIT = 500;   // in meters
 
     private AutocompletePrediction searchPlaceResult;
     private LatLng selectedMapPoint;
@@ -88,6 +93,7 @@ public class TrafficReportFragment extends Fragment implements
     private List<Bitmap> imageBitmaps = new ArrayList<>();
     private PhotoUploader photoUploader;
     private ProgressDialog progressDialog;
+    private Circle circleReportLimit;
 
     private GoogleMap map;
 
@@ -178,6 +184,12 @@ public class TrafficReportFragment extends Fragment implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        removeCircleReportLimit();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -252,6 +264,7 @@ public class TrafficReportFragment extends Fragment implements
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     map = googleMap;
+                    drawCircleReportLimit(map, REPORT_RADIUS_LIMIT);
                 }
             });
             mapActivity.setMarkerListener(new MarkerListener() {
@@ -366,6 +379,31 @@ public class TrafficReportFragment extends Fragment implements
         });
     }
 
+    public void drawCircleReportLimit(GoogleMap map, double radius) {
+        removeCircleReportLimit();
+        LatLng center = UserLocation.parseLatLng(LocationCollectionManager.getInstance(getContext()).getLastUserLocation());
+        if (center != null) {
+            circleReportLimit = map.addCircle(new CircleOptions()
+                    .center(center)
+                    .radius(radius)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(8));
+        }
+    }
+
+    public void removeCircleReportLimit() {
+        if (circleReportLimit != null) {
+            circleReportLimit.remove();
+        }
+    }
+
+    public boolean isInCircleReportLimit(@NonNull LatLng point) {
+        UserLocation userLocation = LocationCollectionManager.getInstance(getContext()).getLastUserLocation();
+        UserLocation selectedLocation = new UserLocation(point);
+        return userLocation != null
+                && userLocation.distanceTo(selectedLocation) <= REPORT_RADIUS_LIMIT;
+    }
+
     public void clearReport() {
         searchInputView.handleBackAndClearView(false);
         reportSendingHandler.clear();
@@ -397,8 +435,12 @@ public class TrafficReportFragment extends Fragment implements
      */
     private void setReportLocation(LatLng latLng) {
         reportLatLng = latLng;
-        searchInputView.handleBackAndClearView(true);
-        reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);
+        if (isInCircleReportLimit(reportLatLng)) {
+            searchInputView.handleBackAndClearView(true);
+            reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);
+        } else {
+            MapActivity.androidExt.showMessageNoAction(getContext(), "Thông báo", "Điểm bạn chọn không nằm trong bán kính cho phép, vui lòng chọn lại điểm nằm trong đường tròn giới hạn");
+        }
     }
 
     @Override
