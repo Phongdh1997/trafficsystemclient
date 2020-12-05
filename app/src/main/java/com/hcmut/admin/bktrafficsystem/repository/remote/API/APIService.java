@@ -1,10 +1,12 @@
 package com.hcmut.admin.bktrafficsystem.repository.remote.API;
 
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.FeedbackRequest;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.RatingBody;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.AppVersionResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.FeedbackResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.NearSegmentResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PatchNotiResponse;
@@ -65,6 +67,10 @@ public interface APIService {
     @GET("api/traffic-status/get-status")
     Call<BaseResponse<List<TrafficStatusResponse>>> getVelocity(@Query("time") long date,
                                                                 @Query("segmentId") int segmentId);
+
+    @POST("api/feedback/create")
+    Call<BaseResponse<FeedbackResponse>> postUserFeedback(@Header("Authorization") String Authorization,
+                                                          @Body FeedbackRequest feedbackRequest);
 
     @POST("api/report/segment/here")
     Call<BaseResponse<ReportResponse>> postTrafficReport(@Header("Authorization") String Authorization,

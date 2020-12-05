@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -63,11 +64,13 @@ public class LocationCollectionManager {
         return lastUserLocation;
     }
 
+    @SuppressLint("MissingPermission")
     public void getCurrentLocation(OnSuccessListener<Location> onSuccessListener) {
         fusedLocationProviderClient.getLastLocation()
                 .addOnSuccessListener(onSuccessListener);
     }
 
+    @SuppressLint("MissingPermission")
     public void beginTraceLocation(Looper looper) {
         LocationRequest request = LocationRequest.create();
         request.setInterval(INTERVAL);
