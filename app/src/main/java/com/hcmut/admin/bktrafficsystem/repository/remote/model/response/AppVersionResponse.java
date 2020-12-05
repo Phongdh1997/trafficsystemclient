@@ -18,5 +18,5 @@ public class AppVersionResponse {
     public String version;
     @SerializedName("versionCode")
     @Expose
-    public String versionCode;
+    public int versionCode;
 }

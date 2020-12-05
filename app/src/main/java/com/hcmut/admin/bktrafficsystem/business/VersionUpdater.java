@@ -25,19 +25,23 @@ public class VersionUpdater {
                 .enqueue(new Callback<BaseResponse<AppVersionResponse>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<AppVersionResponse>> call, Response<BaseResponse<AppVersionResponse>> response) {
-                        int appVersionCode = BuildConfig.VERSION_CODE;
-                        int remoteVersionCode = 2;
-                        if (checkVersionCode(appVersionCode, remoteVersionCode)) {
-                            MapActivity.androidExt.showDialog(
-                                    activity,
-                                    "Cập nhật phần mềm",
-                                    "Phiên bản mới đã có sẵn, bạn có muốn cập nhật?",
-                                    new ClickDialogListener.Yes() {
-                                        @Override
-                                        public void onCLickYes() {
-                                            directToAppInCHPlay(activity);
-                                        }
-                                    });
+                        try {
+                            int appVersionCode = BuildConfig.VERSION_CODE;
+                            int remoteVersionCode = response.body().getData().versionCode;
+                            if (isOldVersionCode(appVersionCode, remoteVersionCode)) {
+                                MapActivity.androidExt.showDialog(
+                                        activity,
+                                        "Cập nhật phần mềm",
+                                        "Phiên bản mới đã có sẵn, bạn có muốn cập nhật?",
+                                        new ClickDialogListener.Yes() {
+                                            @Override
+                                            public void onCLickYes() {
+                                                directToAppInCHPlay(activity);
+                                            }
+                                        });
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -48,7 +52,7 @@ public class VersionUpdater {
                 });
     }
 
-    private static boolean checkVersionCode(int appVersionCode, int remoteVersionCode) {
+    private static boolean isOldVersionCode(int appVersionCode, int remoteVersionCode) {
         return appVersionCode < remoteVersionCode;
     }
 
