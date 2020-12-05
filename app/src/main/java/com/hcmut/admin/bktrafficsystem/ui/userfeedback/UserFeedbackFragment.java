@@ -15,15 +15,14 @@ import android.widget.TextView;
 
 import com.hcmut.admin.bktrafficsystem.BuildConfig;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UserFeedback#newInstance} factory method to
+ * Use the {@link UserFeedbackFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserFeedback extends Fragment implements MapActivity.OnBackPressCallback {
+public class UserFeedbackFragment extends Fragment implements MapActivity.OnBackPressCallback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,7 +36,7 @@ public class UserFeedback extends Fragment implements MapActivity.OnBackPressCal
     private ImageView imgBack;
     private TextView txtAppVersion;
 
-    public UserFeedback() {
+    public UserFeedbackFragment() {
         // Required empty public constructor
     }
 
@@ -50,8 +49,8 @@ public class UserFeedback extends Fragment implements MapActivity.OnBackPressCal
      * @return A new instance of fragment UserFeedback.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserFeedback newInstance(String param1, String param2) {
-        UserFeedback fragment = new UserFeedback();
+    public static UserFeedbackFragment newInstance(String param1, String param2) {
+        UserFeedbackFragment fragment = new UserFeedbackFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -93,13 +92,13 @@ public class UserFeedback extends Fragment implements MapActivity.OnBackPressCal
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(UserFeedback.this).popBackStack();
+                NavHostFragment.findNavController(UserFeedbackFragment.this).popBackStack();
             }
         });
     }
 
     @Override
     public void onBackPress() {
-        NavHostFragment.findNavController(UserFeedback.this).popBackStack();
+        NavHostFragment.findNavController(UserFeedbackFragment.this).popBackStack();
     }
 }

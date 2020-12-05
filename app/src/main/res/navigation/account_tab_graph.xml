@@ -90,7 +90,7 @@
         android:label="GuidingContentFragment" />
     <fragment
         android:id="@+id/userFeedback"
-        android:name="com.hcmut.admin.bktrafficsystem.ui.userfeedback.UserFeedback"
+        android:name="com.hcmut.admin.bktrafficsystem.ui.userfeedback.UserFeedbackFragment"
         android:label="fragment_user_feedback"
         tools:layout="@layout/fragment_user_feedback" />
 </navigation>
