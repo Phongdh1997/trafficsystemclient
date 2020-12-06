@@ -79,7 +79,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
         content = view.findViewById(R.id.contentTransfer);
         name.setText(getArguments().getString("name"));
         phone.setText(getArguments().getString("phone"));
-        point.setHint("Số dư có thể chuyển: "+SharedPrefUtils.getUser(getContext()).getPoint()+ " điểm");
+        point.setHint("Số dư có thể chuyển: "+getArguments().getInt("pointUser")+ " điểm");
         Picasso.get().load(getArguments().getString("avatar")).noFade().fit().into(avatar);
 
         btnConfirm.setEnabled(false);
@@ -125,7 +125,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editable.toString().length()>0 && Integer.parseInt(editable.toString())<=SharedPrefUtils.getUser(getContext()).getPoint() && Integer.parseInt(editable.toString())>0){
+                if(editable.toString().length()>0 && Integer.parseInt(editable.toString())<=getArguments().getInt("pointUser") && Integer.parseInt(editable.toString())>0){
                     btnConfirm.setEnabled(true);
                 }
                 else{

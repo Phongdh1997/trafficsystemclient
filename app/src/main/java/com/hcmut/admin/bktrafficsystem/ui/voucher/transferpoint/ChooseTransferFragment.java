@@ -144,6 +144,7 @@ public class ChooseTransferFragment extends Fragment implements View.OnClickList
                                     bundle.putString("name",userResponse.getName());
                                     bundle.putString("phone",userResponse.getPhoneNumber());
                                     bundle.putInt("point",userResponse.getPoint());
+                                    bundle.putInt("pointUser",getArguments().getInt("pointUser"));
                                     NavHostFragment.findNavController(ChooseTransferFragment.this)
                                             .navigate(R.id.action_chooseTransferFragment_to_transferPointFragment,bundle);
 

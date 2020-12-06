@@ -204,4 +204,8 @@ public interface APIService {
     @POST("api/voucher/confirmqrcode")
     @FormUrlEncoded
     Call<BaseResponse> confirmQRCode(@Header("Authorization") String Authorization,@Field("code") String code);
+
+    @POST("api/paymentrequest")
+    @FormUrlEncoded
+    Call<BaseResponse> paymentRequest(@Header("Authorization") String Authorization,@Field("token") String token,@Field("phone")String phone,@Field("order")String order,@Field("amount")int amount);
 }

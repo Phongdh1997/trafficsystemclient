@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +31,7 @@ import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.buypoint.BuyPointFragment;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import com.stepstone.apprating.listener.RatingDialogListener;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +42,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
+import vn.momo.momo_partner.AppMoMoLib;
 
 /**
  * Created by User on 10/2/2017.
@@ -63,6 +67,7 @@ public class MapActivity extends AppCompatActivity implements
     private PhotoUploader photoUploader;
 
     private SupportMapFragment mapFragment;
+    private BuyPointFragment buyPointFragment;
     private BottomTab bottomTab;
     private BottomNavigation bottomNavigation;
     private FrameLayout flFragment;
@@ -78,7 +83,9 @@ public class MapActivity extends AppCompatActivity implements
     public void setMarkerListener(MarkerListener markerListener) {
         this.markerListener = markerListener;
     }
-
+    public void setBuyPointFragment(BuyPointFragment buyPointFramgent) {
+        this.buyPointFragment = buyPointFramgent;
+    }
     public void addMapReadyCallback(@NotNull OnMapReadyListener onMapReadyListener) {
         if (mMap != null) {
             onMapReadyListener.onMapReady(mMap);
@@ -312,12 +319,17 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         switch (requestCode) {
             case PhotoUploader.IMAGE_REQUEST:
                 Objects.requireNonNull(photoUploader).onActivityResult(getApplicationContext(), resultCode, data);
                 return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == AppMoMoLib.getInstance().REQUEST_CODE_MOMO) {
+            buyPointFragment.onActivityResult(requestCode,resultCode,data);
+        }
+
     }
 
     @Override
@@ -371,4 +383,5 @@ public class MapActivity extends AppCompatActivity implements
     public interface OnBackPressCallback {
         void onBackPress();
     }
+
 }

@@ -58,11 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link VoucherFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class VoucherFragment extends Fragment implements MapActivity.OnBackPressCallback, TestVoucherAdapter.ProductAdapterOnClickHandler,View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -77,6 +73,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
     private CircleImageView userImage;
     private TextView userName;
     private TextView userPoint;
+    private  int point;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -281,8 +278,9 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
             NavHostFragment.findNavController(VoucherFragment.this)
                     .navigate(R.id.action_voucherFragment_to_MyVoucherFragment);
         } else if (id == R.id.nav_myAccount) {
+            bundle.putInt("pointUser", point);
             NavHostFragment.findNavController(VoucherFragment.this)
-                    .navigate(R.id.action_voucherFragment_to_ChooseTransferFragment);
+                    .navigate(R.id.action_voucherFragment_to_ChooseTransferFragment,bundle);
 
         } else if (id == R.id.nav_newsFeed) {
             NavHostFragment.findNavController(VoucherFragment.this)
@@ -313,8 +311,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
                                 InfoVoucher voucherResponse = response.body().getData();
                                 userName.setText(voucherResponse.getName());
                                 userPoint.setText("Điểm: "+voucherResponse.getPoint());
-                                SharedPrefUtils.getUser(getContext()).setPoint(voucherResponse.getPoint());
-
+                                point= voucherResponse.getPoint();
                                 Picasso.get().load(SharedPrefUtils.getUser(getContext()).getImgUrl()).noFade().fit().into(userImage);
 
                                 flipImages(voucherResponse.getSlider());
@@ -344,4 +341,5 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 
 
 }
+
 

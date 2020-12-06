@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher.scanqrcode;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -15,7 +16,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.gms.vision.barcode.Barcode;
+import com.budiyev.android.codescanner.CodeScanner;
+import com.budiyev.android.codescanner.CodeScannerView;
+import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.zxing.Result;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
@@ -28,14 +32,12 @@ import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import java.util.List;
 
-import info.androidhive.barcode.BarcodeReader;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ScanQRCode extends Fragment implements BarcodeReader.BarcodeReaderListener, MapActivity.OnBackPressCallback {
-    private static final String TAG = ScanQRCode.class.getSimpleName();
-    private BarcodeReader barcodeReader;
+public class ScanQRCode extends Fragment implements  MapActivity.OnBackPressCallback {
+
     AndroidExt androidExt = new AndroidExt();
     Toolbar toolbar;
     public ScanQRCode() {
@@ -48,17 +50,36 @@ public class ScanQRCode extends Fragment implements BarcodeReader.BarcodeReaderL
         if (getArguments() != null) {
         }
     }
+    private CodeScanner mCodeScanner;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        final Activity activity = getActivity();
+        View root = inflater.inflate(R.layout.fragment_barcode, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_barcode, container, false);
+        CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
+        mCodeScanner = new CodeScanner(activity, scannerView);
+        mCodeScanner.setDecodeCallback(new DecodeCallback() {
+            @Override
+            public void onDecoded(@NonNull final Result result) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        confirmQRCode(result.getText());
+                    }
+                });
+            }
+        });
+        scannerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCodeScanner.startPreview();
+            }
+        });
 
-        barcodeReader = (BarcodeReader) getChildFragmentManager().findFragmentById(R.id.barcode_fragment);
-        barcodeReader.setListener(this);
-
-        return view;
+        return root;
     }
 
     @Override
@@ -76,42 +97,19 @@ public class ScanQRCode extends Fragment implements BarcodeReader.BarcodeReaderL
                 onBackPress();
             }
         });
-    }
-
-    @Override
-    public void onScanned(Barcode barcode) {
-        if(barcode.displayValue!=null){
-            barcodeReader.pauseScanning();
-            confirmQRCode(barcode.displayValue);
-        }
-    }
-
-    @Override
-    public void onScannedMultiple(List<Barcode> barcodes) {
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        try {
-            ((MapActivity) getContext()).hideBottomNav();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    @Override
-    public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
-
+        mCodeScanner.startPreview();
     }
 
     @Override
-    public void onScanError(String errorMessage) {
-        Log.e(TAG, "onScanError: " + errorMessage);
-    }
-
-    @Override
-    public void onCameraPermissionDenied() {
-        Toast.makeText(getActivity(), "Camera permission denied!", Toast.LENGTH_LONG).show();
+    public void onPause() {
+        mCodeScanner.releaseResources();
+        super.onPause();
     }
     @Override
     public void onBackPress() {
@@ -130,7 +128,7 @@ public class ScanQRCode extends Fragment implements BarcodeReader.BarcodeReaderL
                                     androidExt.confirmQRScan(getContext(), "Sử dụng Voucher thành công", new ClickDialogListener.Yes() {
                                         @Override
                                         public void onCLickYes() {
-                                            barcodeReader.resumeScanning();
+                                            mCodeScanner.startPreview();
                                             return;
                                         }
                                     }, new ClickDialogListener.No() {
@@ -144,7 +142,7 @@ public class ScanQRCode extends Fragment implements BarcodeReader.BarcodeReaderL
                                     androidExt.confirmQRScan(getContext(), "Voucher không tồn tại hoặc đã được sử dụng", new ClickDialogListener.Yes() {
                                         @Override
                                         public void onCLickYes() {
-                                            barcodeReader.resumeScanning();
+                                            mCodeScanner.startPreview();
                                             return;
                                         }
                                     }, new ClickDialogListener.No() {
