@@ -198,6 +198,12 @@ public class MapActivity extends AppCompatActivity implements
         });
     }
 
+    public void setTrafficEnable(boolean isEnable) {
+        if (trafficRenderModule != null) {
+            trafficRenderModule.setTrafficEnable(isEnable);
+        }
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {

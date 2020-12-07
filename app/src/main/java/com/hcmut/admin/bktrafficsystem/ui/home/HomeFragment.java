@@ -1,15 +1,19 @@
 package com.hcmut.admin.bktrafficsystem.ui.home;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -54,6 +58,7 @@ public class HomeFragment extends Fragment
     private FloatingActionButton btnDirect;
     private SearchInputView searchInputView;
     private FloatingActionButton btnCurrentLocation;
+    private AppCompatToggleButton btnToggleRender;
 
     private MarkerCreating searchMarkerCreating;
 
@@ -149,6 +154,7 @@ public class HomeFragment extends Fragment
         btnDirect = view.findViewById(R.id.btnDirect);
         searchInputView = view.findViewById(R.id.searchInputView);
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation);
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
         addEvents();
     }
 
@@ -209,6 +215,18 @@ public class HomeFragment extends Fragment
                                     }
                                 }
                             });
+                }
+            }
+        });
+        btnToggleRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+                    ((MapActivity)getContext()).setTrafficEnable(true);
+                } else {
+                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+                    ((MapActivity)getContext()).setTrafficEnable(false);
                 }
             }
         });

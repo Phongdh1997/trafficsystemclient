@@ -36,4 +36,8 @@ public class TilerOverlayRenderModule {
             }
         });
     }
+
+    public void setTrafficEnable(boolean isEnable) {
+        statusTileOverlay.setVisible(isEnable);
+    }
 }
