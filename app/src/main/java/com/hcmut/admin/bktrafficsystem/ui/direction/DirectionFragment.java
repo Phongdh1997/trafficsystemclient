@@ -8,11 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -36,6 +38,7 @@ import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallb
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,6 +57,7 @@ public class DirectionFragment extends Fragment
     private String mParam1;
     private String mParam2;
 
+    private AppCompatToggleButton btnToggleRender;
     private AutoCompleteTextView txtBeginAddress;
     private AutoCompleteTextView txtEndAddress;
     private AppCompatImageButton btnBack;
@@ -215,6 +219,7 @@ public class DirectionFragment extends Fragment
 
         btnDistance = view.findViewById(R.id.btnDistance);
         btnTime = view.findViewById(R.id.btnTime);
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
 
         addEvents();
     }
@@ -255,6 +260,19 @@ public class DirectionFragment extends Fragment
             @Override
             public void onClick(View view) {
                 onTimeButtonClick();
+            }
+        });
+
+        btnToggleRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+                    ((MapActivity)getContext()).setTrafficEnable(true);
+                } else {
+                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+                    ((MapActivity)getContext()).setTrafficEnable(false);
+                }
             }
         });
     }

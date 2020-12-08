@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -94,6 +96,7 @@ public class TrafficReportFragment extends Fragment implements
     private PhotoUploader photoUploader;
     private ProgressDialog progressDialog;
     private Circle circleReportLimit;
+    private AppCompatToggleButton btnToggleRender;
 
     private GoogleMap map;
 
@@ -193,6 +196,7 @@ public class TrafficReportFragment extends Fragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
         btnYourLocation = view.findViewById(R.id.btnYourLocation);
         btnChooseOnMap = view.findViewById(R.id.btnChooseOnMap);
         searchInputView = view.findViewById(R.id.searchInputView);
@@ -375,6 +379,19 @@ public class TrafficReportFragment extends Fragment implements
                         Arrays.asList(snReason.getSelectedItem().toString()),
                         txtNote.getText().toString(),
                         images);
+            }
+        });
+
+        btnToggleRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+                    ((MapActivity)getContext()).setTrafficEnable(true);
+                } else {
+                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+                    ((MapActivity)getContext()).setTrafficEnable(false);
+                }
             }
         });
     }
