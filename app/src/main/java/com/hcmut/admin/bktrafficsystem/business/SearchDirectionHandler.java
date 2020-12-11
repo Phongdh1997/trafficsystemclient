@@ -53,10 +53,8 @@ public class SearchDirectionHandler {
                         progressDialog.dismiss();
                         try {
                             DirectRespose directRespose = response.body().getData().get(0);
-                            List<Coord> directs = directRespose.getCoords();
-                            AppForegroundService.path_id = directRespose.getPathId();
-                            if (directs.size() > 1) {
-                                listener.onSuccess(directs);
+                            if (directRespose.getCoords().size() > 1) {
+                                listener.onSuccess(directRespose);
                                 return;
                             }
                         } catch (Exception e) {}
@@ -71,7 +69,7 @@ public class SearchDirectionHandler {
     }
 
     public interface DirectResultCallback {
-        void onSuccess(List<Coord> directs);
+        void onSuccess(DirectRespose directRespose);
         void onHaveNoData();
         void onFail();
     }

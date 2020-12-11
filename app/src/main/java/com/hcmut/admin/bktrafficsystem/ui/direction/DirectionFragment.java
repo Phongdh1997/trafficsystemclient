@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.direction;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.MarkerCreating;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.Coord;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
 import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
@@ -75,6 +77,7 @@ public class DirectionFragment extends Fragment
 
     private MarkerCreating beginMarkerCreating;
     private MarkerCreating endMarkerCreating;
+    private MarkerCreating directInfoMarker;    // for time and distance show
     private GoogleMap map;
     private List<Polyline> directPolylines = new ArrayList<>();
 
@@ -156,8 +159,8 @@ public class DirectionFragment extends Fragment
                     isTimeDirectionSelected,
                     new SearchDirectionHandler.DirectResultCallback() {
                         @Override
-                        public void onSuccess(List<Coord> directs) {
-                            renderDirection(directs);
+                        public void onSuccess(DirectRespose directRespose) {
+                            renderDirection(directRespose);
                         }
 
                         @Override
@@ -320,30 +323,43 @@ public class DirectionFragment extends Fragment
                 .navigate(R.id.action_directionFragment_to_searchPlaceFragment, bundle);
     }
 
-    private void createMarker(LatLng beginLatLng, LatLng endLatLng) {
+    private void createMarker(LatLng beginLatLng, LatLng endLatLng, LatLng directInfoLatLng, String directInfoTitle) {
         removeMarker();
         beginMarkerCreating = new MarkerCreating(beginLatLng);
         endMarkerCreating = new MarkerCreating(endLatLng);
+        directInfoMarker = new MarkerCreating(directInfoLatLng);
         beginMarkerCreating.createMarker(getContext(), map, R.drawable.ic_start_location_marker, false, false);
         endMarkerCreating.createMarker(getContext(), map, R.drawable.ic_stop_location_marker, false, false);
+        directInfoMarker.createMarker(getContext(), map, R.drawable.ic_dot, false, false, directInfoTitle);
     }
 
-    private void renderDirection(List<Coord> directs) {
+    @SuppressLint("DefaultLocale")
+    private void renderDirection(DirectRespose directRespose) {
+        List<Coord> directs = directRespose.getCoords();
+        AppForegroundService.path_id = directRespose.getPathId();
+
+        // render direct to map
         LatLng beginLatLng = new LatLng(directs.get(0).getLat(), directs.get(0).getLng());
         LatLng endLatLng = new LatLng(directs.get(directs.size() - 1).getLat(), directs.get(directs.size() - 1).getLng());
-        createMarker(beginLatLng, endLatLng);
+        LatLng directInfoLatLng = new LatLng(directs.get(directs.size() / 2).getLat(), directs.get(directs.size() / 2).getLng());
+        String directInfoTitle = String.format("%d phút (%d km)", (int)Math.round(directRespose.getTime()), directRespose.getDistance());
+        createMarker(beginLatLng, endLatLng, directInfoLatLng, directInfoTitle);
         removeDirect();
-        for (int i = 0; i < directs.size() - 1; i++) {
-            LatLng start = new LatLng(directs.get(i).getLat(), directs.get(i).getLng());
-            LatLng end = new LatLng(directs.get(i + 1).getLat(), directs.get(i + 1).getLng());
+        LatLng start;
+        LatLng end;
+        String color;
+        for (int i = 0; i < directs.size(); i++) {
             try {
+                start = new LatLng(directs.get(i).getLat(), directs.get(i).getLng());
+                end = new LatLng(directs.get(i).geteLat(), directs.get(i).geteLng());
+                color = directs.get(i).getStatus().color;
                 directPolylines.add(map.addPolyline(
                         new PolylineOptions().add(
                                 start,
                                 end
-                        ).width(5).geodesic(true)
+                        ).width(10).geodesic(true)
                                 .clickable(true)
-                                .color(Color.BLUE)
+                                .color(Color.parseColor(color))
                 ));
             } catch (Exception e) {}
         }
@@ -353,6 +369,7 @@ public class DirectionFragment extends Fragment
                 .build();
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         map.animateCamera(cu);
+        btnToggleRender.setChecked(false);
     }
 
     private void removeDirect() {
@@ -370,6 +387,9 @@ public class DirectionFragment extends Fragment
         }
         if (endMarkerCreating != null) {
             endMarkerCreating.removeMarker();
+        }
+        if (directInfoMarker != null) {
+            directInfoMarker.removeMarker();
         }
     }
 

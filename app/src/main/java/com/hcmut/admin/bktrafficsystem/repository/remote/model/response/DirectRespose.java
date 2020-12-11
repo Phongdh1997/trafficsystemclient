@@ -9,6 +9,8 @@ public class DirectRespose {
     private String pathId;
     @SerializedName("distance")
     private int distance;
+    @SerializedName("time")
+    private double time;
     @SerializedName("coords")
     private List<Coord> coords;
 
@@ -34,5 +36,13 @@ public class DirectRespose {
 
     public void setCoords(List<Coord> coords) {
         this.coords = coords;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
     }
 }
