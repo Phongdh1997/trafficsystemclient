@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -96,7 +97,7 @@ public class TrafficReportFragment extends Fragment implements
     private PhotoUploader photoUploader;
     private ProgressDialog progressDialog;
     private Circle circleReportLimit;
-    private AppCompatToggleButton btnToggleRender;
+    private AppCompatButton btnToggleRender;
 
     private GoogleMap map;
 
@@ -138,7 +139,9 @@ public class TrafficReportFragment extends Fragment implements
             handleSearchResult();
         } else {
             try {
-                ((MapActivity) getContext()).hideBottomNav();
+                MapActivity mapActivity = ((MapActivity) getContext());
+                mapActivity.hideBottomNav();
+                updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -382,18 +385,23 @@ public class TrafficReportFragment extends Fragment implements
             }
         });
 
-        btnToggleRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
-                    ((MapActivity)getContext()).setTrafficEnable(true);
-                } else {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
-                    ((MapActivity)getContext()).setTrafficEnable(false);
-                }
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
             }
         });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     public void drawCircleReportLimit(GoogleMap map, double radius) {

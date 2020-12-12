@@ -76,6 +76,7 @@ public class MapActivity extends AppCompatActivity implements
     public static AndroidExt androidExt;
     private Date pressTime;
     private TrafficRenderModule trafficRenderModule;
+    private boolean isRenderStatus = true;
 
     // Listener
     private ViewReportFragment.OnReportMakerClick reportMakerClickListener;
@@ -107,6 +108,10 @@ public class MapActivity extends AppCompatActivity implements
         } else {
             onMapReadyListeners.add(onMapReadyListener);
         }
+    }
+
+    public boolean isRenderStatus() {
+        return isRenderStatus;
     }
 
     public void setRatingDialogListener(RatingDialogListener ratingDialogListener) {
@@ -200,6 +205,7 @@ public class MapActivity extends AppCompatActivity implements
 
     public void setTrafficEnable(boolean isEnable) {
         if (trafficRenderModule != null) {
+            isRenderStatus = isEnable;
             trafficRenderModule.setTrafficEnable(isEnable);
         }
     }

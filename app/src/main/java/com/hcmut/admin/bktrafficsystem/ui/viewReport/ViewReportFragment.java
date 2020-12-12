@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -68,7 +69,7 @@ public class ViewReportFragment extends Fragment {
     private ViewReportHandler viewReportHandler;
     private ArrayList<Marker> userReportMarker = new ArrayList<>();
     private SegmentData selectedSegment;
-    private AppCompatToggleButton btnToggleRender;
+    private AppCompatButton btnToggleRender;
 
     private GoogleMap.InfoWindowAdapter infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
         @Override
@@ -210,18 +211,23 @@ public class ViewReportFragment extends Fragment {
                 updateUI();
             }
         });
-        btnToggleRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
-                    ((MapActivity)getContext()).setTrafficEnable(true);
-                } else {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
-                    ((MapActivity)getContext()).setTrafficEnable(false);
-                }
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
             }
         });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     private void showSelectedUserReport(String [] datas) {
@@ -289,6 +295,13 @@ public class ViewReportFragment extends Fragment {
                 imgBack.setVisibility(View.GONE);
                 showBottomNav();
             }
+        }
+
+        try {
+            MapActivity mapActivity = (MapActivity) getContext();
+            updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

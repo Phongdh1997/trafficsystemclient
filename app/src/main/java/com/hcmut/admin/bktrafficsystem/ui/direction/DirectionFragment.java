@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.fragment.app.Fragment;
@@ -59,7 +60,7 @@ public class DirectionFragment extends Fragment
     private String mParam1;
     private String mParam2;
 
-    private AppCompatToggleButton btnToggleRender;
+    private AppCompatButton btnToggleRender;
     private AutoCompleteTextView txtBeginAddress;
     private AutoCompleteTextView txtEndAddress;
     private AppCompatImageButton btnBack;
@@ -116,7 +117,9 @@ public class DirectionFragment extends Fragment
     public void onResume() {
         super.onResume();
         try {
-            ((MapActivity) getContext()).hideBottomNav();
+            MapActivity mapActivity = ((MapActivity) getContext());
+            mapActivity.hideBottomNav();
+            updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -266,18 +269,23 @@ public class DirectionFragment extends Fragment
             }
         });
 
-        btnToggleRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
-                    ((MapActivity)getContext()).setTrafficEnable(true);
-                } else {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
-                    ((MapActivity)getContext()).setTrafficEnable(false);
-                }
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
             }
         });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     private void onTimeButtonClick() {
@@ -369,7 +377,6 @@ public class DirectionFragment extends Fragment
                 .build();
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         map.animateCamera(cu);
-        btnToggleRender.setChecked(false);
     }
 
     private void removeDirect() {

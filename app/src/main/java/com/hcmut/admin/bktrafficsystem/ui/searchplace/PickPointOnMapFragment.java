@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -46,7 +47,7 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
     private ImageView imgBack;
     private TextView btnOk;
     private TextView middlePoint;
-    private AppCompatToggleButton btnToggleRender;
+    private AppCompatButton btnToggleRender;
 
     private GoogleMap map;
 
@@ -85,7 +86,9 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
     public void onResume() {
         super.onResume();
         try {
-            ((MapActivity) getContext()).hideBottomNav();
+            MapActivity mapActivity = ((MapActivity) getContext());
+            mapActivity.hideBottomNav();
+            updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,18 +140,23 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
                 NavHostFragment.findNavController(PickPointOnMapFragment.this).popBackStack();
             }
         });
-        btnToggleRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
-                    ((MapActivity)getContext()).setTrafficEnable(true);
-                } else {
-                    btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
-                    ((MapActivity)getContext()).setTrafficEnable(false);
-                }
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
             }
         });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     private void handleGetPointOnMap() {
