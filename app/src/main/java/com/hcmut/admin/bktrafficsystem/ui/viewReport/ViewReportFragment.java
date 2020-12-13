@@ -222,7 +222,7 @@ public class ViewReportFragment extends Fragment {
         });
     }
 
-    private void updateRenderStatusOptionBackground(boolean isEnable) {
+    public void updateRenderStatusOptionBackground(boolean isEnable) {
         if (isEnable) {
             btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
         } else {
