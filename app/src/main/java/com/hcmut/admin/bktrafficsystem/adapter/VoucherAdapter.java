@@ -6,236 +6,163 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.paging.PagedList;
-import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
 import com.hcmut.admin.bktrafficsystem.R;
-import com.hcmut.admin.bktrafficsystem.databinding.VoucherListItemBinding;
 import com.hcmut.admin.bktrafficsystem.model.Voucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.VoucherResponse;
+import com.squareup.picasso.Picasso;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
-public class VoucherAdapter extends PagedListAdapter<Voucher, VoucherAdapter.VoucherViewHolder> {
+//public class TestVoucherAdapter extends BaseAdapter {
+////    final ArrayList<Voucher> listVoucher;
+////
+////    public TestVoucherAdapter(ArrayList<Voucher> listVoucher) {
+////        this.listVoucher = listVoucher;
+////    }
+////
+////    @Override
+////    public int getCount() {
+////        //Trả về tổng số phần tử, nó được gọi bởi ListView
+////        return listVoucher.size();
+////    }
+////
+////    @Override
+////    public Object getItem(int position) {
+////        //Trả về dữ liệu ở vị trí position của Adapter, tương ứng là phần tử
+////        //có chỉ số position trong listProduct
+////        return listVoucher.get(position);
+////    }
+////
+////    @Override
+////    public long getItemId(int position) {
+////        //Trả về một ID của phần
+////        return listVoucher.get(position).getVoucherId();
+////    }
+////
+////    @Override
+////    public View getView(int i, View view, ViewGroup viewGroup) {
+////
+////        View viewProduct;
+////        if (view == null) {
+////            viewProduct = View.inflate(viewGroup.getContext(), R.layout.voucher_list_item, null);
+////        } else viewProduct = view;
+////
+////        //Bind sữ liệu phần tử vào View
+////        Voucher voucher = (Voucher) getItem(i);
+////        String voucherName = voucher.getVoucherName();
+////        ((TextView) viewProduct.findViewById(R.id.txtVoucherName)).setText(voucherName);
+////
+////        DecimalFormat formatter = new DecimalFormat("#,###,###");
+////        String formattedPrice = formatter.format(voucher.getVoucherValue());
+////        ((TextView) viewProduct.findViewById(R.id.txtVoucherValue)).setText(formattedPrice+" điểm");
+////        ((ImageView) viewProduct.findViewById(R.id.imgVoucherImage)).setImageResource(R.drawable.voucher1);
+////
+////        // Load the Product image into ImageView
+//////        String imageUrl =voucher.getVoucherImage().replaceAll("\\\\", "/");
+//////        Glide.with()
+//////                .load(imageUrl)
+//////                .into(holder.binding.imgVoucherImage);
+//////
+//////        Log.d("imageUrl", imageUrl);
+////
+////
+////        return viewProduct;
+////    }
+////
+////
+////}
+public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.ViewHolder> {
+
+    final ArrayList<VoucherResponse> listVoucher;
     private Context mContext;
-    public static Voucher voucher;
-//    private AddFavoriteViewModel addFavoriteViewModel;
-//    private RemoveFavoriteViewModel removeFavoriteViewModel;
-//    private ToCartViewModel toCartViewModel;
-//    private FromCartViewModel fromCartViewModel;
-//    private ToHistoryViewModel toHistoryViewModel;
+    private ProductAdapterOnClickHandler clickHandler;
+    public interface ProductAdapterOnClickHandler {
+        void onClick(VoucherResponse voucher);
+    }
 
-    // Create a final private MovieAdapterOnClickHandler called mClickHandler
-    private VoucherAdapterOnClickHandler clickHandler;
 
+    public VoucherAdapter(ArrayList<VoucherResponse> listVoucher, Context mContext,ProductAdapterOnClickHandler clickHandler) {
+        super();
+
+        this.listVoucher = listVoucher;
+        this.mContext = mContext;
+        this.clickHandler=clickHandler;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        View voucherView =
+                inflater.inflate(R.layout.voucher_list_vertical, parent, false);
+
+        ViewHolder viewHolder = new ViewHolder(voucherView);
+        return viewHolder;
+
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        VoucherResponse voucher = listVoucher.get(position);
+        holder.voucherName.setText(voucher.getName());
+        holder.voucherValue.setText(voucher.getValue()+" điểm");
+        if(voucher.getImage()==null) {
+            holder.imageView.setImageResource(R.drawable.voucher1);
+        }else{
+            Picasso.get().load(voucher.getImage()).noFade().fit().into(holder.imageView);
+        }
+    }
+
+
+
+
+
+    @Override
+    public int getItemCount() {
+        return listVoucher.size();
+    }
 
     /**
-     * The interface that receives onClick messages.
+     * Lớp nắm giữ cấu trúc view
      */
-    public interface VoucherAdapterOnClickHandler {
-        void onClick(Voucher voucher);
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public VoucherAdapter(Context mContext) {
-        super(DIFF_CALLBACK);
-        this.mContext = mContext;
-//        this.clickHandler = clickHandler;
-//        addFavoriteViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(AddFavoriteViewModel.class);
-//        removeFavoriteViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(RemoveFavoriteViewModel.class);
-//        toCartViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(ToCartViewModel.class);
-//        fromCartViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(FromCartViewModel.class);
-//        toHistoryViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(ToHistoryViewModel.class);
-    }
+        public TextView voucherName;
+        public TextView voucherValue;
+        public ImageView imageView;
 
-    @NonNull
-    @Override
-    public VoucherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        VoucherListItemBinding  voucherListItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.voucher_list_item, parent, false);
-        return new VoucherViewHolder(voucherListItemBinding);
-    }
 
-    @Override
-    public void onBindViewHolder(@NonNull VoucherViewHolder holder, int position) {
-        holder.setIsRecyclable(false);
-        voucher = getItem(position);
-
-        if (voucher != null) {
-            String voucherName = voucher.getVoucherName();
-            holder.binding.txtVoucherName.setText(voucherName);
-
-            DecimalFormat formatter = new DecimalFormat("#,###,###");
-            String formattedPrice = formatter.format(voucher.getVoucherValue());
-            holder.binding.txtVoucherValue.setText(formattedPrice + " điểm");
-
-            // Load the Product image into ImageView
-            String imageUrl =voucher.getVoucherImage().replaceAll("\\\\", "/");
-            Glide.with(mContext)
-                    .load(imageUrl)
-                    .into(holder.binding.imgVoucherImage);
-
-            Log.d("imageUrl", imageUrl);
-
-//            holder.binding.imgShare.setOnClickListener(v -> shareProduct(mContext, productName, imageUrl));
-
-            // If product is inserted
-//            if (product.isFavourite() == 1) {
-//                holder.binding.imgFavourite.setImageResource(R.drawable.ic_favorite_pink);
-//            }
-//
-//            // If product is added to cart
-//            if (product.isInCart() == 1) {
-//                holder.binding.imgCart.setImageResource(R.drawable.ic_shopping_cart_green);
-//            }
-
-        } else {
-            Toast.makeText(mContext, "Voucher is null", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public PagedList<Voucher> getCurrentList() {
-        return super.getCurrentList();
-    }
-
-    public Voucher getProductAt(int position) {
-        return getItem(position);
-    }
-
-    public void notifyOnInsertedItem(int position) {
-        notifyItemInserted(position);
-        notifyItemRangeInserted(position, getCurrentList().size()-1);
-        notifyDataSetChanged();
-    }
-
-    // It determine if two list objects are the same or not
-    private static DiffUtil.ItemCallback<Voucher> DIFF_CALLBACK = new DiffUtil.ItemCallback<Voucher>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull Voucher oldProduct, @NonNull Voucher newProduct) {
-            return oldProduct.getVoucherName().equals(newProduct.getVoucherName());
-        }
-
-        @SuppressLint("DiffUtilEquals")
-        @Override
-        public boolean areContentsTheSame(@NonNull Voucher oldProduct, @NonNull Voucher newProduct) {
-            return oldProduct.equals(newProduct);
-        }
-    };
-
-    class VoucherViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        // Create view instances
-        private final VoucherListItemBinding binding;
-
-        private VoucherViewHolder(VoucherListItemBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-            // Register a callback to be invoked when this view is clicked.
+        public ViewHolder(View itemView) {
+            super(itemView);
             itemView.setOnClickListener(this);
-//            binding.imgFavourite.setOnClickListener(this);
-//            binding.imgCart.setOnClickListener(this);
+            voucherName = itemView.findViewById(R.id.txtVoucherName);
+            voucherValue = itemView.findViewById(R.id.txtVoucherValue);
+            imageView = itemView.findViewById(R.id.imgVoucherImage);
+
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(View view) {
             int position = getAdapterPosition();
-            // Get position of the product
-            voucher = getItem(position);
-
-//            switch (v.getId()) {
-//                case R.id.card_view:
-//                    // Send product through click
-//                    clickHandler.onClick(voucher);
-//                    insertProductToHistory();
-//                    break;
-//                case R.id.imgFavourite:
-//                    toggleFavourite();
-//                    break;
-//                case R.id.imgCart:
-//                    toggleProductsInCart();
-//                    break;
-//            }
+            VoucherResponse voucher =listVoucher.get(position);
+            switch (view.getId()) {
+                case R.id.card_view:
+                    clickHandler.onClick(voucher);
+            }
         }
-
-//        private void toggleFavourite() {
-//            // If favorite is not bookmarked
-//            if (product.isFavourite() != 1) {
-//                binding.imgFavourite.setImageResource(R.drawable.ic_favorite_pink);
-//                insertFavoriteProduct(() -> {
-//                    product.setIsFavourite(true);
-//                    notifyDataSetChanged();
-//                });
-//                showSnackBar("Bookmark Added");
-//            } else {
-//                binding.imgFavourite.setImageResource(R.drawable.ic_favorite_border);
-//                deleteFavoriteProduct(() -> {
-//                    product.setIsFavourite(false);
-//                    notifyDataSetChanged();
-//                });
-//                showSnackBar("Bookmark Removed");
-//            }
-//        }
-
-//        private void toggleProductsInCart() {
-//            // If Product is not added to cart
-//            if (product.isInCart() != 1) {
-//                binding.imgCart.setImageResource(R.drawable.ic_shopping_cart_green);
-//                insertToCart(() -> {
-//                    product.setIsInCart(true);
-//                    notifyDataSetChanged();
-//                });
-//                showSnackBar("Added To Cart");
-//            } else {
-//                binding.imgCart.setImageResource(R.drawable.ic_add_shopping_cart);
-//                deleteFromCart(() -> {
-//                    product.setIsInCart(false);
-//                    notifyDataSetChanged();
-//                });
-//                showSnackBar("Removed From Cart");
-//            }
-//        }
-
-//        private void showSnackBar(String text) {
-//            Snackbar.make(itemView, text, Snackbar.LENGTH_SHORT).show();
-//        }
-//
-//        private void insertFavoriteProduct(RequestCallback callback) {
-//            Favorite favorite = new Favorite(LoginUtils.getInstance(mContext).getUserInfo().getId(), product.getProductId());
-//            addFavoriteViewModel.addFavorite(favorite,callback);
-//        }
-//
-//        private void deleteFavoriteProduct(RequestCallback callback) {
-//            removeFavoriteViewModel.removeFavorite(LoginUtils.getInstance(mContext).getUserInfo().getId(), product.getProductId(),callback);
-//        }
-//
-//        private void insertToCart(RequestCallback callback) {
-//            Cart cart = new Cart(LoginUtils.getInstance(mContext).getUserInfo().getId(), product.getProductId());
-//            toCartViewModel.addToCart(cart, callback);
-//        }
-//
-//        private void deleteFromCart(RequestCallback callback) {
-//            fromCartViewModel.removeFromCart(LoginUtils.getInstance(mContext).getUserInfo().getId(), product.getProductId(),callback);
-//        }
-//
-//        private void insertProductToHistory() {
-//            History history = new History(LoginUtils.getInstance(mContext).getUserInfo().getId(), product.getProductId());
-//            toHistoryViewModel.addToHistory(history);
-//        }
     }
+
+
+
 }

@@ -86,17 +86,19 @@ public class TestVoucherAdapter extends RecyclerView.Adapter<TestVoucherAdapter.
     final ArrayList<VoucherResponse> listVoucher;
     private Context mContext;
     private ProductAdapterOnClickHandler clickHandler;
+    private int adapter_layout;
     public interface ProductAdapterOnClickHandler {
         void onClick(VoucherResponse voucher);
     }
 
 
-    public TestVoucherAdapter(ArrayList<VoucherResponse> listVoucher, Context mContext,ProductAdapterOnClickHandler clickHandler) {
+    public TestVoucherAdapter(ArrayList<VoucherResponse> listVoucher, Context mContext,ProductAdapterOnClickHandler clickHandler,int layout) {
         super();
 
         this.listVoucher = listVoucher;
         this.mContext = mContext;
         this.clickHandler=clickHandler;
+        this.adapter_layout = layout;
     }
 
     @Override
@@ -105,7 +107,7 @@ public class TestVoucherAdapter extends RecyclerView.Adapter<TestVoucherAdapter.
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View voucherView =
-                inflater.inflate(R.layout.voucher_list_item, parent, false);
+                inflater.inflate(adapter_layout, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(voucherView);
         return viewHolder;

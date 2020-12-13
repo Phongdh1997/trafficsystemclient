@@ -68,7 +68,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private TextView txtAllTop;
-    private TextView txtAllTrending;
+//    private TextView txtAllTrending;
     private NavigationView navigationView;
     private CircleImageView userImage;
     private TextView userName;
@@ -134,7 +134,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         toolbar = view.findViewById(R.id.toolbar);
         drawer = view.findViewById(R.id.drawer_layout);
         txtAllTop = view.findViewById(R.id.txtSeeAllTop);
-        txtAllTrending = view.findViewById(R.id.txtSeeAllTrending);
+//        txtAllTrending = view.findViewById(R.id.txtSeeAllTrending);
         navigationView = view.findViewById(R.id.nav_view);
         txtSearch = view.findViewById(R.id.txtSearch);
         View header = navigationView.getHeaderView(0);
@@ -143,11 +143,11 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         userPoint = view.findViewById(R.id.toolbarPoint);
 
 
-
+        txtAllTop.setNestedScrollingEnabled(false);
 
 
         txtAllTop.setOnClickListener(this);
-        txtAllTrending.setOnClickListener(this);
+//        txtAllTrending.setOnClickListener(this);
         txtSearch.setOnClickListener(this);
 
         listTopVoucher = new ArrayList<>();
@@ -157,14 +157,14 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
 //        getTrendVoucher();
 
         setUpViews();
-        topAdapter = new TestVoucherAdapter(listTopVoucher,getContext(),VoucherFragment.this);
-        trendingAdapter = new TestVoucherAdapter(listTrendVoucher,getContext(),VoucherFragment.this);
+        topAdapter = new TestVoucherAdapter(listTopVoucher,getContext(),VoucherFragment.this,R.layout.voucher_list_vertical);
+        trendingAdapter = new TestVoucherAdapter(listTrendVoucher,getContext(),VoucherFragment.this,R.layout.voucher_list_item);
         listViewTop = view.findViewById(R.id.listOfTop);
         listViewTop.setAdapter(topAdapter);
         listViewTrending = view.findViewById(R.id.listOfTrending);
         listViewTrending.setAdapter(trendingAdapter);
         LinearLayoutManager layoutManager1
-                = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         LinearLayoutManager layoutManager2
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         listViewTop.setLayoutManager(layoutManager1);
@@ -225,7 +225,7 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         // Set the animation for the view leaving th screen
         imageSlider.setOutAnimation(getContext(), R.anim.slide_out_left);
 
-        imageSlider.startFlipping();
+//        imageSlider.startFlipping();
     }
     private void setUpViews() {
 
@@ -257,11 +257,11 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
                 NavHostFragment.findNavController(VoucherFragment.this)
                         .navigate(R.id.action_voucherFragment_to_allVoucherFragment,bundle);
                 break;
-            case R.id.txtSeeAllTrending:
-                bundle.putInt("type", 1);
-                NavHostFragment.findNavController(VoucherFragment.this)
-                        .navigate(R.id.action_voucherFragment_to_allVoucherFragment,bundle);
-                break;
+//            case R.id.txtSeeAllTrending:
+//                bundle.putInt("type", 1);
+//                NavHostFragment.findNavController(VoucherFragment.this)
+//                        .navigate(R.id.action_voucherFragment_to_allVoucherFragment,bundle);
+//                break;
             case R.id.txtSearch:
                 NavHostFragment.findNavController(VoucherFragment.this)
                         .navigate(R.id.action_voucherFragment_to_searchFragment);

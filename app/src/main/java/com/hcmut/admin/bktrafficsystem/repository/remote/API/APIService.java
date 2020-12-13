@@ -12,6 +12,7 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginRes
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.MyVoucherResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.NearSegmentResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PatchNotiResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PayMoMoResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PostRatingResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponseVoucher;
@@ -207,5 +208,5 @@ public interface APIService {
 
     @POST("api/paymentrequest")
     @FormUrlEncoded
-    Call<BaseResponse> paymentRequest(@Header("Authorization") String Authorization,@Field("token") String token,@Field("phone")String phone,@Field("order")String order,@Field("amount")int amount);
+    Call<BaseResponse<PayMoMoResponse>> paymentRequest(@Header("Authorization") String Authorization, @Field("token") String token, @Field("phone")String phone, @Field("order")String order, @Field("amount")int amount, @Field("point")int point);
 }

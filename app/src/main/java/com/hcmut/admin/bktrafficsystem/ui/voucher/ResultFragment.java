@@ -100,7 +100,7 @@ public class ResultFragment extends Fragment implements  MapActivity.OnBackPress
                   };
 
 
-              });
+              },R.layout.voucher_list_item);
       listOfSearchedList.setAdapter(searchAdapter);
       getSearchVoucher(word);
     }

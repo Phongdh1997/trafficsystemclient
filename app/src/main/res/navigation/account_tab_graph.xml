@@ -267,7 +267,15 @@
         android:id="@+id/buyPointFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.buypoint.BuyPointFragment"
         android:label="BuyPointFragment"
-        />
+        >
+        <action
+            android:id="@+id/action_buyPointFragment_to_PaySuccessFragment"
+            app:destination="@id/PaySuccessVoucherFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/non_anim"
+            app:popEnterAnim="@anim/non_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+    </fragment>
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.hcmut.admin.bktrafficsystem.ui.voucher.history.HistoryFragment"

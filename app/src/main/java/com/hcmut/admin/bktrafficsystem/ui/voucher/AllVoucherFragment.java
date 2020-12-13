@@ -96,7 +96,7 @@ public class AllVoucherFragment extends Fragment implements TestVoucherAdapter.P
 //        listVoucher.add(new Voucher(3, "Giảm giá 3", 700,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
 //        listVoucher.add(new Voucher(4, "Giảm giá 4", 800,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
 //        listVoucher.add(new Voucher(5, "Giảm giá 5", 900,10,"samsung","thiết bị di động","https://mshoagiaotiep.com/theme/frontend/default/images/route-compact.jpg"));
-        allVoucherAdapter=new TestVoucherAdapter(listVoucher,getContext(),AllVoucherFragment.this);
+        allVoucherAdapter=new TestVoucherAdapter(listVoucher,getContext(),AllVoucherFragment.this,R.layout.voucher_list_item);
         listViewAll = view.findViewById(R.id.allvoucher);
         setUpRecycleView();
         listViewAll.setAdapter(allVoucherAdapter);

@@ -120,14 +120,20 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
                                 name.setText(myVoucherResponses.getVoucherResponse().getName());
                                 price.setText(myVoucherResponses.getVoucherResponse().getValue()+" điểm");
                                 content.setText(myVoucherResponses.getVoucherResponse().getContent());
-                                if(myVoucherResponses.getStatus()==0){
-                                    status.setText("Voucher chưa được sử dụng");
-
+                                String[] parts = myVoucherResponses.getCode().split(",");
+                                if (parts.length==2){
+                                    status.setText("Mã thẻ: "+parts[0]+"\n"+"\n"+"Số serial: "+ parts[1]);
+                                    btnUse.setVisibility(View.GONE);
                                 }
-                                else{
-                                    status.setText("Voucher đã được sử dụng");
-                                    btnUse.setEnabled(false);
-                                    btnUse.setBackgroundColor(Color.GRAY);
+                                else {
+                                    if (myVoucherResponses.getStatus() == 0) {
+                                        status.setText("Voucher chưa được sử dụng");
+
+                                    } else {
+                                        status.setText("Voucher đã được sử dụng");
+                                        btnUse.setEnabled(false);
+                                        btnUse.setBackgroundColor(Color.GRAY);
+                                    }
                                 }
                                 if(myVoucherResponses.getVoucherResponse().getImage()!=null){
                                     Picasso.get().load(myVoucherResponses.getVoucherResponse().getImage()).noFade().fit().into(image);

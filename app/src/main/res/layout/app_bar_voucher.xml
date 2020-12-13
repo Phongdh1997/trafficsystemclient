@@ -3,7 +3,7 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools">
 
-<ScrollView
+<androidx.core.widget.NestedScrollView
     android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -70,22 +70,22 @@ xmlns:tools="http://schemas.android.com/tools">
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
             android:layout_marginTop="25dp"
-            android:text="@string/top"
+            android:text="Voucher"
             android:textSize="@dimen/dimen20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/listOfTrending" />
 
-        <TextView
-            android:id="@+id/txtSeeAllTrending"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="25dp"
-            android:text="@string/see_all"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/dimen20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listOfTrending" />
+<!--        <TextView-->
+<!--            android:id="@+id/txtSeeAllTrending"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:layout_marginEnd="25dp"-->
+<!--            android:text="Voucher"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            android:textSize="@dimen/dimen20sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/listOfTrending" />-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listOfTop"
@@ -96,60 +96,50 @@ xmlns:tools="http://schemas.android.com/tools">
             android:minHeight="270dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtSeeAllTrending" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewLaptops" />
 
-        <TextView
-            android:id="@+id/textViewHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="25dp"
-            android:text="@string/recently_viewed_items"
-            android:textSize="@dimen/dimen20sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listOfTop" />
+<!--        <TextView-->
+<!--            android:id="@+id/textViewHistory"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="25dp"-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:text="@string/recently_viewed_items"-->
+<!--            android:textSize="@dimen/dimen20sp"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/listOfTop" />-->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/historyList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewHistory" />
 
-        <TextView
-            android:id="@+id/txtReturn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="10dp"
+<!--        <TextView-->
+<!--            android:id="@+id/txtReturn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:layout_marginEnd="25dp"-->
+<!--            android:layout_marginBottom="10dp"-->
 
-            android:drawablePadding="@dimen/dimen5dp"
-            android:text="@string/easy_use"
-            android:textColor="@color/vDarkGray"
-            android:textSize="@dimen/dimen14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/historyList" />
+<!--            android:drawablePadding="@dimen/dimen5dp"-->
+<!--            android:text="@string/easy_use"-->
+<!--            android:textColor="@color/vDarkGray"-->
+<!--            android:textSize="@dimen/dimen14sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/historyList" />-->
 
-        <TextView
-            android:id="@+id/txtCash"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
+<!--        <TextView-->
+<!--            android:id="@+id/txtCash"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginStart="15dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:layout_marginBottom="10dp"-->
 
-            android:drawablePadding="@dimen/dimen5dp"
-            android:text="@string/payment"
-            android:textColor="@color/vDarkGray"
-            android:textSize="@dimen/dimen14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/historyList" />
+<!--            android:drawablePadding="@dimen/dimen5dp"-->
+<!--            android:text="@string/payment"-->
+<!--            android:textColor="@color/vDarkGray"-->
+<!--            android:textSize="@dimen/dimen14sp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/historyList" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
 </layout>

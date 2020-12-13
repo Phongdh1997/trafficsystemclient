@@ -96,7 +96,7 @@
     <string name="my_list_voucher">Dánh sách voucher</string>
     <string name="number_voucher">Mã giao dịch:</string>
     <string name="infor_voucher">Thông tin voucher</string>
-    <string name="status_bar">Trạng thái sử dụng</string>
+    <string name="status_bar">Sử dụng</string>
     <string name="use_voucher">Sử dụng</string>
     <string name="info_perform">Thông tin giao dịch</string>
     <string name="pay_success">Giao dịch thành công</string>

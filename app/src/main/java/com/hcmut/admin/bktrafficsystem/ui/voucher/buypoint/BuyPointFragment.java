@@ -23,7 +23,9 @@ import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.MyVoucherResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PayMoMoResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.PayVoucherFragment;
 import com.hcmut.admin.bktrafficsystem.ui.voucher.VoucherFragment;
 import com.hcmut.admin.bktrafficsystem.ui.voucher.transferpoint.TransferOTPFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
@@ -65,6 +67,7 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
 ////    private String description = "Thanh toán dịch vụ ABC";
     public String amount = "0";
     private String fee = "0";
+    private int check_amount=0;
     int environment = 0;//developer default
     private String merchantName = "UTraffic";
     private String merchantCode = "MOMOUX4U20201123";
@@ -148,8 +151,19 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
         AppMoMoLib.getInstance().setAction(AppMoMoLib.ACTION.PAYMENT);
         AppMoMoLib.getInstance().setActionType(AppMoMoLib.ACTION_TYPE.GET_TOKEN);
 
-        if (amountText.getText().toString() != null && amountText.getText().toString().trim().length() != 0)
-            amount = amountText.getText().toString().trim();
+        if (amountText.getText().toString() != null && amountText.getText().toString().trim().length() != 0) {
+            check_amount = Integer.parseInt(amountText.getText().toString().trim());
+            if(check_amount<20 ){
+                androidExt.showNotifyDialog(getContext(), "Số điểm mua tối thiểu là 20", new ClickDialogListener.OK() {
+                    @Override
+                    public void onCLickOK() {
+
+                    }
+                });
+                return;
+            }
+            amount =  Integer.toString(check_amount*50);
+        }
 
 
         Map<String, Object> eventValue = new HashMap<>();
@@ -190,7 +204,7 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
                     }
                     if (token != null && !token.equals("")) {
                         System.out.println("test1");
-                        paymentRequest(token,phoneNumber,requestId, Integer.parseInt(amount));
+                        paymentRequest(token,phoneNumber,requestId, Integer.parseInt(amount),check_amount);
 
 
                     } else {
@@ -227,13 +241,26 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
             });
         }
     }
-    public void paymentRequest(String token,String phone,String order,int amount) {
-        RetrofitClient.getApiService().paymentRequest(SharedPrefUtils.getUser(getContext()).getAccessToken(), token, phone, order, amount)
-                .enqueue(new Callback<BaseResponse>() {
+    public void paymentRequest(String token,String phone,String order,int amount,int point) {
+        RetrofitClient.getApiService().paymentRequest(SharedPrefUtils.getUser(getContext()).getAccessToken(), token, phone, order, amount,point)
+                .enqueue(new Callback<BaseResponse<PayMoMoResponse>>() {
                     @Override
-                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    public void onResponse(Call<BaseResponse<PayMoMoResponse>> call, Response<BaseResponse<PayMoMoResponse>> response) {
                         if (response.body() != null) {
                             if (response.body().getData() != null) {
+                                PayMoMoResponse result = response.body().getData();
+                                if(result.getState()==1){
+                                    NavHostFragment.findNavController(BuyPointFragment.this)
+                                            .navigate(R.id.action_buyPointFragment_to_PaySuccessFragment);
+                                }
+                                else{
+                                    androidExt.showNotifyDialog(getContext(), "Giao dịch thất bại, vui lòng thử lại.", new ClickDialogListener.OK() {
+                                        @Override
+                                        public void onCLickOK() {
+
+                                        }
+                                    });
+                                }
 
                             } else {
                                 androidExt.showErrorDialog(getContext(), "Có lỗi, vui lòng thông báo cho admin");
@@ -244,7 +271,7 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
                     }
 
                     @Override
-                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    public void onFailure(Call<BaseResponse<PayMoMoResponse>> call, Throwable t) {
                         androidExt.showErrorDialog(getContext(), "Kết nối thất bại, vui lòng kiểm tra lại");
                     }
                 });

@@ -29,7 +29,7 @@
             android:inputType="number"
 
             android:gravity="start|center"
-            android:hint="Nhập số tiền"
+            android:hint="Nhập số điểm"
             android:paddingStart="@dimen/dimen10dp"
             android:paddingEnd="@dimen/dimen10dp"
             android:textColor="@color/black"
