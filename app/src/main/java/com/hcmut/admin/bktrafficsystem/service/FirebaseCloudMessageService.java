@@ -10,16 +10,24 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.SegmentNotificationDataMessage;
 import com.hcmut.admin.bktrafficsystem.util.TrafficNotificationFactory;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
 
 import java.util.Map;
 import java.util.Objects;
@@ -32,8 +40,9 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
     AndroidExt androidExt = new AndroidExt();
 
     private static final String NOTI_TYPE_FEILD = "notiType";
-    private static final String REPORT_NOTI_TYPE = "reportNotification";
-    private static final String DIRECTION_NOTI_TYPE = "directionNotification";
+    private static final String SEGMENTS_FEILD = "segments";
+    private static final String REPORT_NOTI_TYPE = "REPORT_NOTI_TYPE";
+    private static final String DIRECTION_NOTI_TYPE = "DIRECTION_NOTI_TYPE";
 
     // report field
     private static final String REPORT_ID_FIELD = "reportId";
@@ -47,18 +56,29 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
     private void sendNotification(RemoteMessage remoteMessage) {
         Map<String, String> remoteData = remoteMessage.getData();
         String notiType = remoteData.get(NOTI_TYPE_FEILD);
+        String segments = remoteData.get(SEGMENTS_FEILD);
+        if (segments == null) {
+            return;
+        }
         if (notiType == null) {
-            // handle notification message
-            pushNotificationMessage();
-        } else {
-            // handel data message
+            return;
+        }
+
+        try {
+            Gson gson = new Gson();
+            SegmentNotificationDataMessage[] segmentArray = gson.fromJson(segments, SegmentNotificationDataMessage[].class);
+            if (segmentArray.length == 0) {
+                return;
+            }
             switch (notiType) {
                 case REPORT_NOTI_TYPE:
-                    pushReportNotification(remoteMessage);
+                    pushReportNotification(segmentArray);
                     break;
                 case DIRECTION_NOTI_TYPE:
-                    pushDirectionNotification(remoteData);
+                    pushDirectionNotification(segmentArray);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +92,7 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
         trafficNotificationFactory.sendNotification(notification, NORMAL_NOTIFICATION_ID);
     }
 
-    private void pushDirectionNotification(Map<String, String> remoteData) {
+    private void pushDirectionNotification(SegmentNotificationDataMessage[] segmentArray) {
         TrafficNotificationFactory trafficNotificationFactory = TrafficNotificationFactory.getInstance(getApplicationContext());
         Notification notification = trafficNotificationFactory.getFoundNewWayNotification(
                 getApplicationContext(), MapActivity.class);
@@ -80,17 +100,12 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
     }
 
     // TODO: start Detail Report Fragment
-    private void pushReportNotification(RemoteMessage remoteMessage) {
+    private void pushReportNotification(SegmentNotificationDataMessage[] segmentArray) {
         String title = "Đánh giá";
-        String reportId = remoteMessage.getData().get(REPORT_ID_FIELD);
-        PendingIntent pendingIntent = null;
-        if (reportId != null) {
-            Intent intent = new Intent(this, MapActivity.class);
-            intent.putExtra("REPORT_ID", Integer.parseInt(reportId));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
-        }
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -98,7 +113,7 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.app_icon)
                         .setContentTitle(title)
-                        .setContentText(Objects.requireNonNull(remoteMessage.getNotification()).getBody())
+                        .setContentText("Có kẹt xe khu vực xung quanh")
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri);
         if (pendingIntent != null) {
@@ -122,7 +137,9 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
+        Log.e("firebase token", s);
         SharedPrefUtils.saveNotiToken(getApplicationContext(), s);
+
     }
 }
 

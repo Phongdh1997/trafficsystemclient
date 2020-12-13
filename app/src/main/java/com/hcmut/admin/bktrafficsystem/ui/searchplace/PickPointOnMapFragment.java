@@ -9,11 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -23,6 +26,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +47,7 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
     private ImageView imgBack;
     private TextView btnOk;
     private TextView middlePoint;
+    private AppCompatButton btnToggleRender;
 
     private GoogleMap map;
 
@@ -80,7 +86,9 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
     public void onResume() {
         super.onResume();
         try {
-            ((MapActivity) getContext()).hideBottomNav();
+            MapActivity mapActivity = ((MapActivity) getContext());
+            mapActivity.hideBottomNav();
+            updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,7 +122,7 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
         btnOk = view.findViewById(R.id.btnOk);
         imgBack = view.findViewById(R.id.imgBack);
         middlePoint = view.findViewById(R.id.middlePoint);
-
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
         addEvents();
     }
 
@@ -132,6 +140,23 @@ public class PickPointOnMapFragment extends Fragment implements MapActivity.OnBa
                 NavHostFragment.findNavController(PickPointOnMapFragment.this).popBackStack();
             }
         });
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
+            }
+        });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     private void handleGetPointOnMap() {

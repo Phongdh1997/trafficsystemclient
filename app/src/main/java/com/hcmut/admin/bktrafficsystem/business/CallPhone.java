@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.business;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,9 +48,10 @@ public class CallPhone {
         return (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
     }
 
+    @SuppressLint("MissingPermission")
     public static void makeAPhoneCall(MapActivity mapActivity) {
         if (mapActivity != null) {
-            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "0123456789"));
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "02838221188"));
             mapActivity.startActivity(intent);
         }
     }

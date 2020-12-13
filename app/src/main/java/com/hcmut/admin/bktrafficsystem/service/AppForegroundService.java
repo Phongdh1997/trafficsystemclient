@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -21,12 +22,36 @@ public class AppForegroundService extends Service {
     public static final int SERVICE_STOP_REQUEST_CODE = 111;
     public static final String STOP_FOREGROUND_ACTION = "com.example.traffic.service.LocationService.STOP_FOREGROUND_ACTION";
 
-    private LocationCollectionManager locationCollectionManager;
+    private static LocationCollectionManager locationCollectionManager;
     private HandlerThread locationHandlerThread;
+    private static boolean isDireactionNotiOn = false;
+    private static boolean isReportNotiOn = false;
+    public static String path_id = null;
     private static MutableLiveData<Boolean> movingStateLiveData = new MutableLiveData<>();
 
     public static LiveData<Boolean> getMovingStateLiveData () {
         return movingStateLiveData;
+    }
+
+    public static boolean isUpdateCurrentLocation() {
+        Log.e("path_id", "" + path_id);
+        return ((path_id != null) && isDireactionNotiOn) || isReportNotiOn;
+    }
+
+    public static void toggleDirectionNoti(boolean value, Context context) {
+        isDireactionNotiOn = value;
+        locationCollectionManager = LocationCollectionManager.getInstance(context);
+        if (!value) {
+            locationCollectionManager.stopNotification();
+        }
+    }
+
+    public static void toggleReportNoti(boolean value, Context context) {
+        isReportNotiOn = value;
+        locationCollectionManager = LocationCollectionManager.getInstance(context);
+        if (!value) {
+            locationCollectionManager.stopNotification();
+        }
     }
 
     @Override

@@ -45,6 +45,16 @@ class AndroidExt {
                 .show()
     }
 
+    fun showMessageNoAction(context: Context,
+                            title: String? = "",
+                            description: String? = ""
+    ) {
+        MessageDialog(context, title, description, false)
+                .setColorTitle(R.color.green)
+                .setButtonNoText("Đóng lại")
+                .show()
+    }
+
     fun showDialog(context: Context,
                           title: String? = "",
                           description: String? = "",

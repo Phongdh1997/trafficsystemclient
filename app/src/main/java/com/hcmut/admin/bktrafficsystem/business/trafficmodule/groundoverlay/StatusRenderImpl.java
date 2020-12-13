@@ -22,4 +22,9 @@ public class StatusRenderImpl extends StatusRender {
     public void refreshRenderStatus(TileCoordinates centerTile) {
         groundOverlayMatrix.refresh(centerTile);
     }
+
+    @Override
+    public void setEnableTraffic(boolean isEnable) {
+        groundOverlayMatrix.setTrafficEnable(isEnable);
+    }
 }
