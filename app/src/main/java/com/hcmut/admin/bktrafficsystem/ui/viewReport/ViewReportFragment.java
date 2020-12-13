@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -36,6 +39,7 @@ import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,6 +69,7 @@ public class ViewReportFragment extends Fragment {
     private ViewReportHandler viewReportHandler;
     private ArrayList<Marker> userReportMarker = new ArrayList<>();
     private SegmentData selectedSegment;
+    private AppCompatButton btnToggleRender;
 
     private GoogleMap.InfoWindowAdapter infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
         @Override
@@ -175,6 +180,7 @@ public class ViewReportFragment extends Fragment {
         txtStatusColor = view.findViewById(R.id.txtStatusColor);
         btnRefresh = view.findViewById(R.id.btnRefresh);
         imgBack = view.findViewById(R.id.imgBack);
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
 
         clearSelectedSegment();
     }
@@ -205,6 +211,23 @@ public class ViewReportFragment extends Fragment {
                 updateUI();
             }
         });
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
+            }
+        });
+    }
+
+    public void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     private void showSelectedUserReport(String [] datas) {
@@ -272,6 +295,13 @@ public class ViewReportFragment extends Fragment {
                 imgBack.setVisibility(View.GONE);
                 showBottomNav();
             }
+        }
+
+        try {
+            MapActivity mapActivity = (MapActivity) getContext();
+            updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.model.User;
 import com.google.gson.Gson;
 
@@ -12,6 +13,8 @@ public class SharedPrefUtils {
     private static final String USER = "USER";
     private static final String RATING = "RATING";
     private static final String NOTI_TOKEN = "NOTI_TOKEN";
+    private static final String LATEST_LAT = "LATEST_LAT";
+    private static final String LATEST_LNG = "LATEST_LNG";
 
     private static String notyficationToken;
 
@@ -48,7 +51,26 @@ public class SharedPrefUtils {
             SharedPreferences pref = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
             notyficationToken = pref.getString(NOTI_TOKEN, null);
         }
-        Log.e("noti token", notyficationToken);
         return notyficationToken;
+    }
+
+    static public void saveLatestLocation(Context context, UserLocation userLocation) {
+        if (userLocation == null) {
+            return;
+        }
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE).edit();
+        editor.putString(LATEST_LAT, String.valueOf(userLocation.getLatitude()));
+        editor.putString(LATEST_LNG, String.valueOf(userLocation.getLongitude()));
+        editor.apply();
+    }
+
+    static public UserLocation getLatestLocation(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        String lat = pref.getString(LATEST_LAT, null);
+        String lng = pref.getString(LATEST_LNG, null);
+        if (lat == null || lng == null) {
+            return null;
+        }
+        return new UserLocation(Double.parseDouble(lat), Double.parseDouble(lng));
     }
 }

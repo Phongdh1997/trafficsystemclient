@@ -43,10 +43,11 @@ public class TrafficRenderModule {
 
     /**
      * API to turn on/off traffic status render
-     * @param enable: true value to enable, false value to disable
+     * @param isEnable: true value to enable, false value to disable
      */
-    public void setTrafficEnable(boolean enable) {
-        // refreshStatusHandler.setTrafficEnable(enable);
+    public void setTrafficEnable(boolean isEnable) {
+        tilerOverlayRenderModule.setTrafficEnable(isEnable);
+        statusRender.setEnableTraffic(isEnable);
     }
 
     public void startStatusRenderTimer () {

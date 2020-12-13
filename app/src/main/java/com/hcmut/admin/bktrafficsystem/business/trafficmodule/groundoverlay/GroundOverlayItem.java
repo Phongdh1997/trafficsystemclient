@@ -130,4 +130,10 @@ public class GroundOverlayItem {
     public void overlayLoadFail() {
         setState(LOAD_FAIL_OVERLAY);
     }
+
+    public void setTrafficEnable(boolean isEnable) {
+        if (groundOverlay != null) {
+            groundOverlay.setVisible(isEnable);
+        }
+    }
 }

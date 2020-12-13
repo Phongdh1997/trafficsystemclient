@@ -129,13 +129,15 @@ public class AccountFragment extends Fragment {
         txtViewGuiding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
+                NavHostFragment.findNavController(AccountFragment.this)
+                        .navigate(R.id.action_accountFragment_to_guidingFragment);
             }
         });
         txtContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Chức năng đang cập nhật, vui lòng chờ phiên bản sau", Toast.LENGTH_SHORT).show();
+                NavHostFragment.findNavController(AccountFragment.this)
+                        .navigate(R.id.action_accountFragment_to_userFeedback);
             }
         });
         txtManageVoucher.setOnClickListener(new View.OnClickListener() {

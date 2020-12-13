@@ -21,6 +21,7 @@ public abstract class StatusRender {
     public void onCameraMoving(GoogleMap googleMap){
         int zoom = (int) googleMap.getCameraPosition().zoom;
         if (zoom > TrafficTileProvider.MAX_ZOOM_RENDER) {
+            setEnableTraffic(true);
             final LatLng centerPoint = googleMap.getCameraPosition().target;
             RetrofitClient.THREAD_POOL_EXECUTOR.execute(new Runnable() {
                 @Override
@@ -31,6 +32,8 @@ public abstract class StatusRender {
                     }
                 }
             });
+        } else {
+            setEnableTraffic(false);
         }
     }
 
@@ -57,4 +60,6 @@ public abstract class StatusRender {
     protected abstract void handleCameraMoving(TileCoordinates currentTile);
 
     public abstract void refreshRenderStatus(TileCoordinates centerTile);
+
+    public abstract void setEnableTraffic(boolean isEnable);
 }
