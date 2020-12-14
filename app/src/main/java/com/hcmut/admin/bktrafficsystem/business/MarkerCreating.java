@@ -49,6 +49,29 @@ public class MarkerCreating {
         }
     }
 
+    public void createMarker(Context context, GoogleMap googleMap, Integer iconSrc, boolean isMoveToCurrentLocation, boolean animated, String title) {
+        if (googleMap == null) return;
+        if (marker != null) {
+            marker.remove();
+        }
+        BitmapDescriptor bitmapDescriptor = (iconSrc != null) ? bitmapDescriptorFromVector(context, iconSrc) : BitmapDescriptorFactory.defaultMarker();
+        marker = googleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(title)
+                .icon(bitmapDescriptor));
+
+        marker.showInfoWindow();
+
+        if (isMoveToCurrentLocation) {
+            // move camera to current location
+            if (animated) {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            } else {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            }
+        }
+    }
+
     public void removeMarker() {
         if (marker != null) {
             marker.remove();

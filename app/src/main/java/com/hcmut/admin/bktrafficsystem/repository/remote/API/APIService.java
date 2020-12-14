@@ -1,6 +1,5 @@
 package com.hcmut.admin.bktrafficsystem.repository.remote.API;
 
-import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.RatingBody;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
@@ -8,6 +7,10 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DealResp
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoPaymentResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoVoucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.FeedbackRequest;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.AppVersionResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.FeedbackResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.LoginResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.MyVoucherResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.NearSegmentResponse;
@@ -28,7 +31,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -39,9 +41,16 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIService {
+    /**
+     *
+     */
+    @GET("/api/app-version/{id}")
+    Call<BaseResponse<AppVersionResponse>> getCurrentAppVersionInfo(@Path("id") String id);
+
     /**
      *
      */
@@ -67,13 +76,17 @@ public interface APIService {
     Call<BaseResponse<List<TrafficStatusResponse>>> getVelocity(@Query("time") long date,
                                                                 @Query("segmentId") int segmentId);
 
+    @POST("api/feedback/create")
+    Call<BaseResponse<FeedbackResponse>> postUserFeedback(@Header("Authorization") String Authorization,
+                                                          @Body FeedbackRequest feedbackRequest);
+
     @POST("api/report/segment/here")
     Call<BaseResponse<ReportResponse>> postTrafficReport(@Header("Authorization") String Authorization,
                                                          @Body ReportRequest reportRequest);
 
     @POST("api/report/segment/here")
-    Call<Object> postGPSTrafficReport(@Header("Authorization") String Authorization,
-                                      @Body ReportRequest reportRequest);
+    Call<BaseResponse<ReportResponse>> postGPSTrafficReport(@Header("Authorization") String Authorization,
+                                                            @Body ReportRequest reportRequest);
 
     @Headers("Content-Type: application/json")
     @POST("api/evaluation/add")
@@ -131,12 +144,12 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("api/notification/update-current-location")
-    Call<BaseResponse<PatchNotiResponse>> patchUserNoti(@Header("Authorization") String Authorization,
-                                                        @Field("token") String notiToken,
-                                                        @Field("lat") Double currentLat,
-                                                        @Field("lng") Double currentLng,
-                                                        @Field("active") String active,
-                                                        @Nullable @Field("path_id") String pathId);
+    Call<BaseResponse<PatchNotiResponse>> updateCurrentLocation(@Header("Authorization") String Authorization,
+                                                                @Field("token") String notiToken,
+                                                                @Field("lat") Double currentLat,
+                                                                @Field("lng") Double currentLng,
+                                                                @Field("active") String active,
+                                                                @Nullable @Field("path_id") String pathId);
 
     @GET("api/segment/direct")
     Call<BaseResponse<List<DirectRespose>>> getFindDirect(@Query("slat") double slat,

@@ -38,6 +38,12 @@ public class GroundOverlayMatrix {
         }
     }
 
+    public void setTrafficEnable(boolean isEnable) {
+        for (GroundOverlayItem item : matrix.values()) {
+            item.setTrafficEnable(isEnable);
+        }
+    }
+
     /**
      *
      * @param tileItems

@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.contribution;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.FastReport;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
+import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
+import com.hcmut.admin.bktrafficsystem.util.MapUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,8 +109,22 @@ public class ContributionFragment extends Fragment {
         txtReportTraffic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(ContributionFragment.this)
-                        .navigate(R.id.action_contributionFragment_to_reportSendingFragment);
+                if (MapUtil.checkGPSTurnOn(getActivity(), MapActivity.androidExt)) {
+                    LocationCollectionManager.getInstance(getContext())
+                            .getCurrentLocation(new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    if (location != null) {
+                                        NavHostFragment.findNavController(ContributionFragment.this)
+                                                .navigate(R.id.action_contributionFragment_to_reportSendingFragment);
+                                    } else {
+                                        Toast.makeText(getContext(),
+                                                "Không thể lấy vị trí, vui lòng thử lại",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
             }
         });
         txtReportInfrastructure.setOnClickListener(new View.OnClickListener() {
