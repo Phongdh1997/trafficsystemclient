@@ -443,12 +443,14 @@ public class MapActivity extends AppCompatActivity implements
                     editor.putBoolean(getResources().getString(R.string.swGpsCollectionRef), false);
                     editor.apply();
                 }
+                return;
         }
-        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == AppMoMoLib.getInstance().REQUEST_CODE_MOMO) {
             buyPointFragment.onActivityResult(requestCode,resultCode,data);
+            return;
         }
 
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
