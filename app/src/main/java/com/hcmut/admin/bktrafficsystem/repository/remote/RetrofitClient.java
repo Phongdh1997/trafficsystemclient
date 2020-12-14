@@ -59,8 +59,6 @@ public class RetrofitClient {
         return APIVOHService;
     }
 
-
-
     public static APIService getApiService() {
         if (apiService == null) {
 //            String baseURL = "http://172.17.22.7:3000";
