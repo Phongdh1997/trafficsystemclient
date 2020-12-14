@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -46,7 +45,6 @@ import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
 import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
-import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
 import com.hcmut.admin.bktrafficsystem.ui.voucher.buypoint.BuyPointFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
@@ -200,22 +198,6 @@ public class MapActivity extends AppCompatActivity implements
             @Override
             public void onMenuItemSelect(int menuItemId, int i1, boolean b) {
                 bottomTab.showTab(menuItemId);
-
-                if (menuItemId == R.id.homeTabId || menuItemId == R.id.viewReportTabId) {
-                    try {
-                        HomeFragment home = (HomeFragment) homeFragment
-                                .getChildFragmentManager()
-                                .getFragments().get(0);
-                        home.updateRenderStatusOptionBackground(isRenderStatus);
-                    } catch (Exception e) {}
-
-                    try {
-                        ViewReportFragment home = (ViewReportFragment) viewReportFragment
-                                .getChildFragmentManager()
-                                .getFragments().get(0);
-                        home.updateRenderStatusOptionBackground(isRenderStatus);
-                    } catch (Exception e) {}
-                }
             }
 
             @Override
