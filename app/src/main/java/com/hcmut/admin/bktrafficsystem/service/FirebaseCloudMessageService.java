@@ -101,7 +101,7 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
 
     // TODO: start Detail Report Fragment
     private void pushReportNotification(SegmentNotificationDataMessage[] segmentArray) {
-        String title = "Đánh giá";
+        String title = "Cảnh báo";
         Intent intent = new Intent(this, MapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -113,7 +113,7 @@ public class FirebaseCloudMessageService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.app_icon)
                         .setContentTitle(title)
-                        .setContentText("Có kẹt xe khu vực xung quanh")
+                        .setContentText("Có kẹt xe khu vực xung quanh 1km")
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri);
         if (pendingIntent != null) {
