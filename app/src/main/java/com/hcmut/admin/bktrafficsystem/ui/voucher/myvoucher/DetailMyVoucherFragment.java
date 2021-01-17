@@ -54,6 +54,7 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
                 bundle.putString("code", myVoucherResponses.getCode());
                 NavHostFragment.findNavController(DetailMyVoucherFragment.this)
                         .navigate(R.id.action_detailMyVoucherFragment_to_qrVoucherFragment,bundle);
+
                 break;
         }
     }
@@ -72,6 +73,7 @@ public class DetailMyVoucherFragment extends Fragment implements View.OnClickLis
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chi tiết");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

@@ -5,6 +5,8 @@ import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportReq
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DealResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.GiftResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.GiftStateResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoPaymentResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoVoucher;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.FeedbackRequest;
@@ -222,4 +224,11 @@ public interface APIService {
     @POST("api/paymentrequest")
     @FormUrlEncoded
     Call<BaseResponse<PayMoMoResponse>> paymentRequest(@Header("Authorization") String Authorization, @Field("token") String token, @Field("phone")String phone, @Field("order")String order, @Field("amount")int amount, @Field("point")int point);
+
+    @GET("api/gift/getallgift")
+    Call<BaseResponse<List<GiftResponse>>> getAllGift(@Header("Authorization") String Authorization);
+
+    @POST("api/gift/checkgift")
+    @FormUrlEncoded
+    Call<BaseResponse<GiftStateResponse>> checkGift(@Header("Authorization") String Authorization, @Field("id") String id);
 }

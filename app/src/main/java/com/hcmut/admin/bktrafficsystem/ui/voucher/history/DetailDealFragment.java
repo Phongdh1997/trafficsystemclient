@@ -54,6 +54,7 @@ public class DetailDealFragment  extends Fragment implements MapActivity.OnBackP
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chi tiết");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

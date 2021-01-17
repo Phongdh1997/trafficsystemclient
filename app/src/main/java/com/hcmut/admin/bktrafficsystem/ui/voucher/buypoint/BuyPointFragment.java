@@ -91,6 +91,7 @@ public class BuyPointFragment extends Fragment  implements MapActivity.OnBackPre
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Mua điểm");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

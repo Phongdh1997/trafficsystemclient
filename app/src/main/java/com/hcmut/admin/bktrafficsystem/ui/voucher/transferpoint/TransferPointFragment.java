@@ -51,8 +51,13 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirm:
-                hideSoftKeyboard(getActivity());
-                getMessageAuthentication();
+                if (getArguments().getString("phone")==null || getArguments().getString("phone")=="") {
+                    androidExt.showErrorDialog(getContext(), "Vui lòng cập nhật số điện thoại để thực hiện giao dịch");
+                }
+                else {
+                    hideSoftKeyboard(getActivity());
+                    getMessageAuthentication();
+                }
                 break;
         }
 
@@ -88,6 +93,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chuyển điểm");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +132,7 @@ public class TransferPointFragment extends Fragment implements View.OnClickListe
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.toString().length()>0 && Integer.parseInt(editable.toString())<=getArguments().getInt("pointUser") && Integer.parseInt(editable.toString())>0){
+
                     btnConfirm.setEnabled(true);
                 }
                 else{

@@ -78,6 +78,7 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemClickL
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Tìm kiếm");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

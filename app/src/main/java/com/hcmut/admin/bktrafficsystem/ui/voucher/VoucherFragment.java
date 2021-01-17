@@ -136,6 +136,13 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         txtAllTop = view.findViewById(R.id.txtSeeAllTop);
 //        txtAllTrending = view.findViewById(R.id.txtSeeAllTrending);
         navigationView = view.findViewById(R.id.nav_view);
+        if(SharedPrefUtils.getUser(getContext()).getRole().compareTo("partner")!=0) {
+            Menu nav_Menu = navigationView.getMenu();
+            nav_Menu.findItem(R.id.nav_scan).setVisible(false);
+        }
+
+
+
         txtSearch = view.findViewById(R.id.txtSearch);
         View header = navigationView.getHeaderView(0);
         userImage = header.findViewById(R.id.userImage);
@@ -224,12 +231,15 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         imageSlider.setInAnimation(getContext(), R.anim.slide_in_right);
         // Set the animation for the view leaving th screen
         imageSlider.setOutAnimation(getContext(), R.anim.slide_out_left);
-
-//        imageSlider.startFlipping();
+        if (images.size()>1) {
+        imageSlider.startFlipping();
+        }
     }
     private void setUpViews() {
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Utraffic");
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 getActivity(), drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);

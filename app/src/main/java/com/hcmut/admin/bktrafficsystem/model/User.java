@@ -31,6 +31,7 @@ public class User {
     private String userEmail;
     private String accessToken;
     private int point;
+    private String role;
 
     public String getAccountType() {
         return accountType;
@@ -109,6 +110,13 @@ public class User {
     }
     public void setPoint(int point) {
         this.point = point;
+    }
+
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void updateUser(final Activity activity, final EditProfileFragment fragment, String name, String avatarUrl, String phone) {

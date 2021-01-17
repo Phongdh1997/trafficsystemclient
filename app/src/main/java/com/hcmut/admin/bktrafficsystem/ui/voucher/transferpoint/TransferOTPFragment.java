@@ -99,6 +99,7 @@ public class TransferOTPFragment extends Fragment implements View.OnClickListene
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chuyển điểm");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

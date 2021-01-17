@@ -92,6 +92,7 @@ public class HistoryFragment extends Fragment implements DealAdapter.DealAdapter
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Lịch sử giao dịch");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

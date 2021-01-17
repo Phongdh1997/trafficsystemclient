@@ -77,6 +77,7 @@ public class ChooseTransferFragment extends Fragment implements View.OnClickList
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chuyển điểm");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +117,8 @@ public class ChooseTransferFragment extends Fragment implements View.OnClickList
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.toString().length()>0){
+
+
                     btnContinue.setEnabled(true);
                     word=editable.toString();
                 }

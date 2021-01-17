@@ -77,6 +77,7 @@ public class PayVoucherFragment extends Fragment implements View.OnClickListener
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Thanh toán");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

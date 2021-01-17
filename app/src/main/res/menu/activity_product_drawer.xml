@@ -8,30 +8,30 @@
            android:id="@+id/group2">
             <item
                 android:id="@+id/nav_trackOrder"
-                android:icon="@drawable/ic_tracking"
+                android:icon="@drawable/ic_my_voucher"
                 android:title="@string/my_voucher" />
 
             <item
                 android:id="@+id/nav_myAccount"
-                android:icon="@drawable/ic_account"
+                android:icon="@drawable/ic_tranfer"
                 android:title="@string/my_account" />
 
             <item
                 android:id="@+id/nav_newsFeed"
-                android:icon="@drawable/ic_newsfeed"
+                android:icon="@drawable/ic_buy_point"
                 android:title="@string/my_report" />
         <item
             android:id="@+id/nav_report"
-            android:icon="@drawable/ic_newsfeed"
+            android:icon="@drawable/ic_report"
             android:title="Báo cáo" />
 
             <item
                 android:id="@+id/nav_wishList"
-                android:icon="@drawable/ic_schedule"
+                android:icon="@drawable/ic_hisory"
                 android:title="@string/my_history" />
         <item
             android:id="@+id/nav_scan"
-            android:icon="@drawable/ic_schedule"
+            android:icon="@drawable/ic_scan"
             android:title="Quét mã" />
 
 

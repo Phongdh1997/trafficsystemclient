@@ -4,6 +4,7 @@ import android.content.Context
 import com.hcmut.admin.bktrafficsystem.R
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener
 import com.hcmut.admin.bktrafficsystem.util.MessageDialog
+import com.hcmut.admin.bktrafficsystem.util.MessageGiftDialog
 
 class AndroidExt {
     fun comfirm(context: Context,
@@ -78,7 +79,15 @@ class AndroidExt {
                 .setClickOk { onOKListener.onCLickOK() }
                 .show()
     }
+    fun showGiftNotifyDialog(context: Context,
+                         description: String? = "",
+                         onOKListener: ClickDialogListener.OK
+    ) {
+        MessageGiftDialog(context,  description)
 
+                .setClickOk { onOKListener.onCLickOK() }
+                .show()
+    }
     fun showAutoDetectDialog(context: Context,
                           description: String? = "",
                             onOKListener: ClickDialogListener.OK

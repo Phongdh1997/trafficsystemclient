@@ -32,6 +32,7 @@ import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +44,7 @@ public class ReportFragment extends Fragment implements MapActivity.OnBackPressC
     AndroidExt androidExt = new AndroidExt();
     String[] days;
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM");
+
     ArrayList<BarEntry> barEntriesIn;
     ArrayList<BarEntry> barEntriesOut;
 
@@ -65,6 +67,7 @@ public class ReportFragment extends Fragment implements MapActivity.OnBackPressC
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Báo cáo");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +80,7 @@ public class ReportFragment extends Fragment implements MapActivity.OnBackPressC
 
 
         days = new String[]{"1","2","3","4","5","6","7"};
-
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         getReportVoucher();
 

@@ -19,6 +19,8 @@ public class UserResponse {
     private String reputation;
     @SerializedName("point")
     private int point;
+    @SerializedName("role")
+    private String role;
 
     public String getId() {
         return id;
@@ -50,5 +52,8 @@ public class UserResponse {
 
     public int getPoint() {
         return point;
+    }
+    public String getRole() {
+        return role;
     }
 }

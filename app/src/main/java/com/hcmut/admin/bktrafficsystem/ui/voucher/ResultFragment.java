@@ -65,6 +65,7 @@ public class ResultFragment extends Fragment implements  MapActivity.OnBackPress
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Kết quả tìm kiếm");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

@@ -90,6 +90,7 @@ public class ScanQRCode extends Fragment implements  MapActivity.OnBackPressCall
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null){
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Quét QR Code");
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
