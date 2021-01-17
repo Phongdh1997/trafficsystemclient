@@ -350,7 +350,7 @@ public class DirectionFragment extends Fragment
         LatLng beginLatLng = new LatLng(directs.get(0).getLat(), directs.get(0).getLng());
         LatLng endLatLng = new LatLng(directs.get(directs.size() - 1).getLat(), directs.get(directs.size() - 1).getLng());
         LatLng directInfoLatLng = new LatLng(directs.get(directs.size() / 2).getLat(), directs.get(directs.size() / 2).getLng());
-        String directInfoTitle = String.format("%d phút (%d km)", (int)Math.round(directRespose.getTime()), directRespose.getDistance());
+        String directInfoTitle = String.format("%d phút (%.1f km)", (int) directRespose.getTime(), (directRespose.getDistance()/1000f));
         createMarker(beginLatLng, endLatLng, directInfoLatLng, directInfoTitle);
         removeDirect();
         LatLng start;

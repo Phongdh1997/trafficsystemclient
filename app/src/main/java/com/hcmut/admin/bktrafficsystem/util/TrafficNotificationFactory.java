@@ -83,7 +83,7 @@ public class TrafficNotificationFactory {
     public Notification getFoundNewWayNotification(Context context, Class activity) {
         // config string
         String NOTIFICATION_CONTENT_TITLE = "Cảnh báo";
-        String NOTIFICATION_CONTENT_TEXT = "Đã tìm thấy đường đi mới";
+        String NOTIFICATION_CONTENT_TEXT = "Xảy ra ùn tắc ở đoạn đường phía trước";
 
         //sound
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
