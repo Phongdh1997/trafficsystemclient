@@ -106,7 +106,7 @@ public class LocationCollectionManager {
                 UserLocation currUserLocation = new UserLocation(location);
                 postReport(currUserLocation);
                 lastUserLocation = currUserLocation;
-                //sleepWakeupLocationService.handleSleepOrWakeupService(currUserLocation);
+                sleepWakeupLocationService.handleSleepOrWakeupService(currUserLocation);
             }
         }
     }
