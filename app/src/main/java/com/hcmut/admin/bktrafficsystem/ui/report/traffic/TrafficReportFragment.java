@@ -488,7 +488,7 @@ public class TrafficReportFragment extends Fragment implements
      */
     private void setReportLocation(LatLng latLng) {
         reportLatLng = latLng;
-        if (!isInCircleReportLimit(reportLatLng)) {
+        if (isInCircleReportLimit(reportLatLng)) {
             searchInputView.handleBackAndClearView(true);
             reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);
         } else {
