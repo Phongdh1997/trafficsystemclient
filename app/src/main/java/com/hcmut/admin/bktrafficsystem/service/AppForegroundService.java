@@ -54,6 +54,11 @@ public class AppForegroundService extends Service {
         }
     }
 
+    public static void toggleSleepWakeup(boolean value, Context context) {
+        locationCollectionManager = LocationCollectionManager.getInstance(context);
+        locationCollectionManager.toggleSleepWakeup(value);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

@@ -38,6 +38,7 @@ public class LocationCollectionManager {
     private Context context;
     private APIService apiService;
     private UserLocation lastUserLocation;
+    private boolean isSleepWakeupOn = true;
 
     private SleepWakeupLocationService sleepWakeupLocationService;
 
@@ -49,8 +50,19 @@ public class LocationCollectionManager {
         sleepWakeupLocationService = new SleepWakeupLocationService(context);
     }
 
+    public void toggleSleepWakeup(boolean isTurnOn) {
+        if (isTurnOn) {
+            sleepWakeupLocationService = new SleepWakeupLocationService(context);
+            sleepWakeupLocationService.repare();
+        }
+        isSleepWakeupOn = isTurnOn;
+        Log.e("sleep", "" + isSleepWakeupOn);
+    }
+
     public void setStopServiceEvent(SleepWakeupLocationService.StopServiceEvent stopServiceEvent) {
-        sleepWakeupLocationService.setStopServiceEvent(stopServiceEvent);
+        try {
+            sleepWakeupLocationService.setStopServiceEvent(stopServiceEvent);
+        } catch (Exception e) {}
     }
 
     public static LocationCollectionManager getInstance(Context context) {
@@ -84,6 +96,7 @@ public class LocationCollectionManager {
         request.setInterval(INTERVAL);
         request.setFastestInterval(FASTEST_INTERVAL);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        sleepWakeupLocationService = new SleepWakeupLocationService(context);
         sleepWakeupLocationService.repare();
         this.callback = new LocationReceiverCallback();
         if (fusedLocationProviderClient != null) {
@@ -106,7 +119,9 @@ public class LocationCollectionManager {
                 UserLocation currUserLocation = new UserLocation(location);
                 postReport(currUserLocation);
                 lastUserLocation = currUserLocation;
-                sleepWakeupLocationService.handleSleepOrWakeupService(currUserLocation);
+                if (isSleepWakeupOn && sleepWakeupLocationService != null) {
+                    sleepWakeupLocationService.handleSleepOrWakeupService(currUserLocation);
+                }
             }
         }
     }
@@ -131,7 +146,12 @@ public class LocationCollectionManager {
 
     public boolean isGPSEnabled() {
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        try {
+            return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception e) {
+
+        }
+        return false;
     }
 
     /**

@@ -211,6 +211,10 @@ public class MapActivity extends AppCompatActivity implements
                 .getDefaultSharedPreferences(this)
                 .getBoolean(getResources().getString(R.string.swNotifyMoveRef), true), getApplicationContext());
 
+        AppForegroundService.toggleSleepWakeup(PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swAutoSleepWakeupRef), true), getApplicationContext());
+
         flFragment = findViewById(R.id.flFragment);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         flFragment.setPadding(0, 0, 0, bottomNavigation.getNavigationHeight());
