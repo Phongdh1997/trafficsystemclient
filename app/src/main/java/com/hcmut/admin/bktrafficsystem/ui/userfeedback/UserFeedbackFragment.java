@@ -121,7 +121,7 @@ public class UserFeedbackFragment extends Fragment implements MapActivity.OnBack
                                 "Vui lòng nhập nội dung góp ý!");
                     } else {
                         String accessAuth = MapActivity.currentUser.getAccessToken();
-                        final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "", "Đang tìm đường..!", true);
+                        final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "", "Đang xử lý..!", true);
                         RetrofitClient.getApiService().postUserFeedback(accessAuth, new FeedbackRequest(message))
                                 .enqueue(new Callback<BaseResponse<FeedbackResponse>>() {
                                     @Override
