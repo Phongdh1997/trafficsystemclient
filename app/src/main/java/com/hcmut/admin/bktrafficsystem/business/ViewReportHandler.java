@@ -45,7 +45,7 @@ public class ViewReportHandler {
 
     public void getUserReportStatus(double lat, double lng, @NotNull final SegmentResultCallback callback) {
         RetrofitClient.getApiService()
-                .getTrafficStatusIncludeUserReport(lat, lng, 500)
+                .getTrafficStatusIncludeUserReport(lat, lng, 1000)
                 .enqueue(new Callback<StatusResponse<List<StatusRenderData>>>() {
                     @Override
                     public void onResponse(Call<StatusResponse<List<StatusRenderData>>> call, Response<StatusResponse<List<StatusRenderData>>> response) {
@@ -82,7 +82,7 @@ public class ViewReportHandler {
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onHaveNotResult();
+                                callback.onFaile();
                             }
                         });
                     }
@@ -101,5 +101,6 @@ public class ViewReportHandler {
     public interface SegmentResultCallback {
         void onSuccess(List<MarkerOptions> markerOptionsList);
         void onHaveNotResult();
+        void onFaile();
     }
 }
