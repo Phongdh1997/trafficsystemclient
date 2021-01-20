@@ -235,7 +235,9 @@ public class ViewReportFragment extends Fragment {
             setSelectedSegment(new SegmentData(Long.parseLong(datas[0]), Integer.parseInt(datas[1]), datas[2], Long.parseLong(datas[3])));
             txtSpeed.setText("Vận tốc trung bình: " + datas[1] + "km/h");
             txtStatusColor.setBackgroundColor(Color.parseColor(datas[2]));
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setSelectedSegment(SegmentData selectedSegment) {
@@ -343,6 +345,13 @@ public class ViewReportFragment extends Fragment {
                 progressDialog.dismiss();
                 updateUI();
                 Toast.makeText(getContext(), "Không có dữ liệu báo cáo tại thời điểm này", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFaile() {
+                progressDialog.dismiss();
+                updateUI();
+                Toast.makeText(getContext(), "Lỗi, vui lòng kiểm tra lại đường truyền hoặc máy chủ", Toast.LENGTH_SHORT).show();
             }
         });
     }
