@@ -156,6 +156,19 @@ public class DetailDealFragment  extends Fragment implements MapActivity.OnBackP
 
 
         }
+        else if(getArguments().getString("type").compareTo("get gift")==0){
+            nameDetail.setText("Nhận phần thưởng");
+            pointDetail.setText("+"+getArguments().getInt("point"));
+            codeDetail.setText(getArguments().getString("code"));
+            timeDetail.setText(getArguments().getString("createdAt"));
+            infoAdd.setVisibility(View.INVISIBLE);
+            layoutInfoAdd.setVisibility(View.INVISIBLE);
+            messageTitle.setVisibility(View.INVISIBLE);
+            layoutMessage.setVisibility(View.INVISIBLE);
+
+
+
+        }
     }
 
     @Nullable

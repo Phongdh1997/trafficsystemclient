@@ -97,6 +97,12 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
             holder.imageDeal.setImageResource(R.drawable.coupon);
 
         }
+        else if(currentDeal.getType().compareTo("get gift")==0){
+            holder.nameDeal.setText( currentDeal.getContent());
+            holder.timeDeal.setText(formatter.format(currentDeal.getCreatedAt()));
+            holder.imageDeal.setImageResource(R.drawable.getpoint);
+
+        }
 
 
 

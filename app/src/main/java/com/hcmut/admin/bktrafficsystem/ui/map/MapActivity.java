@@ -86,7 +86,7 @@ import vn.momo.momo_partner.AppMoMoLib;
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         RatingDialogListener {
-    private static final int TURN_ON_GPS_REQUEST = 1000;
+    private static final int TURN_ON_GPS_REQUEST = 2000;
 
     private MyApplication myapp;
 
@@ -457,24 +457,24 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+        System.out.println(requestCode);
         switch (requestCode) {
             case PhotoUploader.IMAGE_REQUEST:
                 Objects.requireNonNull(photoUploader).onActivityResult(getApplicationContext(), resultCode, data);
                 return;
-            case TURN_ON_GPS_REQUEST:
-                if (resultCode == RESULT_OK) {
-                    // GPS was turned on
-                    GPSForegroundServiceHandler.initLocationService(MapActivity.this);
-                } else {
-                    // GPS is not turn on
-                    SharedPreferences.Editor editor = PreferenceManager
-                            .getDefaultSharedPreferences(MapActivity.this)
-                            .edit();
-                    editor.putBoolean(getResources().getString(R.string.swGpsCollectionRef), false);
-                    editor.apply();
-                }
-                return;
+//            case TURN_ON_GPS_REQUEST:
+//                if (resultCode == RESULT_OK) {
+//                    // GPS was turned on
+//                    GPSForegroundServiceHandler.initLocationService(MapActivity.this);
+//                } else {
+//                    // GPS is not turn on
+//                    SharedPreferences.Editor editor = PreferenceManager
+//                            .getDefaultSharedPreferences(MapActivity.this)
+//                            .edit();
+//                    editor.putBoolean(getResources().getString(R.string.swGpsCollectionRef), false);
+//                    editor.apply();
+//                }
+//                return;
         }
         if(requestCode == AppMoMoLib.getInstance().REQUEST_CODE_MOMO) {
             buyPointFragment.onActivityResult(requestCode,resultCode,data);
