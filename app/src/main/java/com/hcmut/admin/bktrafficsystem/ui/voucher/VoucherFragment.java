@@ -1,6 +1,8 @@
 package com.hcmut.admin.bktrafficsystem.ui.voucher;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -136,9 +139,15 @@ public class VoucherFragment extends Fragment implements MapActivity.OnBackPress
         txtAllTop = view.findViewById(R.id.txtSeeAllTop);
 //        txtAllTrending = view.findViewById(R.id.txtSeeAllTrending);
         navigationView = view.findViewById(R.id.nav_view);
-        if(SharedPrefUtils.getUser(getContext()).getRole().compareTo("partner")!=0) {
+        if(SharedPrefUtils.getUser(getContext()).getRole()== null || SharedPrefUtils.getUser(getContext()).getRole().compareTo("partner")!=0) {
             Menu nav_Menu = navigationView.getMenu();
             nav_Menu.findItem(R.id.nav_scan).setVisible(false);
+        }
+        else{
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_DENIED){
+                ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 898);
+            }
         }
 
 
