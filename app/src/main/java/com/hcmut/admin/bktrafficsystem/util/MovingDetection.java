@@ -3,7 +3,7 @@ package com.hcmut.admin.bktrafficsystem.util;
 import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 
 public class MovingDetection {
-    private static final float MOVING_DISTANCE_LIMIT = 1.39f * 15; // 1.39 (m) * 15 (s)
+    private static final float MOVING_DISTANCE_LIMIT = 67.2f; // 1.39 (m) * 15 (s)
 
     private UserLocation prevLocation;
     private UserLocation currLocation;
