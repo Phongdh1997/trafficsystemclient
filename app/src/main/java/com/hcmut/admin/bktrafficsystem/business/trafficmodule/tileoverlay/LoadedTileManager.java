@@ -3,12 +3,16 @@ package com.hcmut.admin.bktrafficsystem.business.trafficmodule.tileoverlay;
 import com.hcmut.admin.bktrafficsystem.business.TileCoordinates;
 import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Set;
 
 public class LoadedTileManager {
     public static final String LOADED_STATE = "LOADED_STATE";
     public static final String LOADING_STATE = "LOADING_STATE";
     public static final String LOAD_FAIL_STATE = "LOAD_FAIL_STATE";
+
+    public static final int MAX_PERIOD_REFRESH_CACHE = 300000;
 
     private HashMap<TileCoordinates, String> loadedTiles = new HashMap<>();
     private static LoadedTileManager loadedTileManager;
@@ -24,6 +28,22 @@ public class LoadedTileManager {
 
     public synchronized void clear () {
         loadedTiles.clear();
+    }
+
+    public boolean checkClearCachedTile (TileCoordinates tile) {
+        TileCoordinates cachedTile = null;
+        for (TileCoordinates k : loadedTiles.keySet()) {
+            if (k.equals(tile)) {
+                cachedTile = k;
+                break;
+            }
+        }
+        if (cachedTile == null) {
+            return false;
+        }
+
+        long nowMillisecond = Calendar.getInstance().getTime().getTime();
+        return nowMillisecond - cachedTile.timestamp.getTime() > MAX_PERIOD_REFRESH_CACHE;
     }
 
     public boolean isNotLoaded (TileCoordinates tile) {
@@ -72,6 +92,7 @@ public class LoadedTileManager {
     }
 
     public synchronized void setLoadedTile (TileCoordinates tile) {
+        tile.timestamp = Calendar.getInstance().getTime();
         loadedTiles.put(tile, LOADED_STATE);
     }
 

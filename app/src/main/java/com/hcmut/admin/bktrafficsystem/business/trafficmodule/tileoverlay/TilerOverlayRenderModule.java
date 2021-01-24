@@ -9,6 +9,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.DataLoadingState;
+import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficDataLoader;
 
 public class TilerOverlayRenderModule {
     private TileOverlay statusTileOverlay;
@@ -16,7 +17,12 @@ public class TilerOverlayRenderModule {
     private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public TilerOverlayRenderModule(GoogleMap map, Context context) {
-        trafficTileProvider = new TrafficTileProvider(context);
+        trafficTileProvider = new TrafficTileProvider(context, new TrafficDataLoader.ClearCacheCallback() {
+            @Override
+            public void onClearCache() {
+                notifyDataChange();
+            }
+        });
         statusTileOverlay = map.addTileOverlay(new TileOverlayOptions()
                 .tileProvider(trafficTileProvider));
     }

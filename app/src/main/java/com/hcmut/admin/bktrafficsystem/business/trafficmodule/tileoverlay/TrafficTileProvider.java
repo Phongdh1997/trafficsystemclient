@@ -22,9 +22,10 @@ public class TrafficTileProvider implements TileProvider {
     private TrafficBitmap trafficBitmap;
     private TrafficDataLoader trafficDataLoader;
 
-    public TrafficTileProvider(Context context) {
+    public TrafficTileProvider(Context context, TrafficDataLoader.ClearCacheCallback clearCacheCallback) {
         trafficBitmap = new TrafficBitmap();
         trafficDataLoader = TrafficDataLoader.getInstance(context);
+        trafficDataLoader.setClearCacheCallback(clearCacheCallback);
     }
 
     @Override

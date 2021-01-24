@@ -26,6 +26,8 @@ public class TrafficDataLoader {
     private RoomDatabaseService roomDatabaseService;
     private LoadedTileManager loadedTileManager;
 
+    private ClearCacheCallback clearCacheCallback;
+
     private TrafficDataLoader(Context context) {
         roomDatabaseService = new RoomDatabaseImpl(context);
         loadedTileManager = LoadedTileManager.getInstance();
@@ -37,6 +39,10 @@ public class TrafficDataLoader {
             trafficDataLoader = new TrafficDataLoader(context);
         }
         return trafficDataLoader;
+    }
+
+    public void setClearCacheCallback(ClearCacheCallback callback) {
+        clearCacheCallback = callback;
     }
 
     /**
@@ -81,6 +87,14 @@ public class TrafficDataLoader {
                 e.printStackTrace();
             }
         }
+
+        // Kiểm tra timestamp của tile có vượt quá chu kì tính toán vận tốc TB là 5 phút hay không.
+        if (loadedTileManager.checkClearCachedTile(loadingTile)) {
+            if (clearCacheCallback != null) {
+                clearCacheCallback.onClearCache();
+            }
+        }
+
         return loadDataFromLocal(renderTile);
     }
 
@@ -193,5 +207,9 @@ public class TrafficDataLoader {
                 return "primary";
         }
         return "trunk";
+    }
+
+    public interface ClearCacheCallback {
+        void onClearCache();
     }
 }

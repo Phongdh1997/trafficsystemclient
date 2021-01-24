@@ -12,12 +12,15 @@ import com.hcmut.admin.bktrafficsystem.util.MyLatLngBoundsUtil;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
+
 public class TileCoordinates {
     public static int HCM_CITY_RADIUS = 28000;
 
     public final int x;
     public final int y;
     public final int z;
+    public Date timestamp;
 
     private TileCoordinates(int x, int y, int z) {
         this.x = x;
