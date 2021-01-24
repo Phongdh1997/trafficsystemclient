@@ -92,7 +92,16 @@ public class LoadedTileManager {
     }
 
     public synchronized void setLoadedTile (TileCoordinates tile) {
-        tile.timestamp = Calendar.getInstance().getTime();
+        TileCoordinates cachedTile = null;
+        for (TileCoordinates k : loadedTiles.keySet()) {
+            if (k.equals(tile)) {
+                cachedTile = k;
+                break;
+            }
+        }
+        if (cachedTile != null) {
+            cachedTile.timestamp = Calendar.getInstance().getTime();
+        }
         loadedTiles.put(tile, LOADED_STATE);
     }
 
