@@ -1,15 +1,20 @@
 package com.hcmut.admin.bktrafficsystem.ui.home;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -54,6 +59,7 @@ public class HomeFragment extends Fragment
     private FloatingActionButton btnDirect;
     private SearchInputView searchInputView;
     private FloatingActionButton btnCurrentLocation;
+    private AppCompatButton btnToggleRender;
 
     private MarkerCreating searchMarkerCreating;
 
@@ -83,7 +89,9 @@ public class HomeFragment extends Fragment
     public void onResume() {
         super.onResume();
         try {
-            ((MapActivity) getContext()).showBottomNav();
+            MapActivity mapActivity = ((MapActivity) getContext());
+            mapActivity.showBottomNav();
+            updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -149,6 +157,7 @@ public class HomeFragment extends Fragment
         btnDirect = view.findViewById(R.id.btnDirect);
         searchInputView = view.findViewById(R.id.searchInputView);
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation);
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
         addEvents();
     }
 
@@ -212,6 +221,23 @@ public class HomeFragment extends Fragment
                 }
             }
         });
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
+            }
+        });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     public void createMarker(LatLng latLng) {

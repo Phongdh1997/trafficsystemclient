@@ -6,9 +6,10 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:4.1.0'
         classpath 'com.google.gms:google-services:4.2.0'  // Google Services plugin
 
         //kotlin
@@ -26,6 +27,10 @@ allprojects {
         jcenter()
         maven{
             url "https://maven.google.com"
+        }
+        maven { url 'https://jitpack.io' }
+        maven{
+            url "https://oss.sonatype.org/content/repositories/snapshots"
         }
     }
 }

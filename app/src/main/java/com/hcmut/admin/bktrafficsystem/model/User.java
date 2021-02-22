@@ -30,6 +30,8 @@ public class User {
     private String imgUrl;
     private String userEmail;
     private String accessToken;
+    private int point;
+    private String role;
 
     public String getAccountType() {
         return accountType;
@@ -83,6 +85,7 @@ public class User {
         return accessToken;
     }
 
+
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
@@ -101,6 +104,19 @@ public class User {
 
     public void setEvaluation_score(int evaluation_score) {
         this.evaluation_score = evaluation_score;
+    }
+    public int getPoint() {
+        return point;
+    }
+    public void setPoint(int point) {
+        this.point = point;
+    }
+
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void updateUser(final Activity activity, final EditProfileFragment fragment, String name, String avatarUrl, String phone) {

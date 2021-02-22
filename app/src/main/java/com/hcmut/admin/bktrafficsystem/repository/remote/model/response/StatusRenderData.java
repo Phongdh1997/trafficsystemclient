@@ -18,6 +18,7 @@ import com.google.gson.annotations.SerializedName;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.groundoverlay.BitmapLineData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -153,9 +154,13 @@ public class StatusRenderData {
             List<MarkerOptions> markerOptionsList = new ArrayList<>();
             for (StatusRenderData data : statusRenderDataList) {
                 try {
+                    Date createdDate = data.getCreatedAt();
+                    if (createdDate == null) {
+                        createdDate = new Date(Calendar.getInstance().getTime().getTime() - 50000);
+                    }
                     markerOptions = new MarkerOptions()
                             .position(data.getStartPointLatLng())
-                            .title(data.getSegment() + "/" + data.getVelocity() + "/" + data.getColor() + "/" + data.getCreatedAt().getTime())
+                            .title(data.getSegment() + "/" + data.getVelocity() + "/" + data.getColor() + "/" + createdDate.getTime())
                             .icon(icon);
                     markerOptionsList.add(markerOptions);
                 } catch (Exception e) {}

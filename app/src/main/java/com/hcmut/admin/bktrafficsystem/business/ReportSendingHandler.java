@@ -93,6 +93,18 @@ public class ReportSendingHandler {
         });
     }
 
+    public void onArrowMarkerClickedNotConfirm(GoogleMap map, Marker marker) {
+        if (Objects.requireNonNull(marker.getTag()).equals(MarkerListener.REPORT_ARROW)) {
+            LatLng temp = currLatLng;
+            currLatLng = nextLatLng;
+            nextLatLng = temp;
+            if (arrowMarker != null) {
+                arrowMarker.remove();
+            }
+            drawOrientationArrow(map, reportMarker.getLocation(), nextLatLng);
+        }
+    }
+
     public void onArrowMarkerClicked(Context context, final GoogleMap map, Marker marker) {
         if (Objects.requireNonNull(marker.getTag()).equals(MarkerListener.REPORT_ARROW)) {
             MapActivity.androidExt.comfirm(context,
@@ -113,13 +125,30 @@ public class ReportSendingHandler {
         }
     }
 
+    public void sendReport(TrafficReportFragment fragment, String address, int velocity, List<String> causes, String note, List<String> images) {
+        ReportRequest reportRequest = new ReportRequest();
+        reportRequest.setCurrentLatLng(currLatLng);
+        reportRequest.setNextLatLng(nextLatLng);
+        reportRequest.setVelocity(velocity);
+        reportRequest.setCauses(causes);
+        reportRequest.setDescription(note);
+        reportRequest.setImages(images);
+        reportRequest.setAddress(address);
+
+        if (reportRequest.checkValidData(context)) {
+            reportRequest.sendReport(fragment);
+        }
+    }
+
     /**
      *
      * @param velocity
      * @param causes
      * @param note
      * @param images
+     *
      */
+    @Deprecated
     public void reviewReport(TrafficReportFragment fragment, String address, int velocity, List<String> causes, String note, List<String> images) {
         ReportRequest reportRequest = new ReportRequest();
         reportRequest.setCurrentLatLng(currLatLng);
@@ -188,7 +217,9 @@ public class ReportSendingHandler {
                     .anchor(0.9f, 0.5f)
                     .alpha(3)
                     .rotation(rotation)
+                    .title("Chọn vào mũi tên để thay đổi chiều")
             );
+            arrowMarker.showInfoWindow();
             arrowMarker.setTag(MarkerListener.REPORT_ARROW);
             clCollectLocation.setVisibility(View.GONE);
             clCollectReportData.setVisibility(View.VISIBLE);

@@ -1,17 +1,22 @@
 package com.hcmut.admin.bktrafficsystem.repository.remote.model.request;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.report.traffic.TrafficReportFragment;
+import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,10 +41,22 @@ public class ReportRequest {
     private String description;
     private List<String> images;
     private String type = "user";
+    private String token;
+    private String active;
+    private String path_id;
+    private String is_update_current_location;
     private String address;
 
-    public ReportRequest() {
+    @NonNull
+    @Override
+    public String toString() {
+        return "type: " + type + "; active: " + active + "; path_id: "+ path_id + "; is_update: " + is_update_current_location;
+    }
 
+    public ReportRequest() {
+        if (velocity < 1) {
+            velocity = 1;
+        }
     }
 
     /**
@@ -54,6 +71,9 @@ public class ReportRequest {
         this.nextLng = currentLocation.getLongitude();
         this.velocity = Math.round(UserLocation.calculateSpeed(prevLocation, currentLocation));
         this.type = "system";
+        if (velocity < 1) {
+            velocity = 1;
+        }
     }
 
     public ReportRequest(int velocity, double currentLat, double currentLng, double nextLat, double nextLng, List<String> causes, String description, List<String> images) {
@@ -65,6 +85,48 @@ public class ReportRequest {
         this.causes = causes;
         this.description = description;
         this.images = images;
+        if (this.velocity < 1) {
+            this.velocity = 1;
+        }
+    }
+
+    /**
+     * Model for stop notification
+     * @param userLocation
+     */
+    private ReportRequest(@NotNull UserLocation userLocation, Context context) {
+        this.currentLat = userLocation.getLatitude();
+        this.currentLng = userLocation.getLongitude();
+        this.nextLat = userLocation.getLatitude();
+        this.nextLng = userLocation.getLongitude();
+        this.velocity = 50;
+        this.type = "system";
+        token = SharedPrefUtils.getNotiToken(context);
+        active = "false";
+        path_id = AppForegroundService.path_id;
+        is_update_current_location = "true";
+    }
+
+    public static ReportRequest getStopNotificationModel(@NotNull UserLocation userLocation, Context context) {
+        return new ReportRequest(userLocation, context);
+    }
+
+    public static ReportRequest getStartReportNotificationModel(@NotNull UserLocation userLocation, Context context) {
+        ReportRequest reportRequest = new ReportRequest(userLocation, context);
+        reportRequest.active = "true";
+        reportRequest.path_id = null;
+        return  reportRequest;
+    }
+
+    public void checkUpdateCurrentLocation(Context context) {
+        if (AppForegroundService.isUpdateCurrentLocation()) {
+            token = SharedPrefUtils.getNotiToken(context);
+            active = "true";
+            path_id = AppForegroundService.path_id;
+            is_update_current_location = "true";
+        } else {
+            is_update_current_location = "false";
+        }
     }
 
     public boolean checkValidData(Context context) {
@@ -87,11 +149,12 @@ public class ReportRequest {
         final Activity activity = fragment.getActivity();
         if (activity == null) return;
 
+        final ProgressDialog progressDialog = ProgressDialog.show(activity, "", "Đang xử lý..!", true);
         RetrofitClient.getApiService().postTrafficReport(MapActivity.currentUser.getAccessToken(), this)
                 .enqueue(new Callback<BaseResponse<ReportResponse>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
-                        Log.d("tessss: ", response.toString());
+                        progressDialog.dismiss();
                         if (response.code() == 200 && response.body() != null && response.body().getCode() == 200) {
                             Log.e("ggg", response.body().getMessage());
                             MapActivity.androidExt.showSuccess(activity, "Gửi cảnh báo thành công");
@@ -103,6 +166,7 @@ public class ReportRequest {
 
                     @Override
                     public void onFailure(Call<BaseResponse<ReportResponse>> call, Throwable t) {
+                        progressDialog.dismiss();
                         MapActivity.androidExt.showErrorDialog(activity, "Gửi cảnh báo thất bại, vui lòng thử lại");
                     }
                 });
@@ -172,6 +236,38 @@ public class ReportRequest {
 
     public void setNextLng(double nextLng) {
         this.nextLng = nextLng;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getActive() {
+        return active;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
+    }
+
+    public String getPath_id() {
+        return path_id;
+    }
+
+    public void setPath_id(String path_id) {
+        this.path_id = path_id;
+    }
+
+    public String getIs_update_current_location() {
+        return is_update_current_location;
+    }
+
+    public void setIs_update_current_location(String is_update_current_location) {
+        this.is_update_current_location = is_update_current_location;
     }
 
     public List<String> getCauses() {

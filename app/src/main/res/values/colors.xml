@@ -49,5 +49,7 @@
     <color name="dark">#B1B1B1</color>
     <color name="background_message">#D1F8F8F8</color>
     <color name="color_divider">#b3b3b3</color>
-
+    <color name="vDarkGray">#616161</color>
+    <color name="lightGray">#E9EEF2</color>
+    <color name="otp_editext_color">#DAE2DFDF</color>
 </resources>

@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -12,11 +13,13 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
 import com.hcmut.admin.bktrafficsystem.business.SleepWakeupLocationService;
 import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.repository.remote.API.APIService;
 import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.ReportResponse;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 
 import retrofit2.Call;
@@ -35,6 +38,7 @@ public class LocationCollectionManager {
     private Context context;
     private APIService apiService;
     private UserLocation lastUserLocation;
+    private boolean isSleepWakeupOn = true;
 
     private SleepWakeupLocationService sleepWakeupLocationService;
 
@@ -46,8 +50,19 @@ public class LocationCollectionManager {
         sleepWakeupLocationService = new SleepWakeupLocationService(context);
     }
 
+    public void toggleSleepWakeup(boolean isTurnOn) {
+        if (isTurnOn) {
+            sleepWakeupLocationService = new SleepWakeupLocationService(context);
+            sleepWakeupLocationService.repare();
+        }
+        isSleepWakeupOn = isTurnOn;
+        Log.e("sleep", "" + isSleepWakeupOn);
+    }
+
     public void setStopServiceEvent(SleepWakeupLocationService.StopServiceEvent stopServiceEvent) {
-        sleepWakeupLocationService.setStopServiceEvent(stopServiceEvent);
+        try {
+            sleepWakeupLocationService.setStopServiceEvent(stopServiceEvent);
+        } catch (Exception e) {}
     }
 
     public static LocationCollectionManager getInstance(Context context) {
@@ -61,16 +76,27 @@ public class LocationCollectionManager {
         return lastUserLocation;
     }
 
-    public void getCurrentLocation (OnSuccessListener<Location> onSuccessListener) {
+    @SuppressLint("MissingPermission")
+    public void getCurrentLocation(OnSuccessListener<Location> onSuccessListener) {
         fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(onSuccessListener);
+                .addOnSuccessListener(onSuccessListener)
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            lastUserLocation = new UserLocation(location.getLatitude(), location.getLongitude());
+                        }
+                    }
+                });
     }
 
+    @SuppressLint("MissingPermission")
     public void beginTraceLocation(Looper looper) {
         LocationRequest request = LocationRequest.create();
         request.setInterval(INTERVAL);
         request.setFastestInterval(FASTEST_INTERVAL);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        sleepWakeupLocationService = new SleepWakeupLocationService(context);
         sleepWakeupLocationService.repare();
         this.callback = new LocationReceiverCallback();
         if (fusedLocationProviderClient != null) {
@@ -93,7 +119,9 @@ public class LocationCollectionManager {
                 UserLocation currUserLocation = new UserLocation(location);
                 postReport(currUserLocation);
                 lastUserLocation = currUserLocation;
-                //sleepWakeupLocationService.handleSleepOrWakeupService(currUserLocation);
+                if (isSleepWakeupOn && sleepWakeupLocationService != null) {
+                    sleepWakeupLocationService.handleSleepOrWakeupService(currUserLocation);
+                }
             }
         }
     }
@@ -102,14 +130,15 @@ public class LocationCollectionManager {
         if (lastUserLocation == null) return;
         String accessAuth = MapActivity.currentUser.getAccessToken();
         ReportRequest reportRequest = new ReportRequest(lastUserLocation, currUserLocation);
-        apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<Object>() {
+        reportRequest.checkUpdateCurrentLocation(context);
+        apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<BaseResponse<ReportResponse>>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
+            public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
                 Log.e("post GPS report", response.toString());
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+            public void onFailure(Call<BaseResponse<ReportResponse>> call, Throwable t) {
                 Log.e("post GPS report", "fail");
             }
         });
@@ -117,6 +146,44 @@ public class LocationCollectionManager {
 
     public boolean isGPSEnabled() {
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        try {
+            return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+
+    /**
+     * query to stop notification to server
+     */
+    public void stopNotification() {
+        getCurrentLocation(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location == null && lastUserLocation == null) {
+                    return;
+                }
+                UserLocation userLocation;
+                if (location != null) {
+                    userLocation = new UserLocation(location);
+                } else {
+                    userLocation = lastUserLocation;
+                }
+                String accessAuth = MapActivity.currentUser.getAccessToken();
+                ReportRequest reportRequest = ReportRequest.getStopNotificationModel(userLocation, context);
+                apiService.postGPSTrafficReport(accessAuth, reportRequest).enqueue(new Callback<BaseResponse<ReportResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
+                        Log.e("post GPS report", response.toString());
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<ReportResponse>> call, Throwable t) {
+                        Log.e("post GPS report", "fail");
+                    }
+                });
+            }
+        });
     }
 }

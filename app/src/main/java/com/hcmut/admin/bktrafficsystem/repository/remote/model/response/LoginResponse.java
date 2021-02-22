@@ -19,6 +19,8 @@ public class LoginResponse {
     private String phoneNumber;
     @SerializedName("evaluation_score")
     private int evaluation_score;
+    @SerializedName("role")
+    private String role;
 
     public String getId() {
         return id;
@@ -50,5 +52,8 @@ public class LoginResponse {
 
     public String getAccessToken() {
         return accessToken;
+    }
+    public String getRole() {
+        return role;
     }
 }

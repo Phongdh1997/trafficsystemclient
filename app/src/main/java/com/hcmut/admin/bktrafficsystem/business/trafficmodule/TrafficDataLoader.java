@@ -177,7 +177,7 @@ public class TrafficDataLoader {
     }
 
     private int getStreetLevel(TileCoordinates tile) {
-        if (tile.z > 15) {
+        if (tile.z > 14) {
             return 0;
         } else if (tile.z > 12) {
             return 2;

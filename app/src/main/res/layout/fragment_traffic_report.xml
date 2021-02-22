@@ -24,6 +24,20 @@
             android:layout_width="match_parent"/>
     </com.hcmut.admin.bktrafficsystem.customview.NonGestureFrameLayout>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnToggleRender"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/bg_button_active"
+        android:textColor="@color/white"
+        android:text="Dữ liệu"
+        android:textSize="12dp"
+        app:elevation="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/clCollectLocation"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.hcmut.admin.bktrafficsystem.customview.NonGestureConstraintLayout
         android:id="@+id/clCollectLocation"
         android:layout_width="match_parent"
@@ -253,7 +267,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="3dp"
-            android:text="Tạo cảnh báo"
+            android:text="Gửi báo cáo"
             android:textSize="14dp"
             android:clickable="true"
             android:drawableStart="@drawable/ic_check_circle"

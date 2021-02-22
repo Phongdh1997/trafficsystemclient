@@ -1,8 +1,13 @@
 package com.hcmut.admin.bktrafficsystem.ui.map;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -10,26 +15,56 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.GPSForegroundServiceHandler;
+import com.hcmut.admin.bktrafficsystem.business.UserLocation;
+import com.hcmut.admin.bktrafficsystem.business.VersionUpdater;
 import com.hcmut.admin.bktrafficsystem.business.trafficmodule.TrafficRenderModule;
 import com.hcmut.admin.bktrafficsystem.model.AndroidExt;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.GiftResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.GiftStateResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoVoucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PayMoMoResponse;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
+import com.hcmut.admin.bktrafficsystem.ui.contribution.ContributionFragment;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.buypoint.BuyPointFragment;
+import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
+import com.hcmut.admin.bktrafficsystem.util.GiftUtil;
+import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.listener.RatingDialogListener;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -39,6 +74,10 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import vn.momo.momo_partner.AppMoMoLib;
 
 /**
  * Created by User on 10/2/2017.
@@ -47,13 +86,17 @@ import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         RatingDialogListener {
+    private static final int TURN_ON_GPS_REQUEST = 2000;
+
     private MyApplication myapp;
 
     public static User currentUser;
     public static GoogleMap mMap;
-    public static AndroidExt androidExt = new AndroidExt();
+    public static AndroidExt androidExt;
+    public static GiftUtil giftUtil;
     private Date pressTime;
     private TrafficRenderModule trafficRenderModule;
+    private boolean isRenderStatus = true;
 
     // Listener
     private ViewReportFragment.OnReportMakerClick reportMakerClickListener;
@@ -63,6 +106,7 @@ public class MapActivity extends AppCompatActivity implements
     private PhotoUploader photoUploader;
 
     private SupportMapFragment mapFragment;
+    private BuyPointFragment buyPointFragment;
     private BottomTab bottomTab;
     private BottomNavigation bottomNavigation;
     private FrameLayout flFragment;
@@ -78,13 +122,19 @@ public class MapActivity extends AppCompatActivity implements
     public void setMarkerListener(MarkerListener markerListener) {
         this.markerListener = markerListener;
     }
-
+    public void setBuyPointFragment(BuyPointFragment buyPointFramgent) {
+        this.buyPointFragment = buyPointFramgent;
+    }
     public void addMapReadyCallback(@NotNull OnMapReadyListener onMapReadyListener) {
         if (mMap != null) {
             onMapReadyListener.onMapReady(mMap);
         } else {
             onMapReadyListeners.add(onMapReadyListener);
         }
+    }
+
+    public boolean isRenderStatus() {
+        return isRenderStatus;
     }
 
     public void setRatingDialogListener(RatingDialogListener ratingDialogListener) {
@@ -105,9 +155,14 @@ public class MapActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_map);
         myapp = (MyApplication) this.getApplicationContext();
         currentUser = SharedPrefUtils.getUser(MapActivity.this);
+        androidExt = new AndroidExt();
+        giftUtil = new GiftUtil();
 
-        addCotrols();
-        addEvents();
+        VersionUpdater.checkNewVersion(this);
+        if (GPSForegroundServiceHandler.requireLocationPermission(this)) {
+            addCotrols();
+            addEvents();
+        }
     }
 
     private void addCotrols() {
@@ -145,8 +200,20 @@ public class MapActivity extends AppCompatActivity implements
                 .getDefaultSharedPreferences(this)
                 .getBoolean(getResources().getString(R.string.swGpsCollectionRef), true);
         if (gpsCollectionSwithValue) {
-            GPSForegroundServiceHandler.initLocationService(this);
+            EnableGPSAutoMatically();
         }
+
+        AppForegroundService.toggleReportNoti(PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swNotifyAroundRef), true), getApplicationContext());
+
+        AppForegroundService.toggleDirectionNoti(PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swNotifyMoveRef), true), getApplicationContext());
+
+        AppForegroundService.toggleSleepWakeup(PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swAutoSleepWakeupRef), true), getApplicationContext());
 
         flFragment = findViewById(R.id.flFragment);
         bottomNavigation = findViewById(R.id.bottomNavigation);
@@ -164,6 +231,14 @@ public class MapActivity extends AppCompatActivity implements
         });
     }
 
+    public void setTrafficEnable(boolean isEnable) {
+        if (trafficRenderModule != null) {
+            isRenderStatus = isEnable;
+            trafficRenderModule.setTrafficEnable(isEnable);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -176,12 +251,24 @@ public class MapActivity extends AppCompatActivity implements
         onMapReadyListeners.clear();
         trafficRenderModule = new TrafficRenderModule(getApplicationContext(), mMap, mapFragment);
         trafficRenderModule.startStatusRenderTimer();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 13));
+        UserLocation latestLocation = SharedPrefUtils.getLatestLocation(getApplicationContext());
+        if (latestLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(latestLocation.getLatitude(), latestLocation.getLongitude()), 13));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 13));
+        }
+        giftUtil.addGift(MapActivity.this,getApplicationContext(),mMap);
+
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
+            public boolean onMarkerClick(final Marker marker) {
                 try {
-                    switch (marker.getTag().toString()) {
+                    String[] strTag = marker.getTag().toString().split("-");
+                    
+
+                    switch (strTag[0]) {
                         case ViewReportFragment.REPORT_RATING: {
                             if (reportMakerClickListener != null) {
                                 reportMakerClickListener.onClick(marker);
@@ -192,7 +279,8 @@ public class MapActivity extends AppCompatActivity implements
                             if (markerListener != null) {
                                 markerListener.onClick(marker);
                             }
-
+                        case "GIFT":
+                            giftUtil.checkGift(MapActivity.this,getApplicationContext(),marker,strTag[1]);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -200,6 +288,59 @@ public class MapActivity extends AppCompatActivity implements
                 return true;
             }
         });
+    }
+
+    private void EnableGPSAutoMatically() {
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .build();
+        googleApiClient.connect();
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(30 * 1000);
+        locationRequest.setFastestInterval(5 * 1000);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        // **************************
+        builder.setAlwaysShow(true); // this is the key ingredient
+        // **************************
+
+        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
+                .checkLocationSettings(googleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result
+                        .getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // GPS was turned on
+                        GPSForegroundServiceHandler.initLocationService(MapActivity.this);
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        try {
+                            // Show the dialog by calling
+                            // startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(MapActivity.this, TURN_ON_GPS_REQUEST);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        toast("Setting change not allowed");
+                        break;
+                }
+            }
+        });
+    }
+    private void toast(String message) {
+        try {
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        } catch (Exception ex) {
+        }
     }
 
     @Override
@@ -235,6 +376,10 @@ public class MapActivity extends AppCompatActivity implements
         clearActivity();
         mMap = null;
         androidExt = null;
+        AppForegroundService.path_id = null;
+        SharedPrefUtils.saveLatestLocation(
+                getApplicationContext(),
+                LocationCollectionManager.getInstance(getApplicationContext()).getLastUserLocation());
         super.onDestroy();
     }
 
@@ -316,7 +461,25 @@ public class MapActivity extends AppCompatActivity implements
             case PhotoUploader.IMAGE_REQUEST:
                 Objects.requireNonNull(photoUploader).onActivityResult(getApplicationContext(), resultCode, data);
                 return;
+            case TURN_ON_GPS_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    // GPS was turned on
+                    GPSForegroundServiceHandler.initLocationService(MapActivity.this);
+                } else {
+                    // GPS is not turn on
+                    SharedPreferences.Editor editor = PreferenceManager
+                            .getDefaultSharedPreferences(MapActivity.this)
+                            .edit();
+                    editor.putBoolean(getResources().getString(R.string.swGpsCollectionRef), false);
+                    editor.apply();
+                }
+                return;
         }
+        if(requestCode == AppMoMoLib.getInstance().REQUEST_CODE_MOMO) {
+            buyPointFragment.onActivityResult(requestCode,resultCode,data);
+            return;
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -325,22 +488,39 @@ public class MapActivity extends AppCompatActivity implements
         switch (requestCode) {
             case GPSForegroundServiceHandler.MUTILE_PERMISSION_REQUEST:
                 GPSForegroundServiceHandler.handleAppForgroundPermission(MapActivity.this, requestCode, permissions, grantResults);
-                return;
+                break;
             case CallPhone.CALL_PHONE_CODE:
                 boolean isHavePermission = CallPhone.handleCallPhonePermission(grantResults);
                 if (isHavePermission) {
                     CallPhone.makeAPhoneCall(MapActivity.this);
                 }
-                return;
+                break;
             case PhotoUploader.IMAGE_PERMISSION_CODE:
                 Objects.requireNonNull(photoUploader).onRequestPermissionsResult(
                         requestCode,
                         permissions,
                         grantResults,
                         MapActivity.this);
-                return;
+                break;
+            case GPSForegroundServiceHandler.LOCATION_PERMISSION_REQUEST:
+                if (!GPSForegroundServiceHandler.handleLocationPermissionResult(requestCode, permissions, grantResults)) {
+                    androidExt.showNotifyDialog(
+                            MapActivity.this,
+                            "Ứng dụng sẽ tắt do không được cấp quyền truy cập vị trí, vui lòng thử lại!",
+                            new ClickDialogListener.OK() {
+                                @Override
+                                public void onCLickOK() {
+                                    MapActivity.this.finishAndRemoveTask();
+                                }
+                            });
+                } else {
+                    addCotrols();
+                    addEvents();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -371,4 +551,6 @@ public class MapActivity extends AppCompatActivity implements
     public interface OnBackPressCallback {
         void onBackPress();
     }
+
+
 }

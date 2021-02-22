@@ -3,12 +3,14 @@ package com.hcmut.admin.bktrafficsystem.ui.report.traffic;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,11 +21,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,10 +37,12 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
 import com.hcmut.admin.bktrafficsystem.business.TrafficReportPhotoUploader;
+import com.hcmut.admin.bktrafficsystem.business.UserLocation;
 import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.business.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
+import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.customview.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
@@ -65,6 +73,7 @@ public class TrafficReportFragment extends Fragment implements
     private String mParam2;
 
     public static final int MAX_PHOTO_TOTAL = 4;
+    public static final double REPORT_RADIUS_LIMIT = 500;   // in meters
 
     private AutocompletePrediction searchPlaceResult;
     private LatLng selectedMapPoint;
@@ -88,6 +97,8 @@ public class TrafficReportFragment extends Fragment implements
     private List<Bitmap> imageBitmaps = new ArrayList<>();
     private PhotoUploader photoUploader;
     private ProgressDialog progressDialog;
+    private Circle circleReportLimit;
+    private AppCompatButton btnToggleRender;
 
     private GoogleMap map;
 
@@ -129,7 +140,9 @@ public class TrafficReportFragment extends Fragment implements
             handleSearchResult();
         } else {
             try {
-                ((MapActivity) getContext()).hideBottomNav();
+                MapActivity mapActivity = ((MapActivity) getContext());
+                mapActivity.hideBottomNav();
+                updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,9 +191,16 @@ public class TrafficReportFragment extends Fragment implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        removeCircleReportLimit();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
         btnYourLocation = view.findViewById(R.id.btnYourLocation);
         btnChooseOnMap = view.findViewById(R.id.btnChooseOnMap);
         searchInputView = view.findViewById(R.id.searchInputView);
@@ -252,12 +272,13 @@ public class TrafficReportFragment extends Fragment implements
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     map = googleMap;
+                    drawCircleReportLimit(map, REPORT_RADIUS_LIMIT);
                 }
             });
             mapActivity.setMarkerListener(new MarkerListener() {
                 @Override
                 public void onClick(Marker marker) {
-                    reportSendingHandler.onArrowMarkerClicked(context, map, marker);
+                    reportSendingHandler.onArrowMarkerClickedNotConfirm(map, marker);
                 }
             });
             mapActivity.registerCameraPhotoHandler(photoUploader);
@@ -352,18 +373,88 @@ public class TrafficReportFragment extends Fragment implements
                 }
             }
         });
+
         txtReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                reportSendingHandler.reviewReport(
-                        TrafficReportFragment.this,
-                        searchInputView.getSearchInputText(),
-                        sbSpeed.getProgress(),
-                        Arrays.asList(snReason.getSelectedItem().toString()),
-                        txtNote.getText().toString(),
-                        images);
+
+                MapActivity.androidExt.comfirm(context,
+                        "Thông báo",
+                        "Bạn có muốn gửi báo cáo này?",
+                        new ClickDialogListener.Yes() {
+                            @Override
+                            public void onCLickYes() {
+                                reportSendingHandler.sendReport(
+                                        TrafficReportFragment.this,
+                                        searchInputView.getSearchInputText(),
+                                        sbSpeed.getProgress(),
+                                        Arrays.asList(snReason.getSelectedItem().toString()),
+                                        txtNote.getText().toString(),
+                                        images);
+                            }
+                        });
             }
         });
+
+
+
+//        CODE Cũ
+//
+//        txtReview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                reportSendingHandler.reviewReport(
+//                        TrafficReportFragment.this,
+//                        searchInputView.getSearchInputText(),
+//                        sbSpeed.getProgress(),
+//                        Arrays.asList(snReason.getSelectedItem().toString()),
+//                        txtNote.getText().toString(),
+//                        images);
+//            }
+//        });
+
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
+            }
+        });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
+    }
+
+    public void drawCircleReportLimit(GoogleMap map, double radius) {
+        removeCircleReportLimit();
+        LatLng center = UserLocation.parseLatLng(LocationCollectionManager.getInstance(getContext()).getLastUserLocation());
+        if (center != null) {
+            circleReportLimit = map.addCircle(new CircleOptions()
+                    .center(center)
+                    .radius(radius)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(8));
+        }
+    }
+
+    public void removeCircleReportLimit() {
+        if (circleReportLimit != null) {
+            circleReportLimit.remove();
+        }
+    }
+
+    public boolean isInCircleReportLimit(@NonNull LatLng point) {
+        UserLocation userLocation = LocationCollectionManager.getInstance(getContext()).getLastUserLocation();
+        UserLocation selectedLocation = new UserLocation(point);
+        return userLocation != null
+                && userLocation.distanceTo(selectedLocation) <= REPORT_RADIUS_LIMIT;
     }
 
     public void clearReport() {
@@ -397,8 +488,12 @@ public class TrafficReportFragment extends Fragment implements
      */
     private void setReportLocation(LatLng latLng) {
         reportLatLng = latLng;
-        searchInputView.handleBackAndClearView(true);
-        reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);
+        if (isInCircleReportLimit(reportLatLng)) {
+            searchInputView.handleBackAndClearView(true);
+            reportSendingHandler.handleReportStepByStep(getActivity(), map, latLng);
+        } else {
+            MapActivity.androidExt.showMessageNoAction(getContext(), "Thông báo", "Điểm bạn chọn không nằm trong bán kính cho phép, vui lòng chọn lại điểm nằm trong đường tròn giới hạn");
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.hcmut.admin.bktrafficsystem.ui.direction;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -28,6 +32,8 @@ import com.hcmut.admin.bktrafficsystem.R;
 import com.hcmut.admin.bktrafficsystem.business.MarkerCreating;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.Coord;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.DirectRespose;
+import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.SearchPlaceFragment;
 import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchPlaceResultHandler;
@@ -35,6 +41,7 @@ import com.hcmut.admin.bktrafficsystem.ui.searchplace.callback.SearchResultCallb
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,6 +60,7 @@ public class DirectionFragment extends Fragment
     private String mParam1;
     private String mParam2;
 
+    private AppCompatButton btnToggleRender;
     private AutoCompleteTextView txtBeginAddress;
     private AutoCompleteTextView txtEndAddress;
     private AppCompatImageButton btnBack;
@@ -70,6 +78,7 @@ public class DirectionFragment extends Fragment
 
     private MarkerCreating beginMarkerCreating;
     private MarkerCreating endMarkerCreating;
+    private MarkerCreating directInfoMarker;    // for time and distance show
     private GoogleMap map;
     private List<Polyline> directPolylines = new ArrayList<>();
 
@@ -108,7 +117,9 @@ public class DirectionFragment extends Fragment
     public void onResume() {
         super.onResume();
         try {
-            ((MapActivity) getContext()).hideBottomNav();
+            MapActivity mapActivity = ((MapActivity) getContext());
+            mapActivity.hideBottomNav();
+            updateRenderStatusOptionBackground(mapActivity.isRenderStatus());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,8 +162,8 @@ public class DirectionFragment extends Fragment
                     isTimeDirectionSelected,
                     new SearchDirectionHandler.DirectResultCallback() {
                         @Override
-                        public void onSuccess(List<Coord> directs) {
-                            renderDirection(directs);
+                        public void onSuccess(DirectRespose directRespose) {
+                            renderDirection(directRespose);
                         }
 
                         @Override
@@ -214,6 +225,7 @@ public class DirectionFragment extends Fragment
 
         btnDistance = view.findViewById(R.id.btnDistance);
         btnTime = view.findViewById(R.id.btnTime);
+        btnToggleRender = view.findViewById(R.id.btnToggleRender);
 
         addEvents();
     }
@@ -238,6 +250,7 @@ public class DirectionFragment extends Fragment
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AppForegroundService.path_id = null;
                 removeMarker();
                 removeDirect();
                 NavHostFragment.findNavController(DirectionFragment.this).popBackStack();
@@ -255,6 +268,24 @@ public class DirectionFragment extends Fragment
                 onTimeButtonClick();
             }
         });
+
+        btnToggleRender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapActivity mapActivity = (MapActivity) getContext();
+                boolean toggleValue = !mapActivity.isRenderStatus();
+                mapActivity.setTrafficEnable(toggleValue);
+                updateRenderStatusOptionBackground(toggleValue);
+            }
+        });
+    }
+
+    private void updateRenderStatusOptionBackground(boolean isEnable) {
+        if (isEnable) {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.bg_button_active));
+        } else {
+            btnToggleRender.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.gray_bg_custom));
+        }
     }
 
     private void onTimeButtonClick() {
@@ -300,30 +331,43 @@ public class DirectionFragment extends Fragment
                 .navigate(R.id.action_directionFragment_to_searchPlaceFragment, bundle);
     }
 
-    private void createMarker(LatLng beginLatLng, LatLng endLatLng) {
+    private void createMarker(LatLng beginLatLng, LatLng endLatLng, LatLng directInfoLatLng, String directInfoTitle) {
         removeMarker();
         beginMarkerCreating = new MarkerCreating(beginLatLng);
         endMarkerCreating = new MarkerCreating(endLatLng);
+        directInfoMarker = new MarkerCreating(directInfoLatLng);
         beginMarkerCreating.createMarker(getContext(), map, R.drawable.ic_start_location_marker, false, false);
         endMarkerCreating.createMarker(getContext(), map, R.drawable.ic_stop_location_marker, false, false);
+        directInfoMarker.createMarker(getContext(), map, R.drawable.ic_dot, false, false, directInfoTitle);
     }
 
-    private void renderDirection(List<Coord> directs) {
+    @SuppressLint("DefaultLocale")
+    private void renderDirection(DirectRespose directRespose) {
+        List<Coord> directs = directRespose.getCoords();
+        AppForegroundService.path_id = directRespose.getPathId();
+
+        // render direct to map
         LatLng beginLatLng = new LatLng(directs.get(0).getLat(), directs.get(0).getLng());
         LatLng endLatLng = new LatLng(directs.get(directs.size() - 1).getLat(), directs.get(directs.size() - 1).getLng());
-        createMarker(beginLatLng, endLatLng);
+        LatLng directInfoLatLng = new LatLng(directs.get(directs.size() / 2).getLat(), directs.get(directs.size() / 2).getLng());
+        String directInfoTitle = String.format("%d phút (%.1f km)", (int) directRespose.getTime(), (directRespose.getDistance()/1000f));
+        createMarker(beginLatLng, endLatLng, directInfoLatLng, directInfoTitle);
         removeDirect();
-        for (int i = 0; i < directs.size() - 1; i++) {
-            LatLng start = new LatLng(directs.get(i).getLat(), directs.get(i).getLng());
-            LatLng end = new LatLng(directs.get(i + 1).getLat(), directs.get(i + 1).getLng());
+        LatLng start;
+        LatLng end;
+        String color;
+        for (int i = 0; i < directs.size(); i++) {
             try {
+                start = new LatLng(directs.get(i).getLat(), directs.get(i).getLng());
+                end = new LatLng(directs.get(i).geteLat(), directs.get(i).geteLng());
+                color = directs.get(i).getStatus().color;
                 directPolylines.add(map.addPolyline(
                         new PolylineOptions().add(
                                 start,
                                 end
-                        ).width(5).geodesic(true)
+                        ).width(10).geodesic(true)
                                 .clickable(true)
-                                .color(Color.BLUE)
+                                .color(Color.parseColor(color))
                 ));
             } catch (Exception e) {}
         }
@@ -350,6 +394,9 @@ public class DirectionFragment extends Fragment
         }
         if (endMarkerCreating != null) {
             endMarkerCreating.removeMarker();
+        }
+        if (directInfoMarker != null) {
+            directInfoMarker.removeMarker();
         }
     }
 
