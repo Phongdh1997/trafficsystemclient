@@ -70,7 +70,7 @@ public class SettingReferenceFragment extends PreferenceFragmentCompat {
             swAutoSleepWakeupRef.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-
+                    AppForegroundService.toggleSleepWakeup("true".equals(newValue.toString()), view.getContext());
                     return true;
                 }
             });

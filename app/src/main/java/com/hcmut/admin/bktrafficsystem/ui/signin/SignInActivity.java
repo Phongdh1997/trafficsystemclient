@@ -219,6 +219,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                     user.setUserName(loginResponse.getName());
                                     user.setAccountType("");
                                     user.setPhoneNumber(loginResponse.getPhoneNumber());
+                                    user.setRole(loginResponse.getRole());
                                     user.setUserId(loginResponse.getId());
                                     user.setEvaluation_score(loginResponse.getEvaluation_score());
                                     user.setmLocationPermissionsGranted(mPermissionsGranted);
@@ -301,6 +302,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     user.setAccountType("google");
                     user.setPhoneNumber(loginResponse.getPhoneNumber());
                     user.setUserId(loginResponse.getId());
+                    user.setRole(loginResponse.getRole());
                     user.setmLocationPermissionsGranted(mPermissionsGranted);
                     SharedPrefUtils.saveUser(SignInActivity.this, user);
                     Intent intent = new Intent(SignInActivity.this, MapActivity.class);
@@ -347,6 +349,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                         user.setAccountType("facebook");
                                         user.setPhoneNumber(loginResponse.getPhoneNumber());
                                         user.setUserId(loginResponse.getId());
+                                        user.setRole(loginResponse.getRole());
                                         user.setmLocationPermissionsGranted(mPermissionsGranted);
                                         SharedPrefUtils.saveUser(SignInActivity.this, user);
                                         Intent intent = new Intent(SignInActivity.this, MapActivity.class);

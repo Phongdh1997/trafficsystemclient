@@ -42,6 +42,7 @@ import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.business.ReportSendingHandler;
 import com.hcmut.admin.bktrafficsystem.business.SearchDirectionHandler;
 import com.hcmut.admin.bktrafficsystem.repository.remote.model.request.ReportRequest;
+import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
 import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.customview.SearchInputView;
 import com.hcmut.admin.bktrafficsystem.ui.map.MapActivity;
@@ -277,7 +278,7 @@ public class TrafficReportFragment extends Fragment implements
             mapActivity.setMarkerListener(new MarkerListener() {
                 @Override
                 public void onClick(Marker marker) {
-                    reportSendingHandler.onArrowMarkerClicked(context, map, marker);
+                    reportSendingHandler.onArrowMarkerClickedNotConfirm(map, marker);
                 }
             });
             mapActivity.registerCameraPhotoHandler(photoUploader);
@@ -372,18 +373,45 @@ public class TrafficReportFragment extends Fragment implements
                 }
             }
         });
+
         txtReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                reportSendingHandler.reviewReport(
-                        TrafficReportFragment.this,
-                        searchInputView.getSearchInputText(),
-                        sbSpeed.getProgress(),
-                        Arrays.asList(snReason.getSelectedItem().toString()),
-                        txtNote.getText().toString(),
-                        images);
+
+                MapActivity.androidExt.comfirm(context,
+                        "Thông báo",
+                        "Bạn có muốn gửi báo cáo này?",
+                        new ClickDialogListener.Yes() {
+                            @Override
+                            public void onCLickYes() {
+                                reportSendingHandler.sendReport(
+                                        TrafficReportFragment.this,
+                                        searchInputView.getSearchInputText(),
+                                        sbSpeed.getProgress(),
+                                        Arrays.asList(snReason.getSelectedItem().toString()),
+                                        txtNote.getText().toString(),
+                                        images);
+                            }
+                        });
             }
         });
+
+
+
+//        CODE Cũ
+//
+//        txtReview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                reportSendingHandler.reviewReport(
+//                        TrafficReportFragment.this,
+//                        searchInputView.getSearchInputText(),
+//                        sbSpeed.getProgress(),
+//                        Arrays.asList(snReason.getSelectedItem().toString()),
+//                        txtNote.getText().toString(),
+//                        images);
+//            }
+//        });
 
         btnToggleRender.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,6 +1,7 @@
 package com.hcmut.admin.bktrafficsystem.repository.remote.model.request;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -148,11 +149,12 @@ public class ReportRequest {
         final Activity activity = fragment.getActivity();
         if (activity == null) return;
 
+        final ProgressDialog progressDialog = ProgressDialog.show(activity, "", "Đang xử lý..!", true);
         RetrofitClient.getApiService().postTrafficReport(MapActivity.currentUser.getAccessToken(), this)
                 .enqueue(new Callback<BaseResponse<ReportResponse>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<ReportResponse>> call, Response<BaseResponse<ReportResponse>> response) {
-                        Log.d("tessss: ", response.toString());
+                        progressDialog.dismiss();
                         if (response.code() == 200 && response.body() != null && response.body().getCode() == 200) {
                             Log.e("ggg", response.body().getMessage());
                             MapActivity.androidExt.showSuccess(activity, "Gửi cảnh báo thành công");
@@ -164,6 +166,7 @@ public class ReportRequest {
 
                     @Override
                     public void onFailure(Call<BaseResponse<ReportResponse>> call, Throwable t) {
+                        progressDialog.dismiss();
                         MapActivity.androidExt.showErrorDialog(activity, "Gửi cảnh báo thất bại, vui lòng thử lại");
                     }
                 });

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hcmut.admin.bktrafficsystem">
+    package="com.hcmut.admin.bktrafficsystem"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,11 +20,15 @@
     <application
         android:name="com.hcmut.admin.bktrafficsystem.MyApplication"
         android:icon="@drawable/app_icon"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:label="@string/appicationName"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar"
+        tools:replace="android:label,android:theme"
+
+        >
+
 
         <activity
             android:name="com.hcmut.admin.bktrafficsystem.ui.SplashActivity"
@@ -76,6 +82,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
 
         <!--firebase-->
         <meta-data

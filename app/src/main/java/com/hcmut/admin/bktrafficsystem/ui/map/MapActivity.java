@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -32,8 +32,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.hcmut.admin.bktrafficsystem.MyApplication;
 import com.hcmut.admin.bktrafficsystem.R;
@@ -46,12 +50,21 @@ import com.hcmut.admin.bktrafficsystem.model.MarkerListener;
 import com.hcmut.admin.bktrafficsystem.model.User;
 import com.hcmut.admin.bktrafficsystem.business.CallPhone;
 import com.hcmut.admin.bktrafficsystem.business.PhotoUploader;
+import com.hcmut.admin.bktrafficsystem.repository.remote.RetrofitClient;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.BaseResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.GiftResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.GiftStateResponse;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.InfoVoucher;
+import com.hcmut.admin.bktrafficsystem.repository.remote.model.response.PayMoMoResponse;
 import com.hcmut.admin.bktrafficsystem.service.AppForegroundService;
-import com.hcmut.admin.bktrafficsystem.ui.home.HomeFragment;
+import com.hcmut.admin.bktrafficsystem.ui.contribution.ContributionFragment;
 import com.hcmut.admin.bktrafficsystem.ui.viewReport.ViewReportFragment;
+import com.hcmut.admin.bktrafficsystem.ui.voucher.buypoint.BuyPointFragment;
 import com.hcmut.admin.bktrafficsystem.util.ClickDialogListener;
+import com.hcmut.admin.bktrafficsystem.util.GiftUtil;
 import com.hcmut.admin.bktrafficsystem.util.LocationCollectionManager;
 import com.hcmut.admin.bktrafficsystem.util.SharedPrefUtils;
+import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.listener.RatingDialogListener;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -61,6 +74,10 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import vn.momo.momo_partner.AppMoMoLib;
 
 /**
  * Created by User on 10/2/2017.
@@ -69,13 +86,14 @@ import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         RatingDialogListener {
-    private static final int TURN_ON_GPS_REQUEST = 1000;
+    private static final int TURN_ON_GPS_REQUEST = 2000;
 
     private MyApplication myapp;
 
     public static User currentUser;
     public static GoogleMap mMap;
     public static AndroidExt androidExt;
+    public static GiftUtil giftUtil;
     private Date pressTime;
     private TrafficRenderModule trafficRenderModule;
     private boolean isRenderStatus = true;
@@ -88,6 +106,7 @@ public class MapActivity extends AppCompatActivity implements
     private PhotoUploader photoUploader;
 
     private SupportMapFragment mapFragment;
+    private BuyPointFragment buyPointFragment;
     private BottomTab bottomTab;
     private BottomNavigation bottomNavigation;
     private FrameLayout flFragment;
@@ -103,7 +122,9 @@ public class MapActivity extends AppCompatActivity implements
     public void setMarkerListener(MarkerListener markerListener) {
         this.markerListener = markerListener;
     }
-
+    public void setBuyPointFragment(BuyPointFragment buyPointFramgent) {
+        this.buyPointFragment = buyPointFramgent;
+    }
     public void addMapReadyCallback(@NotNull OnMapReadyListener onMapReadyListener) {
         if (mMap != null) {
             onMapReadyListener.onMapReady(mMap);
@@ -135,6 +156,7 @@ public class MapActivity extends AppCompatActivity implements
         myapp = (MyApplication) this.getApplicationContext();
         currentUser = SharedPrefUtils.getUser(MapActivity.this);
         androidExt = new AndroidExt();
+        giftUtil = new GiftUtil();
 
         VersionUpdater.checkNewVersion(this);
         if (GPSForegroundServiceHandler.requireLocationPermission(this)) {
@@ -189,6 +211,10 @@ public class MapActivity extends AppCompatActivity implements
                 .getDefaultSharedPreferences(this)
                 .getBoolean(getResources().getString(R.string.swNotifyMoveRef), true), getApplicationContext());
 
+        AppForegroundService.toggleSleepWakeup(PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getBoolean(getResources().getString(R.string.swAutoSleepWakeupRef), true), getApplicationContext());
+
         flFragment = findViewById(R.id.flFragment);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         flFragment.setPadding(0, 0, 0, bottomNavigation.getNavigationHeight());
@@ -196,22 +222,6 @@ public class MapActivity extends AppCompatActivity implements
             @Override
             public void onMenuItemSelect(int menuItemId, int i1, boolean b) {
                 bottomTab.showTab(menuItemId);
-
-                if (menuItemId == R.id.homeTabId || menuItemId == R.id.viewReportTabId) {
-                    try {
-                        HomeFragment home = (HomeFragment) homeFragment
-                                .getChildFragmentManager()
-                                .getFragments().get(0);
-                        home.updateRenderStatusOptionBackground(isRenderStatus);
-                    } catch (Exception e) {}
-
-                    try {
-                        ViewReportFragment home = (ViewReportFragment) viewReportFragment
-                                .getChildFragmentManager()
-                                .getFragments().get(0);
-                        home.updateRenderStatusOptionBackground(isRenderStatus);
-                    } catch (Exception e) {}
-                }
             }
 
             @Override
@@ -248,11 +258,17 @@ public class MapActivity extends AppCompatActivity implements
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(10.790643, 106.652569), 13));
         }
+        giftUtil.addGift(MapActivity.this,getApplicationContext(),mMap);
+
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
+            public boolean onMarkerClick(final Marker marker) {
                 try {
-                    switch (marker.getTag().toString()) {
+                    String[] strTag = marker.getTag().toString().split("-");
+                    
+
+                    switch (strTag[0]) {
                         case ViewReportFragment.REPORT_RATING: {
                             if (reportMakerClickListener != null) {
                                 reportMakerClickListener.onClick(marker);
@@ -263,7 +279,8 @@ public class MapActivity extends AppCompatActivity implements
                             if (markerListener != null) {
                                 markerListener.onClick(marker);
                             }
-
+                        case "GIFT":
+                            giftUtil.checkGift(MapActivity.this,getApplicationContext(),marker,strTag[1]);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -456,7 +473,13 @@ public class MapActivity extends AppCompatActivity implements
                     editor.putBoolean(getResources().getString(R.string.swGpsCollectionRef), false);
                     editor.apply();
                 }
+                return;
         }
+        if(requestCode == AppMoMoLib.getInstance().REQUEST_CODE_MOMO) {
+            buyPointFragment.onActivityResult(requestCode,resultCode,data);
+            return;
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -528,4 +551,6 @@ public class MapActivity extends AppCompatActivity implements
     public interface OnBackPressCallback {
         void onBackPress();
     }
+
+
 }
